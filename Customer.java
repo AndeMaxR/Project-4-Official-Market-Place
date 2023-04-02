@@ -72,7 +72,7 @@ public class Customer {
         }
     }
 
-    public void viewMarketStoreSort(String name) {
+    public void viewMarketStoreSort(String storeName) {
         try {
             File masterList = new File("ItemMasterList.txt");
             if (!masterList.exists()) {
@@ -89,7 +89,7 @@ public class Customer {
                     }
                     break;
                 }
-                if (fileContent.contains(name)) {
+                if (fileContent.contains(storeName)) {
                     System.out.println(fileContent);
                 }
                 counter++;
@@ -101,4 +101,13 @@ public class Customer {
             e.printStackTrace();
         }
     }
+
+
+    //TODO: Sort by description.
+
+
+    public void orderByPrice() {
+
+    }
+
 }
