@@ -71,4 +71,34 @@ public class Customer {
             e.printStackTrace();
         }
     }
+
+    public void viewMarketStoreSort(String name) {
+        try {
+            File masterList = new File("ItemMasterList.txt");
+            if (!masterList.exists()) {
+                masterList.createNewFile();
+            }
+            BufferedReader bfr = new BufferedReader(new FileReader(masterList));
+            String fileContent;
+            int counter = 0;
+            while (true) {
+                fileContent = bfr.readLine();
+                if (fileContent == null) {
+                    if (counter == 0) {
+                        System.out.println("There are currently no items for sale!");
+                    }
+                    break;
+                }
+                if (fileContent.contains(name)) {
+                    System.out.println(fileContent);
+                }
+                counter++;
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("There are currently no items for sale!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
