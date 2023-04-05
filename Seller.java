@@ -7,7 +7,7 @@ public class Seller {
     private String username;
     private String store;
     private ArrayList<Item> items;
-    private ArrayList<String> storeList;
+    private ArrayList<String> storeList; //list of all stores owned by this seller
 
     public Seller(String username, String store, ArrayList<Item> items, ArrayList<String> storeList) {
         this.username = username;
@@ -149,7 +149,7 @@ public class Seller {
         } while (!(storeChoice > 0 && storeChoice < storeList.size()));
 
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(storeList.get(storeChoice) + "txt"));
+            BufferedReader bfr = new BufferedReader(new FileReader(storeList.get(storeChoice) + "Sales.txt"));
 
             String line = bfr.readLine();
 
@@ -158,8 +158,20 @@ public class Seller {
             }
 
             //this loop will print out the stats of the store based on how the store is formatted.
+            int numSales = 0;
             while (!(line == null)) {
-                System.out.println("");
+                numSales++;
+                line = bfr.readLine();
+                String[] saleInfo = line.split(",");
+                System.out.println(line + "\n" +
+                    "Sale #" + numSales + ":\n" +
+                    "Customer Name: " + saleInfo[1] + "\n" +
+                    "Revenue from sale: " + saleInfo[0] + "\n" +
+                    "Items purchased: ");
+                    for (int i = 2; i < saleInfo.length - 2; i++) {
+                        System.out.println(saleInfo[i] + ", ");
+                    }
+                    System.out.println(saleInfo[saleInfo.length - 1]);
             }
 
         } catch (FileNotFoundException e) {
