@@ -1,5 +1,3 @@
-Seller
-Username,MAX
-Password,Pass
+Seller,Username,MAX,Password,Pass
 Store,Homegoods,Homedepot
 items,item1,item2,item3
