@@ -1,2 +1,2 @@
-Seller,Username,MAX,Password,Pass
+Seller,Username,Password
 Homegoods,Homedepot
