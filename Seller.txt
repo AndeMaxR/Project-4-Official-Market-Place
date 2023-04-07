@@ -1,2 +1,2 @@
 Seller,Username,Password
-Homegoods,Homedepot
+Username_StoreName.txt,Username_StoreName.txt
