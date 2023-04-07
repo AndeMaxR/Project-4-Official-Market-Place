@@ -1,16 +1,15 @@
 import java.io.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class Customer {
     private String username;
     private String password;
-    private String name;
 
-    public Customer(String username, String password, String name) {
+    public Customer(String username, String password) {
         this.username = username;
         this.password = password;
-        this.name = name;
     }
 
     public void viewMarket() {
@@ -143,7 +142,7 @@ public class Customer {
             System.out.println("Couldn't find ItemMasterList.txt");
             e.printStackTrace();
         } catch (IOException e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
         return priceSortedMarket;
     }

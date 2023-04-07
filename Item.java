@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * For CSV files we will format all item strings as productName,storeName,productDescription,quantityAvailable,price
  * No spaces in between to make things simple
@@ -74,8 +79,21 @@ public class Item {
 
     //Use this for CSV's
     public String toStringFile() {
-        String str = String.format("%s,%s,%s,%d,%f", productName, storeName, productDescription, quantityAvailable,
+        String str = String.format("%s,%s,%s,%d,%f\n", productName, storeName, productDescription, quantityAvailable,
                 price);
         return str;
+    }
+
+    public void printToFile() {
+        try {
+            File file = new File(storeName + "_" + productName + ".txt");
+            if (!file.exists()) { file.createNewFile(); }
+            BufferedWriter bfr = new BufferedWriter(new FileWriter(file, false));
+            bfr.write(toStringFile());
+            bfr.flush();
+            bfr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
