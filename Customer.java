@@ -215,5 +215,38 @@ public class Customer {
         }
         return quantitySortedMarket;
     }
+    
+    // one of the selections, customer can view the dashboard. the parameter
+    // will be user input
+    public void viewDashboard(String option) {
+        while (true) {
+            if (option.equals("Yes") || option.equals("yes")) {
+                // TODO: print the dashboard if the customer says yes
+
+                break;
+            } else if (option.equals("No") || option.equals("no")) {
+                System.out.println("You chose not to print the dashboard.");
+                break;
+            } else {
+                System.out.println("Please enter Yes or No! Would you like to view the dashboard?");
+            }
+        } 
+    }
+
+    // customer can choose to sort the dashboard. parameter is the same
+    public void sortDashboard(String option) {
+        while (true) {
+            if (option.equals("Yes") || option.equals("yes")) {
+                // TODO: sort and print the dashboard if the customer says yes
+                
+                break;
+            } else if (option.equals("No") || option.equals("no")) {
+                System.out.println("You chose not to sort the dashboard.");
+                break;
+            } else {
+                System.out.println("Please enter Yes or No! Would you like to sort the dashboard?");
+            }
+        }
+    }
 
 }
