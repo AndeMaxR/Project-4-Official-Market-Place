@@ -1,6 +1,7 @@
 import java.io.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class Customer {
@@ -101,8 +102,46 @@ public class Customer {
         }
     }
 
-
-    //TODO: Sort by description.
+    public ArrayList<String> sortDescription() {
+        ArrayList<String> sortedByDescription = new ArrayList<String>();
+        try {
+            int items = 0;
+            BufferedReader br = new BufferedReader(new FileReader("ItemMasterList.txt"));
+            String line;
+            // iterate through the file and add each line to the temp list
+            while ((line = br.readLine()) != null) {
+                sortedByDescription.add(line);
+                items++;
+            }
+            // check if there are any items in the file
+            if (items == 0) {
+                System.out.println("There are currently no items for sale!");
+            }
+            // sort the file by description in alphabetical order
+            for (int i = 0; i < sortedByDescription.size() - 1; i++) {
+                for (int j = i + 1; j < sortedByDescription.size(); j++) {
+                    String[] fields1 = sortedByDescription.get(i).split(",");
+                    String[] fields2 = sortedByDescription.get(j).split(",");
+                    if (fields1[2].compareTo(fields2[2]) > 0) {
+                        String temp = sortedByDescription.get(i);
+                        sortedByDescription.set(i, sortedByDescription.get(j));
+                        sortedByDescription.set(j, temp);
+                    }
+                }
+            }
+            // print out each line of the arraylist
+            for (String sorted : sortedByDescription) {
+                System.out.println(sorted);
+            }
+            br.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Couldn't find ItemMasterList.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // return the sorted arraylist
+        return sortedByDescription;
+    }
 
 
     //returns a string list of item info ordered from greatest to lowest price, also prints to terminal in that order
