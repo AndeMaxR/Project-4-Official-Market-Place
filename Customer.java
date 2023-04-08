@@ -102,7 +102,7 @@ public class Customer {
         }
     }
 
-    public ArrayList<String> sortDescription() {
+    public void sortDescription(String description) {
         ArrayList<String> sortedByDescription = new ArrayList<String>();
         try {
             int items = 0;
@@ -117,21 +117,11 @@ public class Customer {
             if (items == 0) {
                 System.out.println("There are currently no items for sale!");
             }
-            // sort the file by description in alphabetical order
-            for (int i = 0; i < sortedByDescription.size() - 1; i++) {
-                for (int j = i + 1; j < sortedByDescription.size(); j++) {
-                    String[] fields1 = sortedByDescription.get(i).split(",");
-                    String[] fields2 = sortedByDescription.get(j).split(",");
-                    if (fields1[2].compareTo(fields2[2]) > 0) {
-                        String temp = sortedByDescription.get(i);
-                        sortedByDescription.set(i, sortedByDescription.get(j));
-                        sortedByDescription.set(j, temp);
-                    }
+            // check each line if the description, and print if it contains the search
+            for (String s : sortedByDescription) {
+                if (s.contains(description)) {
+                    System.out.println(s);
                 }
-            }
-            // print out each line of the arraylist
-            for (String sorted : sortedByDescription) {
-                System.out.println(sorted);
             }
             br.close();
         } catch (FileNotFoundException e) {
@@ -139,8 +129,6 @@ public class Customer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // return the sorted arraylist
-        return sortedByDescription;
     }
 
 
