@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.*;
 
 
@@ -75,6 +74,11 @@ public class Seller {
         return holder;
     }
 
+    public void initializeStoreList(Store store) {
+        this.storeList.add(store);
+    }
+
+
     public void addStore(Store store) {
         this.storeList.add(store);
         printToFile();
@@ -105,7 +109,7 @@ public class Seller {
             bfw.write("SELLER," + username + "," + password + "\n");
             for (int i = 0; i < storeList.size(); i++) {
                 if (i == storeList.size() - 1) {
-                    bfw.write(storeList.get(i).getStoreName() + "\n");
+                    bfw.write(storeList.get(i).getStoreName());
                 } else {
                     bfw.write(storeList.get(i).getStoreName() + ",");
                 }

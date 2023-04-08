@@ -40,7 +40,6 @@ public class Store {
                 revenue = Double.parseDouble(content.substring(content.indexOf(",") + 1));
                 content = bfr.readLine();
                 bfr.close();
-                System.out.println(content);
                 if (content != null) {
                     String[] items = content.split(",");
                     for (int i = 0; i < items.length; i++) {
@@ -254,12 +253,11 @@ public class Store {
             bfw.write(numberOfSales + "," + revenue + "\n");
             for (int i = 0; i < items.size(); i++) {
                 if (i == items.size() - 1) {
-                    bfw.write(storeName + "_" + items.get(i).getProductName());
+                    bfw.write(storeName + "_" + items.get(i).getProductName() + "\n");
                 } else {
                     bfw.write(storeName + "_" + items.get(i).getProductName() + ",");
                 }
             }
-            bfw.write("\n");
             bfw.flush();
             bfw.close();
         } catch (IOException e) {

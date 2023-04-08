@@ -48,11 +48,6 @@ public class Market {
                                 if (content.contains("SELLER")) {
                                     seller = new Seller(userNameHolder, passwordHolder);
 
-                                    content = bfr.readLine();
-                                    String[] stores = content.split(",");
-                                    for (int i = 0; i < stores.length; i++) {
-                                        seller.addStore(new Store(userNameHolder, stores[i]));
-                                    }
                                     System.out.println("You are now logged in!");
                                     return true;
                                 }
@@ -62,8 +57,11 @@ public class Market {
                                     return true;
                                 }
                             } else {
-                                System.out.println("Your Username or Password is incorrect");
-                                return false;
+                                System.out.println("Your Username or Password is incorrect.\n1. Try again?\n2. Return to main menu.");
+                                decision = scanner.nextLine();
+                                if (decision.equals("2")) {
+                                    return true;
+                                }
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
