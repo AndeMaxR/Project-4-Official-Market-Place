@@ -44,7 +44,7 @@ public class Store {
                     String[] items = content.split(",");
                     for (int i = 0; i < items.length; i++) {
                         String[] holder;
-                        File itemFile = new File(items[i]);
+                        File itemFile = new File(items[i] + ".txt");
                         bfr = new BufferedReader(new FileReader(itemFile));
                         content = bfr.readLine();
                         if (content != null) {
@@ -157,12 +157,20 @@ public class Store {
 
     public void addItem(Item item) {
         items.add(item);
+        item.printToFile();
         printToFile();
     }
 
-    public void removeItem(int index) {
+    public boolean removeItem(int index) {
+        File file1 = new File(storeName + "_" + items.get(index).getProductName() + ".txt");
+        if (file1.exists()) {
+            if (!file1.delete()) {
+                return false;
+            }
+        }
         items.remove(index);
         printToFile();
+        return true;
     }
 
     public int getItemListSize() {

@@ -8,12 +8,53 @@ public class Customer {
     private String username;
     private String password;
 
+    ArrayList<Store> storeArrayList;
+
     public Customer(String username, String password) {
         this.username = username;
         this.password = password;
+        storeArrayList = new ArrayList<>();
+        try {
+            File customerFile = new File(username + ".txt");
+            if (!customerFile.exists()) {
+                customerFile.createNewFile();
+                printToFile();
+            }
+            File masterList = new File("StoreMasterList.txt");
+            if (masterList.exists()) {
+                BufferedReader bfr = new BufferedReader(new FileReader(masterList));
+                String content;
+                while (true) {
+                    content = bfr.readLine();
+                    if (content == null) {
+                        break;
+                    } else {
+                        String[] splitContent;
+                        content = content.substring(0, content.indexOf("."));
+                        splitContent = content.split("_");
+                        storeArrayList.add((new Store(splitContent[0], splitContent[1])));
+                    }
+                }
+                bfr.close();
+            }
+            File itemMasterList = new File("ItemMasterList.txt");
+            if (!itemMasterList.exists()) {
+                itemMasterList.createNewFile();
+            }
+            BufferedWriter bfw = new BufferedWriter(new FileWriter("ItemMasterList.txt", false));
+            for (int i = 0; i < storeArrayList.size(); i++) {
+                for (int j = 0; j < storeArrayList.get(i).getItemListSize(); j++) {
+                    bfw.write(storeArrayList.get(i).getItem(j).toString() + "\n");
+                }
+            }
+            bfw.flush();
+            bfw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void viewMarket() {
+    public boolean viewMarket() {
         try {
             File masterList = new File("ItemMasterList.txt");
             if (!masterList.exists()) {
@@ -26,7 +67,8 @@ public class Customer {
                 fileContent = bfr.readLine();
                 if (fileContent == null) {
                     if (counter == 0) {
-                        System.out.println("There are currently no items for sale!");
+                        System.out.println("There are currently no items for sale! Returning to main menu.");
+                        return false;
                     }
                     break;
                 } else {
@@ -34,12 +76,15 @@ public class Customer {
                 }
                 counter++;
             }
+            return true;
         } catch (FileNotFoundException e) {
-            System.out.println("There are currently no items for sale!");
+            System.out.println("There are currently no items for sale! Returning to main menu.");
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void viewMarketNameSort(String name) {
@@ -251,4 +296,17 @@ public class Customer {
         //TODO: create a File for each new customer with the formatting as shown in customer.txt
     }
 
+    public void printToFile() {
+        try {
+            File file = new File(username + ".txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(file, false));
+            bfw.write("CUSTOMER," + username + "," + password + "\n");
+            bfw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -73,7 +73,7 @@ public class Item {
     //Use this for general text
     public String toString() {
         String str = String.format("Product Name: %s, Store Name: %s, Description: %s" + ", Quantity Available: %d" +
-                ", Price: $%f", productName, storeName, productDescription, quantityAvailable, price);
+                ", Price: $%.2f", productName, storeName, productDescription, quantityAvailable, price);
         return str;
     }
 

@@ -160,8 +160,7 @@ public class Market {
                                                         if (decision.equals("1")) {
                                                             System.out.println("Please enter the product name:");
                                                             String name = scanner.nextLine();
-                                                            System.out.println("Please enter the store name:");
-                                                            String storeName = scanner.nextLine();
+                                                            String storeName = seller.getSpecificStore(location - 1).getStoreName();
                                                             System.out.println("Please enter the product description name:");
                                                             String description = scanner.nextLine();
                                                             int available = 0;
@@ -284,14 +283,14 @@ public class Market {
                                 break;
                             } else {
                                 System.out.println("Which store would you like to remove?");
-                                System.out.print(holder + seller.getFullStoreList().size() + 1 + ". Cancel");
+                                System.out.println(holder + (seller.getFullStoreList().size() + 1) + ". Cancel");
                                 decision = scanner.nextLine();
                                 try {
                                     int location = Integer.parseInt(decision);
                                     if (location == seller.getFullStoreList().size() + 1) {
                                         System.out.println("Cancelling...");
                                     } else if (holder.contains(decision)) {
-                                        System.out.print(seller.removeStore(location - 1));
+                                        seller.removeStore(location - 1);
                                         System.out.println("Would you like to remove another store?" +
                                                 "\n1. Yes\n2. No");
                                         decision = scanner.nextLine();
@@ -387,7 +386,10 @@ public class Market {
                 viewMarket = scanner.nextLine();
                 switch (viewMarket) {
                     case "1":
-                        customer.viewMarket();
+                        if (!customer.viewMarket()) {
+                            return true;
+                        }
+
                         break;
 
                     case "2":

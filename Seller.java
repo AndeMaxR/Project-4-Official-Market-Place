@@ -85,13 +85,24 @@ public class Seller {
     }
 
     public boolean removeStore(int location) {
-        File file = new File(username + "_" + storeList.get(location).getStoreName() + ".txt");
-        if (file.exists()) {
-            if (!file.delete()) {
+        File file1 = new File(username + "_" + storeList.get(location).getStoreName() + ".txt");
+        File file2 = new File(storeList.get(location).getStoreName() + "_Receipt.txt");
+        for (int i = 0; i < storeList.get(location).getItemListSize(); i++) {
+            storeList.get(location).removeItem(i);
+        }
+        if (file1.exists()) {
+            if (!file1.delete()) {
                 return false;
             }
         }
+        if (file2.exists()) {
+            if (!file2.delete()) {
+                return false;
+            }
+        }
+
         if (storeList.remove(location) != null) {
+            printToFile();
             return true;
         } else {
             return false;
