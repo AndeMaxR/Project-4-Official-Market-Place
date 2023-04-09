@@ -133,7 +133,7 @@ public class Customer {
 
 
     //returns a string list of item info ordered from greatest to lowest price, also prints to terminal in that order
-    public ArrayList<String> sortMarketPrice() {
+    public void sortMarketPrice() {
         ArrayList<String> priceSortedMarket = new ArrayList<String>();
         ArrayList<String> tempMarket = new ArrayList<String>();
         try {
@@ -171,11 +171,10 @@ public class Customer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return priceSortedMarket;
     }
 
     //returns a string list of item info ordered from greatest to lowest quantity, also prints to terminal in that order
-    public ArrayList<String> sortMarketQuantity() {
+    public void sortMarketQuantity() {
         ArrayList<String> quantitySortedMarket = new ArrayList<String>();
         ArrayList<String> tempMarket = new ArrayList<String>();
         try {
@@ -213,9 +212,8 @@ public class Customer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return quantitySortedMarket;
     }
-    
+
     // one of the selections, customer can view the dashboard. the parameter
     // will be user input
     public void viewDashboard(String option) {
@@ -230,7 +228,7 @@ public class Customer {
             } else {
                 System.out.println("Please enter Yes or No! Would you like to view the dashboard?");
             }
-        } 
+        }
     }
 
     // customer can choose to sort the dashboard. parameter is the same
@@ -238,7 +236,7 @@ public class Customer {
         while (true) {
             if (option.equals("Yes") || option.equals("yes")) {
                 // TODO: sort and print the dashboard if the customer says yes
-                
+
                 break;
             } else if (option.equals("No") || option.equals("no")) {
                 System.out.println("You chose not to sort the dashboard.");
@@ -247,6 +245,10 @@ public class Customer {
                 System.out.println("Please enter Yes or No! Would you like to sort the dashboard?");
             }
         }
+    }
+
+    public void purchaseHistory() {
+        //TODO: create a File for each new customer with the formatting as shown in customer.txt
     }
 
 }
