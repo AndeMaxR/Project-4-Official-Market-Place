@@ -1,0 +1,3 @@
+customer name
+item name, quantity purchased, total cost
+item name, quantity purchased, total cost
