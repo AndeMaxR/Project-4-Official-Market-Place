@@ -372,11 +372,137 @@ public class Market {
     }
 
     public static boolean customerManipulation(Scanner scanner) {
-        //TODO: Make sure you initialize all stores.
+        String decision;
+        System.out.println("What would you like to do? " +
+                "\n1. Browse marketplace." +
+                "\n2. View purchase history.");
+        decision = scanner.nextLine();
+        switch (decision) {
+            case "1":
+                String viewMarket;
+                System.out.println("How would you like to view the market place?" +
+                        "\n1. View entire market place." +
+                        "\n2. Search." +
+                        "\n3. Sort.");
+                viewMarket = scanner.nextLine();
+                switch (viewMarket) {
+                    case "1":
+                        customer.viewMarket();
+                        break;
+
+                    case "2":
+                        boolean searchAgain = true;
+                        do {
+                            String searchBy;
+                            System.out.println("What would you like to search for?" +
+                                    "\n1. Item Name." +
+                                    "\n2. Store Name." +
+                                    "\n3. Item Description.");
+                            searchBy = scanner.nextLine();
+                            switch (searchBy) {
+                                case "1":
+                                    String itemName;
+                                    System.out.println("Please enter your search for Item Name");
+                                    itemName = scanner.nextLine();
+                                    customer.viewMarketNameSort(itemName);
+                                    break;
+                                case "2":
+                                    String storeName;
+                                    System.out.println("Please enter your search for Store Name");
+                                    storeName = scanner.nextLine();
+                                    customer.viewMarketStoreSort(storeName);
+                                    break;
+                                case "3":
+                                    String itemDesc;
+                                    System.out.println("Please enter your search for Item Description");
+                                    itemDesc = scanner.nextLine();
+                                    customer.sortDescription(itemDesc);
+                                    break;
+                            }
+                            String answer;
+                            System.out.println("Would you like to search again?" +
+                                    "\n1. Yes." +
+                                    "\n2. No.");
+                            answer = scanner.nextLine();
+                            if (answer.equals("2")) {
+                                searchAgain = false;
+                            }
+                        } while(searchAgain);
+                        break;
+
+                    case "3":
+                        boolean sortAgain = true;
+                        do {
+                            String sortMethod;
+                            System.out.print("How would you like to sort the market?" +
+                                    "\n1. Price" +
+                                    "\n2. Available Quantity");
+                            sortMethod = scanner.nextLine();
+                            switch (sortMethod) {
+                                case "1":
+                                    customer.sortMarketPrice();
+                                case "2":
+                                    customer.sortMarketQuantity();
+                            }
+                            String answer;
+                            System.out.println("Would you like to sort again?" +
+                                    "\n1. Yes." +
+                                    "\n2. No.");
+                            answer = scanner.nextLine();
+
+                            if(answer.equals("2")) {
+                                sortAgain = false;
+                            }
+                        } while (sortAgain);
+                        break;
+                }
+                String viewItem;
+                System.out.println("Would you like to view an item?" +
+                        "\n1. Yes." +
+                        "\n2. No.");
+                viewItem = scanner.nextLine();
+                boolean viewAgain = true;
+                switch (viewItem) {
+                    case "1":
+                        do {
+                            String itemName;
+                            System.out.println("Which item would you like to view?");
+                            itemName = scanner.nextLine();
+                            //TODO: show info on this item
+
+                            String makePurchase;
+                            System.out.println("Would you like to purchase this item?" +
+                                    "\n1. Yes." +
+                                    "\n2. No");
+                            makePurchase = scanner.nextLine();
+                            switch (makePurchase) {
+                                case "1":
+                                    //TODO: modify files to make a purchase or make a method in customer that does it
+                                    break;
+
+                                case "2":
+                                    String answer;
+                                    System.out.println("Would you like to view another Item?" +
+                                            "\n1. Yes." +
+                                            "\n2. No.");
+                                    answer = scanner.nextLine();
+                                    if (answer.equals("2")) {
+                                        viewAgain = false;
+                                    }
+                                    break;
+                            }
+                        } while (viewAgain);
+                    case "2":
+                        //not to sure what to do here
+                        break;
+                }
+            case "2":
+                customer.purchaseHistory();
+                //
+
+        }
 
         return true;
     }
-
-
 
 }
