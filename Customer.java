@@ -54,6 +54,15 @@ public class Customer {
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+
     public boolean viewMarket() {
         try {
             File masterList = new File("ItemMasterList.txt");
@@ -87,7 +96,7 @@ public class Customer {
         return false;
     }
 
-    public void viewMarketNameSort(String name) {
+    public boolean viewMarketNameSort(String name) {
         try {
             File masterList = new File("ItemMasterList.txt");
             if (!masterList.exists()) {
@@ -101,6 +110,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         System.out.println("There are currently no items for sale!");
+                        return false;
                     }
                     break;
                 }
@@ -112,12 +122,14 @@ public class Customer {
         } catch (FileNotFoundException e) {
             System.out.println("There are currently no items for sale!");
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
-    public void viewMarketStoreSort(String storeName) {
+    public boolean viewMarketStoreSort(String storeName) {
         try {
             File masterList = new File("ItemMasterList.txt");
             if (!masterList.exists()) {
@@ -131,6 +143,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         System.out.println("There are currently no items for sale!");
+                        return false;
                     }
                     break;
                 }
@@ -142,12 +155,14 @@ public class Customer {
         } catch (FileNotFoundException e) {
             System.out.println("There are currently no items for sale!");
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
-    public void sortDescription(String description) {
+    public boolean sortDescription(String description) {
         ArrayList<String> sortedByDescription = new ArrayList<String>();
         try {
             int items = 0;
@@ -161,6 +176,7 @@ public class Customer {
             // check if there are any items in the file
             if (items == 0) {
                 System.out.println("There are currently no items for sale!");
+                return false;
             }
             // check each line if the description, and print if it contains the search
             for (String s : sortedByDescription) {
@@ -174,6 +190,7 @@ public class Customer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
 
