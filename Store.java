@@ -245,6 +245,35 @@ public class Store {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            ArrayList<String> marketList = new ArrayList<>();
+            File file = new File("ItemMasterList.txt");
+            BufferedReader bfr = new BufferedReader(new FileReader(file));
+            String line;
+            while((line = bfr.readLine()) != null) {
+                marketList.add(line);
+            }
+            bfr.close();
+
+            for (int i = 0; i < marketList.size(); i++) {
+                if (marketList.get(i).substring(14, marketList.get(i).indexOf(",")).equals(items.get(itemLocation).getProductName())) {
+                    String newLine = marketList.get(i).substring(0, marketList.get(i).indexOf("Available:") + 11) +
+                            items.get(itemLocation).getQuantityAvailable() +
+                            marketList.get(i).substring(marketList.get(i).indexOf(", Price"));
+                    marketList.set(i, newLine);
+                }
+            }
+
+            FileWriter fw = new FileWriter("ItemMasterList.txt");
+            for (int i = 0; i < marketList.size(); i++) {
+                fw.write(marketList.get(i) + "\n");
+            }
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getFinances() {
