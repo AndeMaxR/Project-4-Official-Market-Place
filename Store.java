@@ -228,6 +228,23 @@ public class Store {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            File file = new File(customerName + "_History.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(file, true));
+            bfw.write("--------------------\n");
+            bfw.write("Item Purchased: " + (items.get(itemLocation).getProductName()) + "\n");
+            bfw.write("Quantity purchased: " + quantity + "\n");
+            bfw.write("Store Name: " + storeName + "\n");
+            bfw.write("Total price: " + quantity * items.get(itemLocation).getPrice() + "\n");
+            bfw.flush();
+            bfw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getFinances() {
@@ -273,6 +290,5 @@ public class Store {
         }
 
     }
-
 
 }
