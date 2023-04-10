@@ -221,8 +221,8 @@ public class Customer {
                 int highestPriceIndex = 0;
                 for (int i = 0; i < tempMarket.size(); i ++) {
                     itemInfo = tempMarket.get(i).split(",");
-                    if (Double.parseDouble(itemInfo[4]) > highestPrice) {
-                        highestPrice = Double.parseDouble(itemInfo[4]);
+                    if (Double.parseDouble(itemInfo[4].substring(9)) > highestPrice) {
+                        highestPrice = Double.parseDouble(itemInfo[4].substring(9));
                         highestPriceIndex = i;
                     }
                 }
@@ -262,8 +262,8 @@ public class Customer {
                 int highestQuantityIndex = 0;
                 for (int i = 0; i < tempMarket.size(); i ++) {
                     itemInfo = tempMarket.get(i).split(",");
-                    if (Integer.parseInt(itemInfo[3]) > highestQuantity) {
-                        highestQuantity = Integer.parseInt(itemInfo[3]);
+                    if (Integer.parseInt(itemInfo[3].substring(21)) > highestQuantity) {
+                        highestQuantity = Integer.parseInt(itemInfo[3].substring(21));
                         highestQuantityIndex = i;
                     }
                 }
@@ -312,8 +312,21 @@ public class Customer {
         }
     }
 
-    public void purchaseHistory() {
-        //TODO: create a File for each new customer with the formatting as shown in customer.txt
+    public void purchaseHistory(String customerName) {
+        File file = new File(customerName + "_History.txt");
+        try {
+            if (!file.exists()) {
+                System.out.println("You have not made any purchases yet.");
+            } else {
+                BufferedReader bfr = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = bfr.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void printToFile() {
