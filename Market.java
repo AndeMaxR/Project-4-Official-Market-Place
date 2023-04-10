@@ -518,7 +518,6 @@ public class Market {
                                     makePurchase = scanner.nextLine();
                                     switch (makePurchase) {
                                         case "1":
-                                            //TODO: modify files to make a purchase or make a method in customer that does it
                                             int quantity = 0;
                                             while (true) {
                                                 try {
@@ -535,8 +534,7 @@ public class Market {
                                             }
                                             customer.getStoreArrayList().get(storeLocation).buyItem(itemLocation, quantity, customer.getUsername());
                                             System.out.printf("You successfully purchased %s!\n", productName);
-                                            viewAgain = false;
-                                            break;
+                                            return true;
 
                                         case "2":
                                             String answer;
@@ -545,7 +543,7 @@ public class Market {
                                                     "\n2. No.");
                                             answer = scanner.nextLine();
                                             if (answer.equals("2")) {
-                                                viewAgain = false;
+                                                return true;
                                             }
                                             break;
                                     }
@@ -559,6 +557,7 @@ public class Market {
                                 continue;
                         }
                     }
+                    break;
                 case "2":
                     customer.purchaseHistory(customer.getUsername());
                     return true;
