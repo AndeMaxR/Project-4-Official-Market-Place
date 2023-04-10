@@ -107,4 +107,5 @@ Would you like to
 [3]
 Goodbye, come back soon!
 
-If this type of test case is not sufficient, are we allowed to get the points back on PJ5? We were on a great time constraint here for various reasons.
+Note: for some reason, GitHub thinks that after the first numbered list, the rest of the test is numbered for some reason.
+If this type of test case is not sufficient and we should use JUnit instead, are we allowed to get the points back on PJ5? We were on a great time constraint here for various reasons.
