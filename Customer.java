@@ -8,7 +8,7 @@ public class Customer {
     private String username;
     private String password;
 
-    ArrayList<Store> storeArrayList;
+    private ArrayList<Store> storeArrayList;
 
     public Customer(String username, String password) {
         this.username = username;
@@ -62,6 +62,9 @@ public class Customer {
         return password;
     }
 
+    public ArrayList<Store> getStoreArrayList() {
+        return storeArrayList;
+    }
 
     public boolean viewMarket() {
         try {

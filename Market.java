@@ -480,10 +480,28 @@ public class Market {
                         switch (viewItem) {
                             case "1":
                                 do {
-                                    String itemName;
-                                    System.out.println("Which item would you like to view?");
-                                    itemName = scanner.nextLine();
-                                    //TODO: show info on this item
+                                    String productName;
+                                    String storeName;
+                                    System.out.println("Please enter the product name exactly as given.");
+                                    productName = scanner.nextLine();
+                                    System.out.println("Please enter the store name exactly as given.");
+                                    storeName = scanner.nextLine();
+                                    int storeListSize = customer.getStoreArrayList().size();
+                                    int storeLocation = 0;
+                                    int itemLocation = 0;
+                                    for (int i = 0; i < storeListSize; i++) {
+                                        int itemListSize = customer.getStoreArrayList().get(i).getItemListSize();
+                                        for (int j = 0; j < itemListSize; j++) {
+                                            if (customer.getStoreArrayList().get(i).getItem(j).getProductName()
+                                                    .equals(productName) && customer.getStoreArrayList().get(i)
+                                                    .getStoreName().equals(storeName)) {
+                                                storeLocation = j;
+                                                itemLocation = i;
+                                                System.out.println(customer.getStoreArrayList()
+                                                        .get(i).getItem(j).toString());
+                                            }
+                                        }
+                                    }
 
                                     String makePurchase;
                                     System.out.println("Would you like to purchase this item?" +
@@ -493,6 +511,21 @@ public class Market {
                                     switch (makePurchase) {
                                         case "1":
                                             //TODO: modify files to make a purchase or make a method in customer that does it
+                                            int quantity = 0;
+                                            while (true) {
+                                                try {
+                                                    System.out.println("How many would you like to by?");
+                                                    quantity = Integer.parseInt(scanner.nextLine());
+                                                    if (quantity >= 0) {
+                                                        break;
+                                                    } else {
+                                                        System.out.println("Invalid input, please enter a valid number.");
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.out.println("Invalid input, please enter a valid number.");
+                                                }
+                                            }
+                                            customer.getStoreArrayList().get(storeLocation).buyItem(itemLocation, quantity, customer.getUsername());
                                             break;
 
                                         case "2":
