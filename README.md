@@ -11,29 +11,29 @@ Would you like to
 1. log-in
 2. sign-up?
 3. Cancel
-2
+[2]
 Please enter your username:
-jack
+[jack]
 Please enter your password:
-1234
+[1234]
 What would you like to sign up as?
 1. shopper
 2. seller
 3. Cancel
-2
+[2]
 Thank you for signing up, your account has been created, and are now logged in!
 Hello jack what would you like to do?
 1. Manage my stores.
 2. View your Finances.
 3. Manage Account.
 4. Logout.
-1
+[1]
 What would you like to do?
 1. Edit a Store.
 2. Add a Store.
 3. Remove a Store.
 4. Cancel.
-2
+[2]
 Please enter the name of the store:
 Target
 You have added the store Target to your account.
@@ -43,67 +43,68 @@ What would you like to do?
 2. Add a Store.
 3. Remove a Store.
 4. Cancel.
-1
+[1]
 Which store would you like to edit?
 1. Target
 2. Cancel
-1
+[1]
 What do you want to do to this store?
 1. Modify Items.
 2. Modify the Stores information.
 3. Cancel.
-1
+[1]
 How would you like to modify your Items?
 1. Add Item.
 2. Remove Item.
 3. Edit an Item.
 4. Cancel.
-1
+[1]
 Please enter the product name:
-Water Bottle
+[Water Bottle]
 Please enter the product description name:
-An insulated water bottle
+[An insulated water bottle]
 Please enter the quantity of available products:
-3
+[3]
 Please enter the price:
-10.00
+[10.00]
 How would you like to modify your Items?
 1. Add Item.
 2. Remove Item.
 3. Edit an Item.
 4. Cancel.
-4
+[4]
 Cancelling...
 What do you want to do to this store?
 1. Modify Items.
 2. Modify the Stores information.
 3. Cancel.
-3
+[3]
 Cancelling...
 Which store would you like to edit?
 1. Target
 2. Cancel
-2
+[2]
 Cancelling...
 What would you like to do?
 1. Edit a Store.
 2. Add a Store.
 3. Remove a Store.
 4. Cancel.
-4
+[4]
 Returning to main menu...
 Hello jack what would you like to do?
 1. Manage my stores.
 2. View your Finances.
 3. Manage Account.
 4. Logout.
-4
+[4]
 Thank you jack, you have been successfully logged out.
 Hello an welcome to Emezon, the right place to be for all your shopping needs!
 Would you like to 
 1. log-in
 2. sign-up?
 3. Cancel
-3
+[3]
 Goodbye, come back soon!
 
+If this type of test case is not sufficient, are we allowed to get the points back on PJ5? We were on a great time constraint here for various reasons.
