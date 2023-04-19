@@ -32,10 +32,6 @@ public class MarketClient extends JComponent implements Runnable {
             if (e.getSource() == signup) {
 
             }
-            // if cancel is pressed
-            if (e.getSource() == cancel) {
-
-            }
         }
     };
 
@@ -53,44 +49,63 @@ public class MarketClient extends JComponent implements Runnable {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new MarketClient());
     }
+    //todo Make methods for each individual panel that return boolean value so that way we can move through out panels
 
     @Override
     public void run() {
         // create a new frame for the Welcome screen
         JFrame frame = new JFrame();
+
+        //todo add action Listeners ##############################################################
+        //Added Cancel ActionListener
+        ActionListener tempName = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == cancel) {
+                    frame.dispose();
+                }
+            }
+        };
+        //todo add action Listeners ##############################################################
+
         frame.setTitle("Welcome");
         Container content = frame.getContentPane();
-        content.setLayout(new BorderLayout());
+        //content.setLayout(new BorderLayout());
+        content.setLayout(new GridLayout(5, 3,20,5));
         marketClient = this;
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-        // initialize the button objects
+        //initialize the button objects
         login = new JButton("Login");
         login.addActionListener(al);
         signup = new JButton("Sign-up");
         signup.addActionListener(al);
         cancel = new JButton("Cancel");
-        cancel.addActionListener(al);
+        cancel.addActionListener(tempName);
 
         // initialize the textField objects
-        username = new JTextField(20);
-        password = new JTextField(20);
-
-        // create the bottom panel for the buttons and add them
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(login);
-        bottomPanel.add(signup);
-        bottomPanel.add(cancel);
-
-        // create the middle panel for the textFields
-        JPanel midPanel = new JPanel();
-        midPanel.add(username);
-        midPanel.add(password);
+        username = new JTextField("",20);
+        username.setSize(20, 5);
+        password = new JTextField("",20);
+        password.setSize(20, 5);
 
         // add the panels to the frame so they are visible when run
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.add(midPanel, BorderLayout.CENTER);
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel("                        Username:"));
+        content.add(username);
+        content.add(new JLabel(""));
+        content.add(new JLabel("                        Password:"));
+        content.add(password);
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(login);
+        content.add(signup);
+        content.add(cancel);
     }
 }
