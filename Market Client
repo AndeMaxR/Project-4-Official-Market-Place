@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Market Client
@@ -13,27 +16,16 @@ import java.awt.event.*;
  */
 public class MarketClient extends JComponent implements Runnable {
     // initialize the buttons
+    String username;
+    String password;
     JButton login;
     JButton signup;
     JButton cancel;
-    JTextField username;
-    JTextField password;
+    JTextField usernameTextBox;
+    JTextField passwordTextBox;
     MarketClient marketClient;
 
     // listen for buttons being pressed
-    ActionListener al = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // if login is pressed
-            if (e.getSource() == login) {
-
-            }
-            // if signup is pressed
-            if (e.getSource() == signup) {
-
-            }
-        }
-    };
 
     // button methods
     public void loginMethod() {
@@ -53,17 +45,38 @@ public class MarketClient extends JComponent implements Runnable {
 
     @Override
     public void run() {
+        try {
+            Socket socket = new Socket("localhost", 4242);
+            register(socket);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void register(Socket socket) {
         // create a new frame for the Welcome screen
         JFrame frame = new JFrame();
 
         //todo add action Listeners ##############################################################
         //Added Cancel ActionListener
-        ActionListener tempName = new ActionListener() {
+        ActionListener registerActions = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == cancel) {
                     frame.dispose();
                 }
+                // if login is pressed
+                if (e.getSource() == login) {
+                    login(socket, frame);
+                }
+                // if signup is pressed
+                if (e.getSource() == signup) {
+                    signup(socket);
+                }
+
             }
         };
         //todo add action Listeners ##############################################################
@@ -79,27 +92,27 @@ public class MarketClient extends JComponent implements Runnable {
         frame.setVisible(true);
         //initialize the button objects
         login = new JButton("Login");
-        login.addActionListener(al);
+        login.addActionListener(registerActions);
         signup = new JButton("Sign-up");
-        signup.addActionListener(al);
+        signup.addActionListener(registerActions);
         cancel = new JButton("Cancel");
-        cancel.addActionListener(tempName);
+        cancel.addActionListener(registerActions);
 
         // initialize the textField objects
-        username = new JTextField("",20);
-        username.setSize(20, 5);
-        password = new JTextField("",20);
-        password.setSize(20, 5);
+        usernameTextBox = new JTextField("",20);
+        usernameTextBox.setSize(20, 5);
+        passwordTextBox = new JTextField("",20);
+        passwordTextBox.setSize(20, 5);
 
         // add the panels to the frame so they are visible when run
         content.add(new JLabel(""));
         content.add(new JLabel(""));
         content.add(new JLabel(""));
         content.add(new JLabel("                        Username:"));
-        content.add(username);
+        content.add(usernameTextBox);
         content.add(new JLabel(""));
         content.add(new JLabel("                        Password:"));
-        content.add(password);
+        content.add(passwordTextBox);
         content.add(new JLabel(""));
         content.add(new JLabel(""));
         content.add(new JLabel(""));
@@ -107,5 +120,63 @@ public class MarketClient extends JComponent implements Runnable {
         content.add(login);
         content.add(signup);
         content.add(cancel);
+    }
+
+    /**
+     * This takes in the socket as the input so that way we can pass information back and forth to the
+     * connected socket.
+     *
+     * initially we write username,password to the server.
+     * the server will check to see if the user input matches any made accounts, if it matches the server will return 1,
+     * if it doesn't match the server will return a number 0.
+     *
+     * @param socket
+     */
+    public void login(Socket socket, Frame frame) {
+        try {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out.write(usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
+            out.flush();
+            out.close();
+            
+            int decision = Integer.parseInt(in.readLine());
+            if (decision == 1) {
+                JOptionPane.showMessageDialog(null,"You have successfully been logged in "
+                        + usernameTextBox.getText() + "!", "Login", JOptionPane.PLAIN_MESSAGE);
+
+                username = usernameTextBox.getText();
+                password = passwordTextBox.getText();
+                String type = in.readLine();
+                in.close();
+                if (type.contains("SELLER")) {
+                    frame.setVisible(false);
+                    seller(socket);
+                } else {
+                    frame.setVisible(false);
+                    customer(socket);
+                }
+            } else {
+                in.close();
+                JOptionPane.showMessageDialog(null,"Login failed, your username or"
+                        + " password was incorrect", "Login", JOptionPane.PLAIN_MESSAGE);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void signup(Socket socket) {
+
+    }
+    
+    public void seller(Socket socket) {
+        
+    }
+    
+    public void customer(Socket socket) {
+        
     }
 }
