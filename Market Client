@@ -21,9 +21,18 @@ public class MarketClient extends JComponent implements Runnable {
     JButton login;
     JButton signup;
     JButton cancel;
+
+    //customer Buttons
+    JButton customerBrowseMarketPlaceButton;
+    JButton customerViewPurchaseHistoryButton;
+    JButton customerLogoutButton;
+    JButton customerViewWholeMarketPlaceButton;
+    JButton customerSearchMarketButton;
+    JButton customerSortMarketPlaceButton;
     JTextField usernameTextBox;
     JTextField passwordTextBox;
     MarketClient marketClient;
+
 
     // listen for buttons being pressed
 
@@ -53,7 +62,6 @@ public class MarketClient extends JComponent implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void register(Socket socket) {
@@ -83,6 +91,7 @@ public class MarketClient extends JComponent implements Runnable {
 
         frame.setTitle("Welcome");
         Container content = frame.getContentPane();
+
         //content.setLayout(new BorderLayout());
         content.setLayout(new GridLayout(5, 3,20,5));
         marketClient = this;
@@ -90,6 +99,7 @@ public class MarketClient extends JComponent implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+
         //initialize the button objects
         login = new JButton("Login");
         login.addActionListener(registerActions);
@@ -139,7 +149,7 @@ public class MarketClient extends JComponent implements Runnable {
             out.write(usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
             out.flush();
             out.close();
-            
+
             int decision = Integer.parseInt(in.readLine());
             if (decision == 1) {
                 JOptionPane.showMessageDialog(null,"You have successfully been logged in "
@@ -171,12 +181,90 @@ public class MarketClient extends JComponent implements Runnable {
     public void signup(Socket socket) {
 
     }
-    
+
     public void seller(Socket socket) {
-        
+
     }
-    
+
     public void customer(Socket socket) {
-        
+        try {
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            JFrame frame = new JFrame();
+
+            frame.setTitle("Customer Interface");
+            Container content = frame.getContentPane();
+
+            //FIRST MENU
+            JPanel panel1 = new JPanel(); //panel1 is the first menu in customer
+            content.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
+
+            customerBrowseMarketPlaceButton = new JButton("Browse Market Place");
+            customerViewPurchaseHistoryButton = new JButton("View Purchase History");
+            customerLogoutButton = new JButton("Logout");
+
+            panel1.add(customerBrowseMarketPlaceButton); //sends the string "0" to server if clicked on
+            panel1.add(customerViewPurchaseHistoryButton); //sends the string "1" to server if clicked on
+            panel1.add(customerLogoutButton); //sends the string "2" to server if clicked on
+
+            content.add(panel1);
+
+            //SECOND MENU
+            JPanel panel2 = new JPanel(); //panel2 is second menu in customer
+            panel2.add(new JLabel("How would you like to view the market?/n"));
+
+            customerViewWholeMarketPlaceButton = new JButton("View Entire Market Place");
+            customerSearchMarketButton = new JButton("Search");
+            customerSortMarketPlaceButton = new JButton("Sort Market");
+
+            panel2.add(customerViewWholeMarketPlaceButton); //sends the string "0" to server if clicked on
+            panel2.add(customerSearchMarketButton); //sends the string "1" to server if clicked on
+            panel2.add(customerSortMarketPlaceButton); //sends the string "2" to server if clicked on
+
+            //ACTION LISTENER
+
+            //FIRST MENU LISTENER
+            customerBrowseMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("0");
+                    content.remove(panel1);
+                    content.add(panel2);
+                }
+            });
+
+            customerViewPurchaseHistoryButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("1");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+            customerLogoutButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("2");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+            //SECOND MENU LISTENER
+            customerViewWholeMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("0");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
