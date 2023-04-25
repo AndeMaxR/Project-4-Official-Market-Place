@@ -1,8 +1,13 @@
+import javax.swing.*;
 import java.io.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 
 public class Customer {
     private String username;
@@ -75,22 +80,32 @@ public class Customer {
             BufferedReader bfr = new BufferedReader(new FileReader(masterList));
             String fileContent;
             int counter = 0;
+
+            JFrame viewMarketFrame = new JFrame();
+            viewMarketFrame.setTitle("Entire Market");
+            Container content = viewMarketFrame.getContentPane();
+            content.setLayout(new BoxLayout(viewMarketFrame, BoxLayout.PAGE_AXIS));
+
             while (true) {
                 fileContent = bfr.readLine();
                 if (fileContent == null) {
                     if (counter == 0) {
-                        System.out.println("There are currently no items for sale! Returning to main menu.");
+                        JOptionPane.showMessageDialog(null,
+                            "There are currently no items for sale! Returning to main menu.",
+                                "Empty market", JOptionPane.INFORMATION_MESSAGE);
                         return false;
                     }
                     break;
                 } else {
-                    System.out.println(fileContent);
+                    viewMarketFrame.add(new JLabel(fileContent));
                 }
                 counter++;
             }
             return true;
         } catch (FileNotFoundException e) {
-            System.out.println("There are currently no items for sale! Returning to main menu.");
+            JOptionPane.showMessageDialog(null,
+                    "There are currently no items for sale! Returning to main menu.",
+                    "Empty market", JOptionPane.INFORMATION_MESSAGE);
             e.printStackTrace();
             return false;
         } catch (IOException e) {
