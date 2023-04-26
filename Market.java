@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Market {
     private static Seller seller;
     private static Customer customer;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (login(scanner)) {
@@ -308,7 +309,8 @@ public class Market {
                                         System.out.println("Please enter a valid input");
                                     }
                                 } catch (Exception e) {
-                                    System.out.println("Please enter a valid input");e.printStackTrace();
+                                    System.out.println("Please enter a valid input");
+                                    e.printStackTrace();
                                 }
                             }
                             break;
@@ -442,7 +444,7 @@ public class Market {
                             boolean sortAgain = true;
                             while (true) {
                                 String sortMethod;
-                                System.out.print("How would you like to sort the market?" +
+                                System.out.println("How would you like to sort the market?" +
                                         "\n1. Price." +
                                         "\n2. Available Quantity." +
                                         "\n3. Cancel.");
@@ -464,11 +466,17 @@ public class Market {
                                         "\n2. No.");
                                 answer = scanner.nextLine();
 
-                                if(answer.equals("2")) {
+                                if (answer.equals("2")) {
                                     break;
                                 }
                             }
                             break;
+                        case "4":
+                            System.out.println("Canceling...");
+                            return true;
+                        default:
+                            System.out.println("Invalid input!");
+                            continue;
                     }
                     if (areThereItemsToView) {
                         String viewItem;
@@ -513,7 +521,7 @@ public class Market {
                                             int quantity = 0;
                                             while (true) {
                                                 try {
-                                                    System.out.println("How many would you like to by?");
+                                                    System.out.println("How many would you like to buy?");
                                                     quantity = Integer.parseInt(scanner.nextLine());
                                                     if (quantity >= 0) {
                                                         break;
@@ -525,7 +533,8 @@ public class Market {
                                                 }
                                             }
                                             customer.getStoreArrayList().get(storeLocation).buyItem(itemLocation, quantity, customer.getUsername());
-                                            break;
+                                            System.out.printf("You successfully purchased %s!\n", productName);
+                                            return true;
 
                                         case "2":
                                             String answer;
@@ -534,20 +543,25 @@ public class Market {
                                                     "\n2. No.");
                                             answer = scanner.nextLine();
                                             if (answer.equals("2")) {
-                                                viewAgain = false;
+                                                return true;
                                             }
                                             break;
                                     }
                                 } while (viewAgain);
-                            case "2":
-                                //not to sure what to do here
                                 break;
+                            case "2":
+                                System.out.println("You selected to not view an item.");
+                                break;
+                            default:
+                                System.out.println("Invalid input!");
+                                continue;
                         }
                     }
-                case "2":
-                    customer.purchaseHistory();
                     break;
-                    //
+                case "2":
+                    customer.purchaseHistory(customer.getUsername());
+                    return true;
+                //
                 case "3":
                     System.out.println("Thank you " + customer.getUsername() + ", you have been successfully logged out.");
                     customer = null;
