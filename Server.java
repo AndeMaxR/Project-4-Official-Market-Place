@@ -1,15 +1,26 @@
 import java.io.*;
 import java.net.*;
-public class MarketServer {
+
+public class MarketServer implements Runnable{
 
     private static Seller seller;
     private static Customer customer;
+    private static final Object obj = new Object();
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(4242);
-        Socket socket = serverSocket.accept();
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        while (true) {
+            Socket socket = serverSocket.accept();
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        }
 
+
+
+    }
+    //TODO implement run method and threads
+    @Override
+    public void run() {
 
     }
 
