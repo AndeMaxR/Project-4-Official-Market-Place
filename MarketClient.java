@@ -1,575 +1,320 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-public class Market {
-    private static Seller seller;
-    private static Customer customer;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+/**
+ * Market Client
+ *
+ * This class handles the GUI and sends input to the server for processing.
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 4/18/2023
+ */
+public class MarketClient extends JComponent {
+
+    // listen for buttons being pressed
+
+    // button methods
+    public void loginMethod() {
+
+    }
+    public void signupMethod() {
+
+    }
+    public void cancelMethod() {
+
+    }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        while (login(scanner)) {
-            if (seller != null) {
-                while (sellerManipulation(scanner)) {
-
-                }
-            }
-            if (customer != null) {
-                while (customerManipulation(scanner)) {
-
-                }
-            }
+        try {
+            Socket socket = new Socket("localhost", 4242);
+            register(socket);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
+    //todo Make methods for each individual panel that return boolean value so that way we can move through out panels
 
+
+    public static void register(Socket socket) {
+        // initialize the frame
+        JFrame frame = new JFrame();
+        // initialize the buttons
+        JButton login;
+        JButton signup;
+        JButton cancel;
+
+        JTextField usernameTextBox;
+        JTextField passwordTextBox;
+        //initialize the button objects
+        login = new JButton("Login");
+        signup = new JButton("Sign-up");
+        cancel = new JButton("Cancel");
+
+        // initialize the textField objects
+        usernameTextBox = new JTextField("",20);
+        usernameTextBox.setSize(20, 5);
+        passwordTextBox = new JTextField("",20);
+        passwordTextBox.setSize(20, 5);
+        //MarketClient marketClient; No Idea what this is
+        // create a new frame for the Welcome screen
+        //todo add action Listeners ##############################################################
+        //Added Cancel ActionListener
+        ActionListener registerActions = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == cancel) {
+                    frame.dispose();
+                }
+                // if login is pressed
+                if (e.getSource() == login) {
+                    login(socket, frame, usernameTextBox, passwordTextBox);
+                }
+                // if signup is pressed
+                if (e.getSource() == signup) {
+                    signup(socket, frame, usernameTextBox, passwordTextBox);
+                }
+
+            }
+        };
+        login.addActionListener(registerActions);
+        signup.addActionListener(registerActions);
+        cancel.addActionListener(registerActions);
+        //todo add action Listeners ##############################################################
+
+        frame.setTitle("Welcome");
+        Container content = frame.getContentPane();
+
+        //content.setLayout(new BorderLayout());
+        content.setLayout(new GridLayout(5, 3,20,5));
+        //marketClient = this;
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+
+        // add the panels to the frame so they are visible when run
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel("                        Username:"));
+        content.add(usernameTextBox);
+        content.add(new JLabel(""));
+        content.add(new JLabel("                        Password:"));
+        content.add(passwordTextBox);
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(new JLabel(""));
+        content.add(login);
+        content.add(signup);
+        content.add(cancel);
     }
 
-    public static boolean login(Scanner scanner) {
-        String userNameHolder;
-        String passwordHolder;
-        String decision;
-        System.out.println("Hello an welcome to Emezon, the right place to be for all your shopping needs!\n" +
-                "Would you like to \n1. log-in\n2. sign-up?\n3. Cancel");
-        decision = scanner.nextLine();
-        switch (decision) {
-            case "1":
-                while (true) {
-                    System.out.println("Please enter your username:");
-                    userNameHolder = scanner.nextLine();
-                    System.out.println("Please enter your password:");
-                    passwordHolder = scanner.nextLine();
-                    File file1 = new File(userNameHolder + ".txt");
-                    if (file1.exists()) {
-                        try {
-                            BufferedReader bfr = new BufferedReader(new FileReader(file1));
-                            String content = bfr.readLine();
-                            if (content.contains(passwordHolder)) {
-                                if (content.contains("SELLER")) {
-                                    seller = new Seller(userNameHolder, passwordHolder);
+    /**
+     * This takes in the socket as the input so that way we can pass information back and forth to the
+     * connected socket.
+     *
+     * initially we write username,password to the server.
+     * the server will check to see if the user input matches any made accounts, if it matches the server will return 1,
+     * if it doesn't match the server will return a number 0.
+     *
+     * @param socket
+     */
+    public static void login(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox) {
+        try {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out.write("LOGIN," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
+            out.flush();
+            out.close();
 
-                                    System.out.println("You are now logged in!");
-                                    return true;
-                                }
-                                if (content.contains("CUSTOMER")) {
-                                    customer = new Customer(userNameHolder, passwordHolder);
-                                    System.out.println("You are now logged in " + userNameHolder + "!");
-                                    return true;
-                                }
-                            } else {
-                                System.out.println("Your Username or Password is incorrect.\n1. Try again?\n2. Return to main menu.");
-                                decision = scanner.nextLine();
-                                if (decision.equals("2")) {
-                                    return true;
-                                }
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            System.out.println("Your Username or Password is incorrect");
-                            return true;
-                        }
-                    } else {
-                        System.out.println("Your Username or Password is incorrect.\n1. Try again?\n2. Return to main menu.");
-                        decision = scanner.nextLine();
-                        if (decision.equals("2")) {
-                            return true;
-                        }
+            int decision = Integer.parseInt(in.readLine());
+            if (decision == 1) {
+                JOptionPane.showMessageDialog(null,"You have successfully been logged in "
+                        + usernameTextBox.getText() + "!", "Login", JOptionPane.PLAIN_MESSAGE);
 
-                    }
-                }
-            case "2":
-                System.out.println("Please enter your username:");
-                userNameHolder = scanner.nextLine();
-                System.out.println("Please enter your password:");
-                passwordHolder = scanner.nextLine();
-                File file2 = new File(userNameHolder + ".txt");
-                if (!file2.exists()) {
-                    while (true) {
-                        System.out.println("What would you like to sign up as?\n1. shopper\n2. seller\n3. Cancel");
-                        decision = scanner.nextLine();
-                        switch (decision) {
-                            case "1":
-                                customer = new Customer(userNameHolder, passwordHolder);
-                                System.out.println("Thank you for signing up, your account has been created" +
-                                        ", and are now logged in!");
-                                return true;
-                            case "2":
-                                seller = new Seller(userNameHolder, passwordHolder);
-                                System.out.println("Thank you for signing up, your account has been created" +
-                                        ", and are now logged in!");
-                                return true;
-                            case "3":
-                                System.out.println("Cancelling sign-up, you will be return to the main menu.");
-                                return true;
-                            default:
-                                System.out.println("Please enter a valid input.");
-                        }
-                    }
+                String username = usernameTextBox.getText();
+                String password = passwordTextBox.getText();
+                String type = in.readLine();
+                in.close();
+                if (type.contains("SELLER")) {
+                    frame.setVisible(false);
+                    seller(socket, username, password);
                 } else {
-                    System.out.println("You there is already an account registered with that username.");
-                    return true;
+                    frame.setVisible(false);
+                    //customer(socket, username, password);
                 }
-            case "3":
-                System.out.println("Goodbye, come back soon!");
-                return false;
-            default:
-                System.out.println("Please enter a valid input.");
-
-        }
-        return true;
-    }
-
-
-    public static boolean sellerManipulation(Scanner scanner) {
-        String decision;
-        System.out.println("Hello " + seller.getUsername() + " what would you like to do?\n1. Manage my stores.\n2. View my your Finances.\n3. Manage Account.\n4. Logout.");
-        decision = scanner.nextLine();
-        switch (decision) {
-            case "1":
-                while (true) {
-                    System.out.println("What would you like to do?\n1. Edit a Store.\n2. Add a Store.\n3. Remove a Store.\n4. Cancel.");
-                    decision = scanner.nextLine();
-                    switch (decision) {
-                        case "1":
-                            while (true) {
-
-                                String holder;
-                                holder = seller.getStoreList();
-                                if (holder.equals("")) {
-                                    System.out.println("You do not own any stores to edit!");
-                                    break;
-                                } else {
-                                    System.out.println("Which store would you like to edit?");
-                                    System.out.println(holder + (seller.getFullStoreList().size() + 1) + ". Cancel");
-                                    decision = scanner.nextLine();
-                                    try {
-                                        int location = Integer.parseInt(decision);
-                                        if (location == seller.getFullStoreList().size() + 1) {
-                                            System.out.println("Cancelling...");
-                                            break;
-                                        } else if (holder.contains(decision)) {
-                                            while (true) {
-                                                System.out.println("What do you want to do to this store?\n1. Modify Items.\n2. Modify the Stores information.\n3. Cancel.");
-                                                decision = scanner.nextLine();
-                                                if (decision.equals("1")) {
-                                                    while (true) {
-                                                        //TODO STARTS HERE
-                                                        System.out.println("How would you like to modify your Items?\n1. Add Item.\n2. Remove Item.\n3. Edit an Item.\n4. Cancel.");
-                                                        Store store = seller.getSpecificStore(location - 1);
-                                                        decision = scanner.nextLine();
-                                                        if (decision.equals("1")) {
-                                                            System.out.println("Please enter the product name:");
-                                                            String name = scanner.nextLine();
-                                                            String storeName = seller.getSpecificStore(location - 1).getStoreName();
-                                                            System.out.println("Please enter the product description name:");
-                                                            String description = scanner.nextLine();
-                                                            int available = 0;
-                                                            double price = 0;
-                                                            while (true) {
-                                                                try {
-                                                                    System.out.println("Please enter the quantity of available products:");
-                                                                    available = Integer.parseInt(scanner.nextLine());
-                                                                    System.out.println("Please enter the price:");
-                                                                    price = Double.parseDouble(scanner.nextLine());
-                                                                    break;
-                                                                } catch (Exception e) {
-                                                                    System.out.println("Please enter a valid input");
-                                                                }
-                                                            }
-                                                            store.addItem(new Item(name, storeName, description, available, price));
-                                                        } else if (decision.equals("2")) {
-                                                            String list = store.getItemList()
-                                                                    + (store.getItemListSize() + 1) + ". Cancel.";
-                                                            System.out.println(list);
-                                                            decision = scanner.nextLine();
-                                                            try {
-                                                                int index = Integer.parseInt(decision) - 1;
-                                                                if (index == store.getItemListSize() + 1) {
-                                                                    System.out.println("Cancelling...");
-                                                                } else {
-                                                                    store.removeItem(index);
-                                                                }
-                                                            } catch (Exception e) {
-                                                                System.out.println("Please enter a valid input");
-                                                                e.printStackTrace();
-                                                            }
-                                                        } else if (decision.equals("3")) {
-                                                            String list = store.getItemList()
-                                                                    + (store.getItemListSize() + 1) + ". Cancel.";
-                                                            System.out.println(list);
-                                                            decision = scanner.nextLine();
-                                                            try {
-                                                                int index = Integer.parseInt(decision) - 1;
-                                                                if (index == store.getItemListSize() + 1) {
-                                                                    System.out.println("Cancelling...");
-                                                                } else {
-                                                                    System.out.println("Please enter the product name:");
-                                                                    String name = scanner.nextLine();
-                                                                    System.out.println("Please enter the store name:");
-                                                                    String storeName = scanner.nextLine();
-                                                                    System.out.println("Please enter the product description name:");
-                                                                    String description = scanner.nextLine();
-                                                                    int available = 0;
-                                                                    double price = 0;
-                                                                    while (true) {
-                                                                        try {
-                                                                            System.out.println("Please enter the quantity of available products:");
-                                                                            available = Integer.parseInt(scanner.nextLine());
-                                                                            System.out.println("Please enter the price:");
-                                                                            price = Double.parseDouble(scanner.nextLine());
-                                                                            break;
-                                                                        } catch (Exception e) {
-                                                                            System.out.println("Please enter a valid input");
-                                                                        }
-                                                                    }
-                                                                    store.editItem(index, name, storeName, description, available, price);
-                                                                }
-                                                            } catch (Exception e) {
-                                                                System.out.println("Please enter a valid input");
-                                                                e.printStackTrace();
-                                                            }
-                                                        } else if (decision.equals("4")) {
-                                                            System.out.println("Cancelling...");
-                                                            break;
-                                                        } else {
-                                                            System.out.println("Please enter a valid input");
-                                                        }
-                                                        //TODO ENDS HERE
-                                                    }
-                                                } else if (decision.equals("2")) {
-                                                    while (true) {
-                                                        System.out.println("How would you like to modify the store?\n 1. Change Store Name.\n2. Cancel.");
-                                                        decision = scanner.nextLine();
-                                                        if (decision.equals("1")) {
-                                                            System.out.println("Please enter the new store name.");
-                                                            String newName = scanner.nextLine();
-                                                            seller.getSpecificStore(location - 1).setStoreName(newName);
-                                                        } else if (decision.equals("2")) {
-                                                            System.out.println("Cancelling...");
-                                                            break;
-                                                        } else {
-                                                            System.out.println("Please enter a valid input");
-                                                        }
-                                                    }
-                                                } else if (decision.equals("3")) {
-                                                    System.out.println("Cancelling...");
-                                                    break;
-                                                } else {
-                                                    System.out.println("Please enter a valid input");
-                                                }
-                                            }
-                                        } else {
-                                            System.out.println("Please enter a valid input");
-                                        }
-                                    } catch (Exception e) {
-                                        System.out.println("Please enter a valid input");
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                            break;
-                        case "2":
-                            System.out.println("Please enter the name of the store:");
-                            String nameOfStore = scanner.nextLine();
-                            seller.addStore(new Store(seller.getUsername(), nameOfStore));
-                            System.out.println("You have added the store " + nameOfStore + " to your account." +
-                                    "\nYou will now be able to edit your store in \"Edit a Store\".");
-                            break;
-                        case "3":
-                            String holder;
-                            holder = seller.getStoreList();
-                            if (holder.equals("")) {
-                                System.out.println("You do not own any stores!");
-                                break;
-                            } else {
-                                System.out.println("Which store would you like to remove?");
-                                System.out.println(holder + (seller.getFullStoreList().size() + 1) + ". Cancel");
-                                decision = scanner.nextLine();
-                                try {
-                                    int location = Integer.parseInt(decision);
-                                    if (location == seller.getFullStoreList().size() + 1) {
-                                        System.out.println("Cancelling...");
-                                    } else if (holder.contains(decision)) {
-                                        seller.removeStore(location - 1);
-                                        System.out.println("Would you like to remove another store?" +
-                                                "\n1. Yes\n2. No");
-                                        decision = scanner.nextLine();
-                                        while (true) {
-                                            if (decision.equals("1")) {
-                                                break;
-                                            } else if (decision.equals("2")) {
-                                                return true;
-                                            } else {
-                                                System.out.println("Please enter a valid input");
-                                            }
-                                        }
-
-                                    } else {
-                                        System.out.println("Please enter a valid input");
-                                    }
-                                } catch (Exception e) {
-                                    System.out.println("Please enter a valid input");
-                                    e.printStackTrace();
-                                }
-                            }
-                            break;
-                        case "4":
-                            System.out.println("Returning to main menu...");
-                            return true;
-                        default:
-                            System.out.println("Please enter a valid input");
-                    }
-                }
-            case "2":
-                while (true) {
-                    String holder;
-                    holder = seller.getStoreList();
-                    if (holder.equals("")) {
-                        System.out.println("You do not own any stores!");
-                        break;
-                    } else {
-                        System.out.println("For which store would you like to view your finances?");
-                        System.out.print(holder);
-                        decision = scanner.nextLine();
-                        try {
-                            int location = Integer.parseInt(decision);
-                            if (holder.contains(decision)) {
-                                System.out.print(seller.getSpecificStore(location - 1).getFinances());
-                                System.out.println("Would you like to view your finances for another store?" +
-                                        "\n1. Yes\n2. No");
-                                decision = scanner.nextLine();
-                                while (true) {
-                                    if (decision.equals("1")) {
-                                        break;
-                                    } else if (decision.equals("2")) {
-                                        return true;
-                                    } else {
-                                        System.out.println("Please enter a valid input");
-                                    }
-                                }
-
-                            } else {
-                                System.out.println("Please enter a valid input");
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Please enter a valid input");
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-                return true;
-            case "3":
-                //TODO
-            case "4":
-                System.out.println("Thank you " + seller.getUsername() + ", you have been successfully logged out.");
-                seller = null;
-                return false;
-            default:
-                System.out.println("Please enter a valid input.");
-                return true;
-        }
-    }
-
-    public static boolean customerManipulation(Scanner scanner) {
-        String decision;
-        System.out.println("What would you like to do? " +
-                "\n1. Browse marketplace." +
-                "\n2. View purchase history." +
-                "\n3. Logout.");
-        decision = scanner.nextLine();
-        while (true) {
-            boolean areThereItemsToView = true;
-            switch (decision) {
-                case "1":
-                    String viewMarket;
-                    System.out.println("How would you like to view the market place?" +
-                            "\n1. View entire market place." +
-                            "\n2. Search." +
-                            "\n3. Sort." +
-                            "\n4. Cancel.");
-                    viewMarket = scanner.nextLine();
-                    switch (viewMarket) {
-                        case "1":
-                            if (!customer.viewMarket()) {
-                                return true;
-                            }
-                            break;
-
-                        case "2":
-                            boolean searchAgain = true;
-                            while (true) {
-                                String searchBy;
-                                System.out.println("What would you like to search for?" +
-                                        "\n1. Item Name." +
-                                        "\n2. Store Name." +
-                                        "\n3. Item Description." +
-                                        "\n4. Cancel");
-                                searchBy = scanner.nextLine();
-                                if (searchBy.equals("1")) {
-                                    String itemName;
-                                    System.out.println("Please enter your search for Item Name");
-                                    itemName = scanner.nextLine();
-                                    areThereItemsToView = customer.viewMarketNameSort(itemName);
-                                } else if (searchBy.equals("2")) {
-                                    String storeName;
-                                    System.out.println("Please enter your search for Store Name");
-                                    storeName = scanner.nextLine();
-                                    areThereItemsToView = customer.viewMarketStoreSort(storeName);
-                                } else if (searchBy.equals("3")) {
-                                    String itemDesc;
-                                    System.out.println("Please enter your search for Item Description");
-                                    itemDesc = scanner.nextLine();
-                                    areThereItemsToView = customer.sortDescription(itemDesc);
-                                } else if (searchBy.equals("4")) {
-                                    System.out.println("Cancelling...");
-                                    break;
-                                } else {
-                                    System.out.println("Invalid input!");
-                                    continue;
-                                }
-                                String answer;
-                                System.out.println("Would you like to search again?" +
-                                        "\n1. Yes." +
-                                        "\n2. No.");
-                                answer = scanner.nextLine();
-                                if (answer.equals("2")) {
-                                    break;
-                                }
-                            }
-                            break;
-
-                        case "3":
-                            boolean sortAgain = true;
-                            while (true) {
-                                String sortMethod;
-                                System.out.println("How would you like to sort the market?" +
-                                        "\n1. Price." +
-                                        "\n2. Available Quantity." +
-                                        "\n3. Cancel.");
-                                sortMethod = scanner.nextLine();
-                                if (sortMethod.equals("1")) {
-                                    customer.sortMarketPrice();
-                                } else if (sortMethod.equals("2")) {
-                                    customer.sortMarketQuantity();
-                                } else if (sortMethod.equals("3")) {
-                                    System.out.println("Cancelling");
-                                    break;
-                                } else {
-                                    System.out.println("Invalid input.");
-                                    continue;
-                                }
-                                String answer;
-                                System.out.println("Would you like to sort again?" +
-                                        "\n1. Yes." +
-                                        "\n2. No.");
-                                answer = scanner.nextLine();
-
-                                if (answer.equals("2")) {
-                                    break;
-                                }
-                            }
-                            break;
-                        case "4":
-                            System.out.println("Canceling...");
-                            return true;
-                        default:
-                            System.out.println("Invalid input!");
-                            continue;
-                    }
-                    if (areThereItemsToView) {
-                        String viewItem;
-                        System.out.println("Would you like to view an item?" +
-                                "\n1. Yes." +
-                                "\n2. No.");
-                        viewItem = scanner.nextLine();
-                        boolean viewAgain = true;
-                        switch (viewItem) {
-                            case "1":
-                                do {
-                                    String productName;
-                                    String storeName;
-                                    System.out.println("Please enter the product name exactly as given.");
-                                    productName = scanner.nextLine();
-                                    System.out.println("Please enter the store name exactly as given.");
-                                    storeName = scanner.nextLine();
-                                    int storeListSize = customer.getStoreArrayList().size();
-                                    int storeLocation = 0;
-                                    int itemLocation = 0;
-                                    for (int i = 0; i < storeListSize; i++) {
-                                        int itemListSize = customer.getStoreArrayList().get(i).getItemListSize();
-                                        for (int j = 0; j < itemListSize; j++) {
-                                            if (customer.getStoreArrayList().get(i).getItem(j).getProductName()
-                                                    .equals(productName) && customer.getStoreArrayList().get(i)
-                                                    .getStoreName().equals(storeName)) {
-                                                storeLocation = j;
-                                                itemLocation = i;
-                                                System.out.println(customer.getStoreArrayList()
-                                                        .get(i).getItem(j).toString());
-                                            }
-                                        }
-                                    }
-
-                                    String makePurchase;
-                                    System.out.println("Would you like to purchase this item?" +
-                                            "\n1. Yes." +
-                                            "\n2. No");
-                                    makePurchase = scanner.nextLine();
-                                    switch (makePurchase) {
-                                        case "1":
-                                            int quantity = 0;
-                                            while (true) {
-                                                try {
-                                                    System.out.println("How many would you like to buy?");
-                                                    quantity = Integer.parseInt(scanner.nextLine());
-                                                    if (quantity >= 0) {
-                                                        break;
-                                                    } else {
-                                                        System.out.println("Invalid input, please enter a valid number.");
-                                                    }
-                                                } catch (Exception e) {
-                                                    System.out.println("Invalid input, please enter a valid number.");
-                                                }
-                                            }
-                                            customer.getStoreArrayList().get(storeLocation).buyItem(itemLocation, quantity, customer.getUsername());
-                                            System.out.printf("You successfully purchased %s!\n", productName);
-                                            return true;
-
-                                        case "2":
-                                            String answer;
-                                            System.out.println("Would you like to view another Item?" +
-                                                    "\n1. Yes." +
-                                                    "\n2. No.");
-                                            answer = scanner.nextLine();
-                                            if (answer.equals("2")) {
-                                                return true;
-                                            }
-                                            break;
-                                    }
-                                } while (viewAgain);
-                                break;
-                            case "2":
-                                System.out.println("You selected to not view an item.");
-                                break;
-                            default:
-                                System.out.println("Invalid input!");
-                                continue;
-                        }
-                    }
-                    break;
-                case "2":
-                    customer.purchaseHistory(customer.getUsername());
-                    return true;
-                //
-                case "3":
-                    System.out.println("Thank you " + customer.getUsername() + ", you have been successfully logged out.");
-                    customer = null;
-                    return false;
-                default:
-                    System.out.println("Please enter a valid input!");
+            } else {
+                in.close();
+                JOptionPane.showMessageDialog(null,"Login failed, your username or"
+                        + " password was incorrect", "Login", JOptionPane.PLAIN_MESSAGE);
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    public static void signup(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox) {
+        try {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String[] options = {"Seller", "Customer"};
+            String type = (String) JOptionPane.showInputDialog(null, "Please chose type: ",
+                    "Type", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            String username = usernameTextBox.getText();
+            String password = passwordTextBox.getText();
+            if (type.equals("Seller")) {
+                out.write("SIGNUP," + username + "," + password + "," + type + "\n");
+                out.flush();
+                out.close();
+
+                int decision = Integer.parseInt(in.readLine());
+                if (decision == 1) {
+                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                            " and logged in"
+                            + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                    in.close();
+                    frame.setVisible(false);
+                    seller(socket, username, password);
+                } else {
+                    in.close();
+                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                            "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                }
+            } else if (type.equals("Customer")) {
+                out.write("SIGNUP," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "," + type + "\n");
+                out.flush();
+                out.close();
+                out.write("SIGNUP," + username + "," + password + "," + type + "\n");
+                out.flush();
+                out.close();
+
+                int decision = Integer.parseInt(in.readLine());
+                if (decision == 1) {
+                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                            " and logged in"
+                            + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                    in.close();
+                    frame.setVisible(false);
+                    //TODO remove "//" from below after implementing customer
+                    customer(socket, username, password);
+                } else {
+                    in.close();
+                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                            "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                }
+            } else {
+
+            }
+            System.out.println(type);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void seller(Socket socket, String username, String password) {
+
+    }
+
+    //TODO: implement the code below. THE CODE BELOW IS VERY IMPORTANT IT JUST NEEDS TO BE ALTERED to conform to updated CODE
+    //IMPORTANT DO NOT DELETE
+    public static void customer(Socket socket, String username, String password) {
+        //customer Buttons
+        JButton customerBrowseMarketPlaceButton;
+        JButton customerViewPurchaseHistoryButton;
+        JButton customerLogoutButton;
+        JButton customerViewWholeMarketPlaceButton;
+        JButton customerSearchMarketButton;
+        JButton customerSortMarketPlaceButton;
+        try {
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            JFrame frame = new JFrame();
+
+            frame.setTitle("Customer Interface");
+            Container content = frame.getContentPane();
+
+            //FIRST MENU
+            JPanel panel1 = new JPanel(); //panel1 is the first menu in customer
+            content.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
+
+            customerBrowseMarketPlaceButton = new JButton("Browse Market Place");
+            customerViewPurchaseHistoryButton = new JButton("View Purchase History");
+            customerLogoutButton = new JButton("Logout");
+
+            panel1.add(customerBrowseMarketPlaceButton); //sends the string "0" to server if clicked on
+            panel1.add(customerViewPurchaseHistoryButton); //sends the string "1" to server if clicked on
+            panel1.add(customerLogoutButton); //sends the string "2" to server if clicked on
+
+            content.add(panel1);
+
+            //SECOND MENU
+            JPanel panel2 = new JPanel(); //panel2 is second menu in customer
+            panel2.add(new JLabel("How would you like to view the market?/n"));
+
+            customerViewWholeMarketPlaceButton = new JButton("View Entire Market Place");
+            customerSearchMarketButton = new JButton("Search");
+            customerSortMarketPlaceButton = new JButton("Sort Market");
+
+            panel2.add(customerViewWholeMarketPlaceButton); //sends the string "0" to server if clicked on
+            panel2.add(customerSearchMarketButton); //sends the string "1" to server if clicked on
+            panel2.add(customerSortMarketPlaceButton); //sends the string "2" to server if clicked on
+
+            //ACTION LISTENER
+
+            //FIRST MENU LISTENER
+            customerBrowseMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("0");
+                    content.remove(panel1);
+                    content.add(panel2);
+                }
+            });
+
+            customerViewPurchaseHistoryButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("1");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+            customerLogoutButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("2");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+            //SECOND MENU LISTENER
+            customerViewWholeMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("0");
+                    writer.println();
+                    writer.flush();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
