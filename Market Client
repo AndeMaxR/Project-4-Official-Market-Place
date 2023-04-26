@@ -14,25 +14,7 @@ import java.net.UnknownHostException;
  *
  * @version 4/18/2023
  */
-public class MarketClient extends JComponent implements Runnable {
-    // initialize the buttons
-    String username;
-    String password;
-    JButton login;
-    JButton signup;
-    JButton cancel;
-
-    //customer Buttons
-    JButton customerBrowseMarketPlaceButton;
-    JButton customerViewPurchaseHistoryButton;
-    JButton customerLogoutButton;
-    JButton customerViewWholeMarketPlaceButton;
-    JButton customerSearchMarketButton;
-    JButton customerSortMarketPlaceButton;
-    JTextField usernameTextBox;
-    JTextField passwordTextBox;
-    MarketClient marketClient;
-
+public class MarketClient extends JComponent {
 
     // listen for buttons being pressed
 
@@ -48,12 +30,6 @@ public class MarketClient extends JComponent implements Runnable {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new MarketClient());
-    }
-    //todo Make methods for each individual panel that return boolean value so that way we can move through out panels
-
-    @Override
-    public void run() {
         try {
             Socket socket = new Socket("localhost", 4242);
             register(socket);
@@ -63,11 +39,31 @@ public class MarketClient extends JComponent implements Runnable {
             throw new RuntimeException(e);
         }
     }
+    //todo Make methods for each individual panel that return boolean value so that way we can move through out panels
 
-    public void register(Socket socket) {
-        // create a new frame for the Welcome screen
+
+    public static void register(Socket socket) {
+        // initialize the frame
         JFrame frame = new JFrame();
+        // initialize the buttons
+        JButton login;
+        JButton signup;
+        JButton cancel;
 
+        JTextField usernameTextBox;
+        JTextField passwordTextBox;
+        //initialize the button objects
+        login = new JButton("Login");
+        signup = new JButton("Sign-up");
+        cancel = new JButton("Cancel");
+
+        // initialize the textField objects
+        usernameTextBox = new JTextField("",20);
+        usernameTextBox.setSize(20, 5);
+        passwordTextBox = new JTextField("",20);
+        passwordTextBox.setSize(20, 5);
+        //MarketClient marketClient; No Idea what this is
+        // create a new frame for the Welcome screen
         //todo add action Listeners ##############################################################
         //Added Cancel ActionListener
         ActionListener registerActions = new ActionListener() {
@@ -78,15 +74,18 @@ public class MarketClient extends JComponent implements Runnable {
                 }
                 // if login is pressed
                 if (e.getSource() == login) {
-                    login(socket, frame);
+                    login(socket, frame, usernameTextBox, passwordTextBox);
                 }
                 // if signup is pressed
                 if (e.getSource() == signup) {
-                    signup(socket);
+                    signup(socket, frame, usernameTextBox, passwordTextBox);
                 }
 
             }
         };
+        login.addActionListener(registerActions);
+        signup.addActionListener(registerActions);
+        cancel.addActionListener(registerActions);
         //todo add action Listeners ##############################################################
 
         frame.setTitle("Welcome");
@@ -94,25 +93,11 @@ public class MarketClient extends JComponent implements Runnable {
 
         //content.setLayout(new BorderLayout());
         content.setLayout(new GridLayout(5, 3,20,5));
-        marketClient = this;
+        //marketClient = this;
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-
-        //initialize the button objects
-        login = new JButton("Login");
-        login.addActionListener(registerActions);
-        signup = new JButton("Sign-up");
-        signup.addActionListener(registerActions);
-        cancel = new JButton("Cancel");
-        cancel.addActionListener(registerActions);
-
-        // initialize the textField objects
-        usernameTextBox = new JTextField("",20);
-        usernameTextBox.setSize(20, 5);
-        passwordTextBox = new JTextField("",20);
-        passwordTextBox.setSize(20, 5);
 
         // add the panels to the frame so they are visible when run
         content.add(new JLabel(""));
@@ -142,11 +127,11 @@ public class MarketClient extends JComponent implements Runnable {
      *
      * @param socket
      */
-    public void login(Socket socket, Frame frame) {
+    public static void login(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox) {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out.write(usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
+            out.write("LOGIN," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
             out.flush();
             out.close();
 
@@ -155,16 +140,16 @@ public class MarketClient extends JComponent implements Runnable {
                 JOptionPane.showMessageDialog(null,"You have successfully been logged in "
                         + usernameTextBox.getText() + "!", "Login", JOptionPane.PLAIN_MESSAGE);
 
-                username = usernameTextBox.getText();
-                password = passwordTextBox.getText();
+                String username = usernameTextBox.getText();
+                String password = passwordTextBox.getText();
                 String type = in.readLine();
                 in.close();
                 if (type.contains("SELLER")) {
                     frame.setVisible(false);
-                    seller(socket);
+                    seller(socket, username, password);
                 } else {
                     frame.setVisible(false);
-                    customer(socket);
+                    //customer(socket, username, password);
                 }
             } else {
                 in.close();
@@ -178,15 +163,80 @@ public class MarketClient extends JComponent implements Runnable {
         }
     }
 
-    public void signup(Socket socket) {
+    public static void signup(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox) {
+        try {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String[] options = {"Seller", "Customer"};
+            String type = (String) JOptionPane.showInputDialog(null, "Please chose type: ",
+                    "Type", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            String username = usernameTextBox.getText();
+            String password = passwordTextBox.getText();
+            if (type.equals("Seller")) {
+                out.write("SIGNUP," + username + "," + password + "," + type + "\n");
+                out.flush();
+                out.close();
+
+                int decision = Integer.parseInt(in.readLine());
+                if (decision == 1) {
+                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                            " and logged in"
+                            + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                    in.close();
+                    frame.setVisible(false);
+                    seller(socket, username, password);
+                } else {
+                    in.close();
+                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                            "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                }
+            } else if (type.equals("Customer")) {
+                out.write("SIGNUP," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "," + type + "\n");
+                out.flush();
+                out.close();
+                out.write("SIGNUP," + username + "," + password + "," + type + "\n");
+                out.flush();
+                out.close();
+
+                int decision = Integer.parseInt(in.readLine());
+                if (decision == 1) {
+                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                            " and logged in"
+                            + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                    in.close();
+                    frame.setVisible(false);
+                    //TODO remove "//" from below after implementing customer
+                    customer(socket, username, password);
+                } else {
+                    in.close();
+                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                            "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
+                }
+            } else {
+
+            }
+            System.out.println(type);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void seller(Socket socket, String username, String password) {
 
     }
 
-    public void seller(Socket socket) {
-
-    }
-
-    public void customer(Socket socket) {
+    //TODO: implement the code below. THE CODE BELOW IS VERY IMPORTANT IT JUST NEEDS TO BE ALTERED to conform to updated CODE
+    //IMPORTANT DO NOT DELETE
+    public static void customer(Socket socket, String username, String password) {
+        //customer Buttons
+        JButton customerBrowseMarketPlaceButton;
+        JButton customerViewPurchaseHistoryButton;
+        JButton customerLogoutButton;
+        JButton customerViewWholeMarketPlaceButton;
+        JButton customerSearchMarketButton;
+        JButton customerSortMarketPlaceButton;
         try {
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
