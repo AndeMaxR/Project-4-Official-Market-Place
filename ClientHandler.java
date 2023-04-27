@@ -1,38 +1,48 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientHandler extends Thread {
     final PrintWriter printWriter;
     final BufferedReader bufferedReader;
     final Socket socket;
+
     public static final Object obj = new Object();
 
     private String username;
     private String password;
 
+    private ArrayList<Store> storeMasterArrayList;
+
     private Seller seller;
     private Customer customer;
 
-    public ClientHandler(PrintWriter printWriter, BufferedReader bufferedReader, Socket socket) {
+    public ClientHandler(PrintWriter printWriter, BufferedReader bufferedReader, Socket socket,
+                         ArrayList<Store> storeMasterArrayList) {
         this.printWriter = printWriter;
         this.bufferedReader = bufferedReader;
         this.socket = socket;
+        this.storeMasterArrayList = storeMasterArrayList;
     }
 
     @Override
     public void run() {
-        String temp;
-        try {
-            synchronized (obj) {
+        while (true) {
+            String temp;
+            try {
                 temp = bufferedReader.readLine();
+                if (temp.contains("LOGIN")) {
+                    login(temp);
+                } else if (temp.contains("SIGNUP")) {
+                    signup(temp);
+                }
+            } catch (Exception e) {
+                //Ignore red here, I want it to stop the current thread that threw the exception
+                e.printStackTrace();
+                //IGNORE THIS RED MARKER, IT"S MARKED FOR DELETION, BUT SATISFIES WHAT WE NEED IT FOR
+                currentThread().stop();
+                throw new RuntimeException(e);
             }
-            if (temp.contains("LOGIN")) {
-                login(temp);
-            } else if (temp.contains("SIGNUP")) {
-                signup(temp);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -46,33 +56,41 @@ public class ClientHandler extends Thread {
             }
         } else {
             try {
+                String temp;
                 synchronized (obj) {
-                    String temp;
                     BufferedReader bfr = new BufferedReader(new FileReader(file));
                     temp = bfr.readLine();
                     bfr.close();
-                    if (temp == null) {
-                        synchronized (obj) {
-                            printWriter.write("-1\n");
+
+                }
+                if (temp == null) {
+                    synchronized (obj) {
+                        printWriter.write("-1\n");
+                        printWriter.flush();
+                    }
+                } else if (temp.contains(list[2])) {
+                    username = list[1];
+                    password = list[2];
+                    synchronized (obj) {
+                        printWriter.write("1\n");
+                        printWriter.flush();
+                        if (temp.contains("SELLER")) {
+                            seller = new Seller(username, password);
+                            printWriter.write("SELLER\n");
                             printWriter.flush();
-                        }
-                    } else if (temp.contains(list[2])) {
-                        username = list[1];
-                        password = list[2];
-                        synchronized (obj) {
-                            if (temp.contains("SELLER")) {
-                                seller = new Seller(username, password);
-                            } else {
-                                customer = new Customer(username, password);
-                            }
-                            printWriter.write("1\n");
+                            seller();
+                        } else {
+                            customer = new Customer(username, password);
+                            printWriter.write("CUSTOMER\n");
                             printWriter.flush();
+                            customer();
                         }
-                    } else {
-                        synchronized (obj) {
-                            printWriter.write("-1\n");
-                            printWriter.flush();
-                        }
+
+                    }
+                } else {
+                    synchronized (obj) {
+                        printWriter.write("-1\n");
+                        printWriter.flush();
                     }
                 }
             } catch (IOException e) {
@@ -94,28 +112,152 @@ public class ClientHandler extends Thread {
                 printWriter.flush();
             }
         } else {
-            synchronized (obj) {
-                username = list[1];
-                password = list[2];
-                if (list[3].equals("Seller")) {
-                    seller = new Seller(username, password);
-                    synchronized (obj) {
-                        printWriter.write("1\n");
-                        printWriter.flush();
-                    }
-                } else {
-                    customer = new Customer(username, password);
-                    synchronized (obj) {
-                        printWriter.write("1\n");
-                        printWriter.flush();
-                    }
+            username = list[1];
+            password = list[2];
+            if (list[3].equals("Seller")) {
+                this.seller = new Seller(username, password);
+                synchronized (obj) {
+                    printWriter.write("1\n");
+                    printWriter.flush();
+                    seller();
+                }
+            } else {
+                this.customer = new Customer(username, password);
+                synchronized (obj) {
+                    printWriter.write("1\n");
+                    printWriter.flush();
+                    customer();
                 }
             }
         }
     }
 
+    public void customer() {
+        while (true) {
+            try {
+                String temp = bufferedReader.readLine();
+                //TODO rest of the client methods should be done below in the else if statements
+                if (temp.equals("viewMarket")) {
+                    //TODO sorting should also be done inside of here
+                    printWriter.write(storeMasterArrayList.size() + "\n");
+                    printWriter.flush();
+                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                        printWriter.write(storeMasterArrayList.get(i).getStoreName() + "\n");
+                        printWriter.flush();
+                        printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
+                        printWriter.flush();
+                    }
+                } else if (temp.equals("")) {
+
+                } else if (temp.equals("")) {
+
+                } else if (temp.equals("")) {
+
+                } else if (temp.equals("Logout")) {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void seller() {
+        while (true) {
+            try {
+                String temp = bufferedReader.readLine();
+                if (temp.equals("AddStore")) {
+                    try {
+                        String storeName = bufferedReader.readLine();
+                        seller.addStore(new Store(seller.getUsername(), storeName));
+                        synchronized (obj) {
+                            storeMasterArrayList.add(seller.getSpecificStore(seller.getFullStoreList().size() - 1));
+                            printWriter.write("1\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                        }
+                    }
+                } else if (temp.equals("RemoveStore")) {
+                    try {
+                        synchronized (obj) {
+                            printWriter.write(seller.getStoreList() + "\n");
+                            printWriter.flush();
+                        }
+
+                        int input = Integer.parseInt(bufferedReader.readLine());
+                        if (input == -1) {
+                            continue;
+                        } else {
+                            synchronized (obj) {
+                                for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                    if (storeMasterArrayList.get(i).getStoreName().equals(seller.getSpecificStore(input).getStoreName())) {
+                                        storeMasterArrayList.remove(i);
+                                        break;
+                                    }
+                                }
+                                try {
+                                    ArrayList<String> list = new ArrayList<>();
+                                    File file = new File("StoreMasterList.txt");
+                                    BufferedReader bfr = new BufferedReader(new FileReader(file));
+                                    String temp2 = "";
+                                    while (true) {
+                                        temp2 = bfr.readLine();
+                                        if (temp2 == null) {
+                                            bfr.close();
+                                            break;
+                                        } else if (!temp2.contains(seller.getSpecificStore(input).getStoreName())) {
+                                            list.add(temp2);
+                                        }
+                                    }
+                                    BufferedWriter bfw = new BufferedWriter(new FileWriter(file, false));
+                                    for (int i = 0; i < list.size(); i++) {
+                                        bfw.write(list.get(i) + "\n");
+                                    }
+                                    bfw.flush();
+                                    bfw.close();
+                                } catch (Exception k) {
+                                    k.printStackTrace();
+                                }
+                                synchronized (obj) {
+                                    seller.removeStore(input);
+                                    printWriter.write("1\n");
+                                    printWriter.flush();
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (temp.equals("AddItem")) {
+
+                } else if (temp.equals("RemoveItem")) {
+
+                }  else if (temp.equals("EditItem")) {
+
+                } else if (temp.equals("Logout")) {
+                    break;
+                }
+                //TODO ADD MORE ELSE IF STATEMENTS TO COMPLETE THE REST OF SELLER
+            } catch (Exception e) {
+                e.printStackTrace();
+                //IGNORE THIS RED MARKER, IT"S MARKED FOR DELETION, BUT SATISFIES WHAT WE NEED IT FOR
+                currentThread().stop();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     /**
-     *  public static boolean customer(Socket socket) {
+     *  public void customer() {
      *         try {
      *             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
      *             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

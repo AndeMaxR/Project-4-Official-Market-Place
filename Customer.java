@@ -91,7 +91,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         JOptionPane.showMessageDialog(null,
-                            "There are currently no items for sale! Returning to main menu.",
+                                "There are currently no items for sale! Returning to main menu.",
                                 "Empty market", JOptionPane.INFORMATION_MESSAGE);
                         return false;
                     }

@@ -193,7 +193,7 @@ public class Store {
     public String getItemList() {
         String holder = "";
         for (int i = 0; i < items.size(); i++) {
-            holder += (i+1) + ". " + items.get(i).getProductName() + "\n";
+            holder += (i+1) + ". " + items.get(i).getProductName() + ",";
         }
         return holder;
     }

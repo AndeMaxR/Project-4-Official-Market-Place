@@ -69,7 +69,7 @@ public class Seller {
     public String getStoreList() {
         String holder = "";
         for (int i = 0; i < storeList.size(); i++) {
-            holder += (i + 1) + ". " + storeList.get(i).getStoreName() + "\n";
+            holder += (i + 1) + ". " + storeList.get(i).getStoreName() + ",";
         }
         return holder;
     }
@@ -87,6 +87,7 @@ public class Seller {
     public boolean removeStore(int location) {
         File file1 = new File(username + "_" + storeList.get(location).getStoreName() + ".txt");
         File file2 = new File(storeList.get(location).getStoreName() + "_Receipt.txt");
+        File file3 = new File("StoreMasterList.txt");
         for (int i = 0; i < storeList.get(location).getItemListSize(); i++) {
             storeList.get(location).removeItem(i);
         }
