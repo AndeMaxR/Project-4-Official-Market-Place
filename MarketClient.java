@@ -1,11 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.EventHandler;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
  * Market Client
@@ -18,6 +16,19 @@ import java.util.ArrayList;
  */
 public class MarketClient extends JComponent {
 
+    // listen for buttons being pressed
+
+    // button methods
+    public void loginMethod() {
+
+    }
+    public void signupMethod() {
+
+    }
+    public void cancelMethod() {
+
+    }
+
     public static void main(String[] args) {
         try {
             Socket socket = new Socket("localhost", 4242);
@@ -25,10 +36,8 @@ public class MarketClient extends JComponent {
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             register(socket, pw, br);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -64,14 +73,10 @@ public class MarketClient extends JComponent {
                 if (e.getSource() == cancel) {
                     frame.dispose();
                     try {
-                        pw.close();
-                        br.close();
                         socket.close();
                     } catch (IOException ex) {
-                        ex.printStackTrace();
                         throw new RuntimeException(ex);
                     }
-                    return;
                 }
                 // if login is pressed
                 if (e.getSource() == login) {
@@ -97,7 +102,7 @@ public class MarketClient extends JComponent {
         //marketClient = this;
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // add the panels to the frame so they are visible when run
         content.add(new JLabel(""));
@@ -129,7 +134,7 @@ public class MarketClient extends JComponent {
      *
      * @param socket
      */
-    public static void login(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox,
+    public static void login(Socket socket, JFrame frame, JTextField usernameTextBox, JTextField passwordTextBox,
                              PrintWriter pw, BufferedReader br) {
         try {
             pw.write("LOGIN," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "\n");
@@ -144,12 +149,11 @@ public class MarketClient extends JComponent {
                 String password = passwordTextBox.getText();
                 String type = br.readLine();
                 if (type.contains("SELLER")) {
-                    frame.dispose();
-                    seller(socket, username, pw, br);
+                    frame.setVisible(false);
+                    seller(socket, username, password, pw, br);
                 } else {
-                    frame.dispose();
-                    //TODO
-                    customer(socket, username, pw, br);
+                    frame.setVisible(false);
+                    customer(socket, username, password, pw, br);
                 }
             } else {
                 JOptionPane.showMessageDialog(null,"Login failed, your username or"
@@ -162,7 +166,7 @@ public class MarketClient extends JComponent {
         }
     }
 
-    public static void signup(Socket socket, Frame frame, JTextField usernameTextBox, JTextField passwordTextBox,
+    public static void signup(Socket socket, JFrame frame, JTextField usernameTextBox, JTextField passwordTextBox,
                               PrintWriter pw, BufferedReader br) {
         try {
             String[] options = {"Seller", "Customer"};
@@ -179,8 +183,8 @@ public class MarketClient extends JComponent {
                     JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
                             " and logged in "
                             + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
-                    frame.dispose();
-                    seller(socket, username, pw, br);
+                    frame.setVisible(false);
+                    seller(socket, username, password, pw, br);
                 } else {
                     JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
                             "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
@@ -193,10 +197,11 @@ public class MarketClient extends JComponent {
                 int decision = Integer.parseInt(br.readLine());
                 if (decision == 1) {
                     JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
-                            " and logged in "
+                            " and logged in"
                             + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
-                    frame.dispose();
-                    customer(socket, username, pw, br);
+                    frame.setVisible(false);
+                    //TODO remove "//" from below after implementing customer
+                    customer(socket, username, password, pw, br);
                 } else {
                     JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
                             "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
@@ -208,566 +213,358 @@ public class MarketClient extends JComponent {
         }
     }
 
-    public static void seller(Socket socket, String username, PrintWriter pw,
+    public static void seller(Socket socket, String username, String password, PrintWriter pw,
                               BufferedReader br) {
-        //Initialize the frame
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JButton sellerManageMyStores;
+        JButton sellerViewMyFinances;
+        JButton sellerLogout;
 
-        //customer Buttons
-        JButton ManageStores;
-        JButton ManageFinances;
-        JButton viewDashboard;
-        JButton sellerLogoutButton;
-        JTextField textField;
+        JButton sellerEditStore;
+        JButton sellerAddStore;
+        JButton sellerRemoveStore;
+        JButton sellerManageCancel;
 
-        ManageStores = new JButton("Manage Stores");
-        ManageFinances = new JButton("View Finances");
-        viewDashboard = new JButton("View Dashboard");
-        sellerLogoutButton = new JButton("Logout");
-        textField  = new JTextField("");
-        textField.setEditable(false);
+        JButton sellerModifyItems;
+        JButton sellerModifyStoreInfo;
+        JButton sellerModifyStoreCancel;
 
+        JButton sellerAddItem;
+        JButton sellerRemoveItem;
+        JButton sellerEditItem;
+        JButton sellerItemCancel;
 
+        JButton sellerRemoveStoreYes;
+        JButton sellerRemoveStoreNo;
+        try {
+            JFrame frame = new JFrame("Seller Interface");
 
-        frame1.setTitle("Seller Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 2,0,0));
+            frame.setSize(430, 150);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel parentPanel = new JPanel();
+            parentPanel.setLayout(new BorderLayout(10, 10));
+            // create top panel
+            JPanel panel1 = new JPanel();
+            BoxLayout horizontal = new BoxLayout(panel1, BoxLayout.X_AXIS);
+            panel1.setLayout(horizontal);
+            sellerManageMyStores = new JButton("Manage my stores");
+            sellerViewMyFinances = new JButton("View my your Finances");
+            sellerLogout = new JButton("Logout");
+            panel1.add(sellerManageMyStores);
+            panel1.add(sellerViewMyFinances);
+            panel1.add(sellerLogout);
+            FlowLayout flow = new FlowLayout();
+            frame.setLayout(flow);
+            parentPanel.add(panel1, BorderLayout.CENTER);
+            frame.add(parentPanel);
+            frame.setVisible(true);
 
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+            //SECOND MENU
+            JPanel panel2 = new JPanel(); //panel2 is second menu in customer
+            panel2.add(new JLabel("What would you like to do?"));
 
-        panel1.add(ManageStores);
-        panel1.add(ManageFinances);
-        panel1.add(viewDashboard);
-        panel1.add(sellerLogoutButton);
+            sellerEditStore = new JButton("Edit a Store");
+            sellerAddStore = new JButton("Add a Store");
+            sellerRemoveStore = new JButton("Remove a Store");
+            sellerManageCancel = new JButton("Cancel");
 
-        content.add(textField);
-        content.add(panel1);
-
-
-        ActionListener sellerActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == ManageStores) {
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
-                }
-                // if login is pressed
-                if (e.getSource() == ManageFinances) {
-                //TODO
-                }
-                // if signup is pressed
-                if (e.getSource() == viewDashboard) {
-                //TODO
-                }
-                if (e.getSource() == sellerLogoutButton) {
-                    pw.write("Logout\n");
-                    pw.flush();
-                    frame1.dispose();
-                    register(socket, pw, br);
-                }
-            }
-        };
-        ManageStores.addActionListener(sellerActionListeners);
-        ManageFinances.addActionListener(sellerActionListeners);
-        viewDashboard.addActionListener(sellerActionListeners);
-        sellerLogoutButton.addActionListener(sellerActionListeners);
-        frame1.setVisible(true);
-
-    }
-
-    public static void manageStores(Socket socket, String username, PrintWriter pw,
-                                    BufferedReader br) {
-        //Initialize the frame
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //customer Buttons
-        JButton AddStore;
-        JButton RemoveStore;
-        JButton ManageInventory;
-        JButton Cancel;
-
-        AddStore = new JButton("Add Store");
-        RemoveStore = new JButton("Remove Store");
-        ManageInventory = new JButton("Manage Inventory");
-        Cancel = new JButton("Cancel");
+            panel2.add(sellerEditStore);
+            panel2.add(sellerAddStore);
+            panel2.add(sellerRemoveStore);
+            panel2.add(sellerManageCancel);
 
 
 
-        frame1.setTitle("Seller Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+            JPanel modifyItem = new JPanel(); //panel2 is second menu in customer
+            modifyItem.add(new JLabel("How would you like to modify your Items?"));
 
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+            sellerAddItem = new JButton("Add Item");
+            sellerRemoveItem = new JButton("Remove Item");
+            sellerEditItem = new JButton("Edit an Item");
+            sellerItemCancel = new JButton("Cancel");
 
-        panel1.add(AddStore);
-        panel1.add(RemoveStore);
-        panel1.add(ManageInventory);
-        panel1.add(Cancel);
+            modifyItem.add(sellerAddItem);
+            modifyItem.add(sellerRemoveItem);
+            modifyItem.add(sellerEditItem);
+            modifyItem.add(sellerItemCancel);
 
-        content.add(panel1);
+            JPanel addPanel = new JPanel(); //panel2 is second menu in customer
+            addPanel.add(new JLabel("Store Name:"));
+            JTextField storeName = new JTextField("",20);
+            storeName.setSize(20, 5);
+            addPanel.add(storeName);
+            JButton add = new JButton("Add");
+            addPanel.add(add);
 
-        ActionListener sellerActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == AddStore) {
-                    frame1.dispose();
-                    addStore(socket, username, pw, br);
-                }
-                // if login is pressed
-                if (e.getSource() == RemoveStore) {
-                    frame1.dispose();
-                    removeStore(socket, username, pw, br);
-                }
-                // if signup is pressed
-                if (e.getSource() == ManageInventory) {
-                    frame1.dispose();
-                    manageInventory(socket, username, pw, br);
-                }
-                if (e.getSource() == Cancel) {
-                    frame1.dispose();
-                    seller(socket, username, pw, br);
-                }
-            }
-        };
-        AddStore.addActionListener(sellerActionListeners);
-        RemoveStore.addActionListener(sellerActionListeners);
-        ManageInventory.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
-        frame1.setVisible(true);
-    }
-    public static void addStore(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel modifyStore = new JPanel(); //panel2 is second menu in customer
+            modifyStore.add(new JLabel("What do you want to do to this store?"));
 
-        JLabel storeName;
-        JTextField textField;
-        JButton enter;
-        JButton cancel;
+            sellerModifyItems = new JButton("Modify Items");
+            sellerModifyStoreInfo = new JButton("Modify the Stores information");
+            sellerModifyStoreCancel = new JButton("Cancel");
 
-        storeName = new JLabel("Store name: ");
-        textField = new JTextField("", 30);
-        enter = new JButton("Enter");
-        cancel = new JButton("Cancel");;
+            modifyStore.add(sellerModifyItems);
+            modifyStore.add(sellerModifyStoreInfo);
+            modifyStore.add(sellerModifyStoreCancel);
 
-        frame1.setTitle("Add store Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(2, 2,0,0));
-        content.add(storeName);
-        content.add(textField);
-        content.add(cancel);
-        content.add(enter);
-        ActionListener addStoreActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == enter) {
-                    //might need username + "," +
-                    pw.write("AddStore\n");
-                    pw.flush();
-                    pw.write(textField.getText() + "\n");
+
+            JPanel removeStorePanel = new JPanel();
+            removeStorePanel.add(new JLabel("Would you like to remove another store?"));
+
+            sellerRemoveStoreYes = new JButton("Yes");
+            sellerRemoveStoreNo = new JButton("No");
+
+            removeStorePanel.add(sellerRemoveStoreYes);
+            removeStorePanel.add(sellerRemoveStoreNo);
+
+            //ACTION LISTENER
+
+            //FIRST MENU LISTENER
+            sellerManageMyStores.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("1\n");
                     pw.flush();
                     try {
-                        String temp = br.readLine();
-                        if (temp.equals("-1")) {
-                            JOptionPane.showMessageDialog(null, "The Store wasn't added",
-                                    "Failed", JOptionPane.PLAIN_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "The Store was added",
-                                    "Complete", JOptionPane.PLAIN_MESSAGE);
-                        }
-                    } catch (Exception s) {
-                        s.printStackTrace();
+                        br.readLine();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
+                    parentPanel.remove(panel1);
+                    parentPanel.add(panel2, BorderLayout.CENTER);
+                    parentPanel.revalidate();
+                    parentPanel.repaint();
+                    frame.pack();
                 }
-                if (e.getSource() == cancel) {
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
-                }
-            }
-        };
-        enter.addActionListener(addStoreActionListeners);
-        cancel.addActionListener(addStoreActionListeners);
-        frame1.setVisible(true);
-    }
+            });
 
-    public static void removeStore(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
-        pw.write("RemoveStore\n");
-        pw.flush();
-        String[] list = new String[0];
-        try {
-            list = br.readLine().split(",");
+            sellerViewMyFinances.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+//                    writer.write("1");
+//                    writer.println();
+//                    writer.flush();
+                }
+            });
+
+            sellerLogout.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+//                    writer.write("2");
+//                    writer.println();
+//                    writer.flush();
+                }
+            });
+            final String[] storeEditSelected = {""};
+            sellerEditStore.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("1\n");
+                    pw.flush();
+                    try {
+                        String earlierStores = br.readLine();
+                        String[] options = earlierStores.split("#");
+                        storeEditSelected[0] = (String) JOptionPane.showInputDialog(null, "Which store would you like to edit?",
+                                "Type", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        parentPanel.remove(panel2);
+                        parentPanel.add(modifyStore, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            final String[] storeRemoveSelected = {""};
+            sellerRemoveStore.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("3\n");
+                    pw.flush();
+                    try {
+                        String earlierStores = br.readLine();
+                        String[] options = earlierStores.split("#");
+                        storeRemoveSelected[0] = (String) JOptionPane.showInputDialog(null, "Which store would you like to remove?",
+                                "Type", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        parentPanel.remove(panel2);
+                        parentPanel.add(removeStorePanel, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                        int i=0;
+                        for(String s: options) {
+                            if (s.equals(storeRemoveSelected[0])) {
+                                break;
+                            }
+                            i++;
+                        }
+                        pw.write(i+"\n");
+                        pw.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            sellerAddStore.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("2\n");
+                    pw.flush();
+                    try {
+                        br.readLine();
+                        parentPanel.remove(panel2);
+                        parentPanel.add(addPanel, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            sellerModifyItems.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("1\n");
+                    pw.flush();
+                    try {
+                        br.readLine();
+                        parentPanel.remove(modifyStore);
+                        parentPanel.add(modifyItem, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write(storeName.getText()+"\n");
+                    pw.flush();
+                    try {
+                        br.readLine();
+                        parentPanel.remove(addPanel);
+                        parentPanel.add(panel2, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JLabel storeName;
-        JComboBox stores;
-        JButton enter;
-        JButton cancel;
-
-        storeName = new JLabel("Store name: ");
-        stores = new JComboBox<>(list);
-        enter = new JButton("Enter");
-        cancel = new JButton("Cancel");;
-
-        frame1.setTitle("Remove store Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(2, 2,0,0));
-        content.add(storeName);
-        content.add(stores);
-        content.add(cancel);
-        content.add(enter);
-        ActionListener removeStoreActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == enter) {
-                    //might need username + "," +
-                    pw.write(stores.getSelectedIndex() + "\n");
-                    pw.flush();
-                    try {
-                        String temp = br.readLine();
-                        if (temp.equals("-1")) {
-                            JOptionPane.showMessageDialog(null, "The Store wasn't removed",
-                                    "Failed", JOptionPane.PLAIN_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "The Store was removed",
-                                    "Complete", JOptionPane.PLAIN_MESSAGE);
-                        }
-                    } catch (Exception s) {
-                        s.printStackTrace();
-                    }
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
-                }
-                if (e.getSource() == cancel) {
-                    pw.write("-1\n");
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
-                }
-            }
-        };
-        enter.addActionListener(removeStoreActionListeners);
-        cancel.addActionListener(removeStoreActionListeners);
-        frame1.setVisible(true);
-    }
-
-    public static void manageInventory(Socket socket, String username, PrintWriter pw,
-                                       BufferedReader br) {
-        //Initialize the frame
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //customer Buttons
-        JButton AddItem;
-        JButton RemoveItem;
-        JButton EditItem;
-        JButton Cancel;
-
-        AddItem = new JButton("Add Item");
-        RemoveItem = new JButton("Remove Item");
-        EditItem = new JButton("Edit Item");
-        Cancel = new JButton("Cancel");
-
-        frame1.setTitle("Seller Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
-
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
-
-        panel1.add(AddItem);
-        panel1.add(RemoveItem);
-        panel1.add(EditItem);
-        panel1.add(Cancel);
-
-        content.add(panel1);
-
-        ActionListener sellerActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == AddItem) {
-                    frame1.dispose();
-                    addStore(socket, username, pw, br);
-                }
-                // if login is pressed
-                if (e.getSource() == RemoveItem) {
-                    frame1.dispose();
-                    removeStore(socket, username, pw, br);
-                }
-                // if signup is pressed
-                if (e.getSource() == EditItem) {
-                    frame1.dispose();
-                    manageInventory(socket, username, pw, br);
-                }
-                if (e.getSource() == Cancel) {
-                    frame1.dispose();
-                    manageStores(socket, username, pw, br);
-                }
-            }
-        };
-        AddItem.addActionListener(sellerActionListeners);
-        RemoveItem.addActionListener(sellerActionListeners);
-        EditItem.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
-        frame1.setVisible(true);
-
-    }
-
-    //TODO
-    public static void addItem(Socket socket, String username, PrintWriter pw,
-                               BufferedReader br) {
-
-    }
-    //TODO
-    public static void removeItem(Socket socket, String username, PrintWriter pw,
-                                  BufferedReader br) {
-
-    }
-    //TODO
-    public static void editItem(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
-
     }
 
     //TODO: implement the code below. THE CODE BELOW IS VERY IMPORTANT IT JUST NEEDS TO BE ALTERED to conform to updated CODE
     //IMPORTANT DO NOT DELETE
-    public static void customer(Socket socket, String username, PrintWriter pw,
+    public static void customer(Socket socket, String username, String password, PrintWriter pw,
                                 BufferedReader br) {
-        //Initialize the frame
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         //customer Buttons
-        JButton viewMarket;
-        JButton viewDashboard;
+        JButton customerBrowseMarketPlaceButton;
         JButton customerViewPurchaseHistoryButton;
-        JButton exportPurchaseHistory;
         JButton customerLogoutButton;
-
-        viewMarket = new JButton("View Market");
-        viewDashboard = new JButton("View Dashboard");
-        customerViewPurchaseHistoryButton = new JButton("View Purchase History");
-        exportPurchaseHistory = new JButton("Export Purchase History");
-        customerLogoutButton = new JButton("Logout");
-
-
-        frame1.setTitle("Customer Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
-
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(5,1,0,0));
-
-        panel1.add(viewMarket);
-        panel1.add(viewDashboard);
-        panel1.add(customerViewPurchaseHistoryButton);
-        panel1.add(exportPurchaseHistory);
-        panel1.add(customerLogoutButton);
-
-        content.add(panel1);
-
-
-        ActionListener customerActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == viewMarket) {
-                    frame1.dispose();
-                    pw.write("viewMarket\n");
-                    pw.flush();
-                    viewMarket(socket, username, pw, br);
-                }
-                if (e.getSource() == viewDashboard) {
-
-                }
-                if (e.getSource() == customerViewPurchaseHistoryButton) {
-
-                }
-                if (e.getSource() == exportPurchaseHistory) {
-
-                }
-                if (e.getSource() == customerLogoutButton) {
-                    pw.write("Logout\n");
-                    pw.flush();
-                    frame1.dispose();
-                    register(socket, pw, br);
-                }
-
-            }
-        };
-        viewMarket.addActionListener(customerActionListeners);
-        viewDashboard.addActionListener(customerActionListeners);
-        customerViewPurchaseHistoryButton.addActionListener(customerActionListeners);
-        exportPurchaseHistory.addActionListener(customerActionListeners);
-        customerLogoutButton.addActionListener(customerActionListeners);
-        frame1.setVisible(true);
-    }
-
-    public static void viewMarket(Socket socket,  String username, PrintWriter pw, BufferedReader br) {
-        String temp;
-        String[] storesList = new String[0];
-        ArrayList<String[]> itemList = new ArrayList<>();
+        JButton customerViewWholeMarketPlaceButton;
+        JButton customerSearchMarketButton;
+        JButton customerSortMarketPlaceButton;
         try {
-            temp = br.readLine();
-            storesList = new String[Integer.parseInt(temp)];
-            for (int i = 0; i < storesList.length; i++) {
-                storesList[i] = br.readLine();
-                itemList.add(br.readLine().split(","));
-            }
+            JFrame frame = new JFrame("Customer Interface");
+
+            frame.setSize(430, 150);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel parentPanel = new JPanel();
+            parentPanel.setLayout(new BorderLayout(10, 10));
+            // create top panel
+            JPanel panel1 = new JPanel();
+            BoxLayout horizontal = new BoxLayout(panel1, BoxLayout.X_AXIS);
+            panel1.setLayout(horizontal);
+            customerBrowseMarketPlaceButton = new JButton("Browse Market Place");
+            customerViewPurchaseHistoryButton = new JButton("View Purchase History");
+            customerLogoutButton = new JButton("Logout");
+            panel1.add(customerBrowseMarketPlaceButton);
+            panel1.add(customerViewPurchaseHistoryButton);
+            panel1.add(customerLogoutButton);
+            FlowLayout flow = new FlowLayout();
+            frame.setLayout(flow);
+            parentPanel.add(panel1, BorderLayout.CENTER);
+            frame.add(parentPanel);
+            frame.setVisible(true);
+
+            //SECOND MENU
+            JPanel panel2 = new JPanel(); //panel2 is second menu in customer
+            panel2.add(new JLabel("How would you like to view the market?"));
+
+            customerViewWholeMarketPlaceButton = new JButton("View Entire Market Place");
+            customerSearchMarketButton = new JButton("Search");
+            customerSortMarketPlaceButton = new JButton("Sort Market");
+
+            panel2.add(customerViewWholeMarketPlaceButton); //sends the string "0" to server if clicked on
+            panel2.add(customerSearchMarketButton); //sends the string "1" to server if clicked on
+            panel2.add(customerSortMarketPlaceButton); //sends the string "2" to server if clicked on
+
+            //ACTION LISTENER
+
+            //FIRST MENU LISTENER
+            customerBrowseMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("1\n");
+                    pw.flush();
+                    try {
+                        br.readLine();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    parentPanel.remove(panel1);
+                    parentPanel.add(panel2, BorderLayout.CENTER);
+                    parentPanel.revalidate();
+                    parentPanel.repaint();
+                    frame.pack();
+                }
+            });
+
+            customerViewPurchaseHistoryButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+//                    writer.write("2");
+//                    writer.println();
+//                    writer.flush();
+                }
+            });
+
+            customerLogoutButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+//                    writer.write("3");
+//                    writer.println();
+//                    writer.flush();
+                }
+            });
+
+            //SECOND MENU LISTENER
+            customerViewWholeMarketPlaceButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pw.write("1\n");
+                    pw.flush();
+                    try {
+                        String data = br.readLine();
+                        parentPanel.remove(panel2);
+                        parentPanel.add(new JLabel(data), BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
-        frame1.setLocationRelativeTo(null);
-        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //customer Buttons
-        JLabel purchaseLabel;
-        //TODO CHECK TO SEE IF THIS WORKS ONCE ADD ITEM IS DONE
-        JComboBox stores;
-        JComboBox items;
-        JButton SearchMarket;
-        JButton SortMarket;
-        JButton refresh;
-        JButton cancel;
-        JButton purchase;
-        JTextField textField;
-
-        String fullString = "";
-        for (int i = 0; i < storesList.length; i++) {
-            fullString += storesList[i] + "\n";
-            for (int j = 0; itemList.size() != 0 && j < itemList.get(i).length; j++) {
-                fullString += itemList.get(i)[j] + "\n";
-            }
-        }
-
-        purchaseLabel = new JLabel("Select and item if you wish to purchase it");
-        SearchMarket = new JButton("Search Market");
-        SortMarket = new JButton("Sort Market");
-        purchase = new JButton("Purchase");
-        refresh = new JButton("Refresh");
-        cancel = new JButton("Cancel");
-        textField = new JTextField(fullString);
-
-        if (storesList.length == 0) {
-            stores = new JComboBox<>(new String[]{"No Stores Available"});
-            purchase.setEnabled(false);
-        } else {
-            stores = new JComboBox<>(storesList);
-            purchase.setEnabled(true);
-        }
-        if (itemList.size() == 0) {
-            items = new JComboBox<>(new String[]{"No Items Available"});
-            purchase.setEnabled(false);
-        } else if (itemList.get(0).length == 1 && itemList.get(0)[0].equals("")) {
-            items = new JComboBox<>(new String[]{"No Items Available"});
-            purchase.setEnabled(false);
-        } else {
-            items = new JComboBox<>(itemList.get(0));
-            purchase.setEnabled(true);
-        }
-
-
-        frame1.setTitle("Market_Interface");
-        Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 2,0,0));
-
-        content.add(textField);
-
-        JPanel subPanel = new JPanel();
-        subPanel.setLayout(new GridLayout(1,2,0,0));
-        subPanel.add(stores);
-        subPanel.add(items);
-
-
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(7,1,0,0));
-
-        panel1.add(purchaseLabel);
-        panel1.add(subPanel);
-        panel1.add(SearchMarket);
-        panel1.add(SortMarket);
-        panel1.add(purchase);
-        panel1.add(refresh);
-        panel1.add(cancel);
-
-        content.add(panel1);
-
-
-        ActionListener marketActionListeners = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == stores) {
-                    //COMEBACK TO
-                    items.removeAllItems();
-                    if (itemList.size() == 0) {
-                        items.addItem(new String[]{"No Items Available"});
-                        purchase.setEnabled(false);
-                    } else if (itemList.get(stores.getSelectedIndex()).length == 1
-                            && itemList.get(stores.getSelectedIndex())[0].equals("")) {
-                        items.addItem(new String[]{"No Items Available"});
-                        purchase.setEnabled(false);
-                    } else {
-                        for (int i = 0; i < itemList.get(stores.getSelectedIndex()).length; i++) {
-                            items.addItem(itemList.get(stores.getSelectedIndex())[i]);
-                            purchase.setEnabled(true);
-                        }
-                    }
-
-                }
-                if (e.getSource() == SearchMarket) {
-                    //TODO
-                }
-                if (e.getSource() == SortMarket) {
-                    //TODO
-                }
-                if (e.getSource() == purchase) {
-                    //TODO
-                }
-                if (e.getSource() == refresh) {
-                    //TODO
-                }
-                if (e.getSource() == cancel) {
-                    frame1.dispose();
-                    customer(socket, username, pw, br);
-                }
-            }
-        };
-        stores.addActionListener(marketActionListeners);
-        SearchMarket.addActionListener(marketActionListeners);
-        SortMarket.addActionListener(marketActionListeners);
-        purchase.addActionListener(marketActionListeners);
-        refresh.addActionListener(marketActionListeners);
-        cancel.addActionListener(marketActionListeners);
-        frame1.setVisible(true);
-
-    }
-
-    public static void makePurchase(Socket socket, PrintWriter pw,
-                                    BufferedReader br) {
 
     }
 }
