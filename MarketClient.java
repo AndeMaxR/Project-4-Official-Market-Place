@@ -257,11 +257,11 @@ public class MarketClient extends JComponent {
                 }
                 // if login is pressed
                 if (e.getSource() == ManageFinances) {
-                //TODO
+                    //TODO
                 }
                 // if signup is pressed
                 if (e.getSource() == viewDashboard) {
-                //TODO
+                    //TODO
                 }
                 if (e.getSource() == sellerLogoutButton) {
                     pw.write("Logout\n");
@@ -297,8 +297,6 @@ public class MarketClient extends JComponent {
         RemoveStore = new JButton("Remove Store");
         ManageInventory = new JButton("Manage Inventory");
         Cancel = new JButton("Cancel");
-
-
 
         frame1.setTitle("Seller Interface");
         Container content = frame1.getContentPane();
@@ -403,7 +401,7 @@ public class MarketClient extends JComponent {
     }
 
     public static void removeStore(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
+                                   BufferedReader br) {
         pw.write("RemoveStore\n");
         pw.flush();
         String[] list = new String[0];
@@ -562,16 +560,15 @@ public class MarketClient extends JComponent {
         //customer Buttons
         JButton viewMarket;
         JButton viewDashboard;
-        JButton customerViewPurchaseHistoryButton;
+        JButton ViewPurchaseHistory;
         JButton exportPurchaseHistory;
-        JButton customerLogoutButton;
+        JButton Logout;
 
         viewMarket = new JButton("View Market");
         viewDashboard = new JButton("View Dashboard");
-        customerViewPurchaseHistoryButton = new JButton("View Purchase History");
+        ViewPurchaseHistory = new JButton("View Purchase History");
         exportPurchaseHistory = new JButton("Export Purchase History");
-        customerLogoutButton = new JButton("Logout");
-
+        Logout = new JButton("Logout");
 
         frame1.setTitle("Customer Interface");
         Container content = frame1.getContentPane();
@@ -582,9 +579,9 @@ public class MarketClient extends JComponent {
 
         panel1.add(viewMarket);
         panel1.add(viewDashboard);
-        panel1.add(customerViewPurchaseHistoryButton);
+        panel1.add(ViewPurchaseHistory);
         panel1.add(exportPurchaseHistory);
-        panel1.add(customerLogoutButton);
+        panel1.add(Logout);
 
         content.add(panel1);
 
@@ -599,15 +596,23 @@ public class MarketClient extends JComponent {
                     viewMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == viewDashboard) {
-
+                    frame1.dispose();
+                    pw.write("viewDashboard\n");
+                    pw.flush();
+                    //TODO: viewDashboard(socket,username, pw, br);
                 }
-                if (e.getSource() == customerViewPurchaseHistoryButton) {
-
+                if (e.getSource() == ViewPurchaseHistory) {
+                    frame1.dispose();
+                    pw.write("ViewPurchaseHistory");
+                    pw.flush();
+                    pw.write(username);
+                    pw.flush();
+                    viewPurchaseHistory(socket, pw, br);
                 }
                 if (e.getSource() == exportPurchaseHistory) {
 
                 }
-                if (e.getSource() == customerLogoutButton) {
+                if (e.getSource() == Logout) {
                     pw.write("Logout\n");
                     pw.flush();
                     frame1.dispose();
@@ -618,9 +623,9 @@ public class MarketClient extends JComponent {
         };
         viewMarket.addActionListener(customerActionListeners);
         viewDashboard.addActionListener(customerActionListeners);
-        customerViewPurchaseHistoryButton.addActionListener(customerActionListeners);
+        ViewPurchaseHistory.addActionListener(customerActionListeners);
         exportPurchaseHistory.addActionListener(customerActionListeners);
-        customerLogoutButton.addActionListener(customerActionListeners);
+        Logout.addActionListener(customerActionListeners);
         frame1.setVisible(true);
     }
 
@@ -640,7 +645,7 @@ public class MarketClient extends JComponent {
         }
 
         JFrame frame1 = new JFrame();
-        frame1.setSize(600, 400);
+        frame1.setSize(1200, 400);
         frame1.setLocationRelativeTo(null);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -649,12 +654,24 @@ public class MarketClient extends JComponent {
         //TODO CHECK TO SEE IF THIS WORKS ONCE ADD ITEM IS DONE
         JComboBox stores;
         JComboBox items;
-        JButton SearchMarket;
-        JButton SortMarket;
+
+        JLabel searchPrompt; //search sub panel
+        JComboBox marketSearchOptions; //search sub panel
+        JTextField marketSearchBox; //search sub panel
+        JButton searchMarketButton; //search sub panel
+
+        JLabel sortPrompt; //search sub panel
+        JComboBox marketSortOptions; //search sub panel
+        JButton sortMarketButton; //sort sub panel
+
+        JLabel purchaseQuantityPrompt; //purchase sub panel
+        JTextField purchaseQuantity; //purchase sub panel
+        JButton purchaseButton; //purchase sub panel
+
         JButton refresh;
         JButton cancel;
-        JButton purchase;
         JTextField textField;
+
 
         String fullString = "";
         for (int i = 0; i < storesList.length; i++) {
@@ -664,58 +681,104 @@ public class MarketClient extends JComponent {
             }
         }
 
-        purchaseLabel = new JLabel("Select and item if you wish to purchase it");
-        SearchMarket = new JButton("Search Market");
-        SortMarket = new JButton("Sort Market");
-        purchase = new JButton("Purchase");
+        purchaseLabel = new JLabel("Select an item if you wish to purchase it");
+
+        searchPrompt = new JLabel("Search market by: "); //search sub panel
+        marketSearchOptions = new JComboBox<>(new String[]{"Item name", "Store Name", "Item Description"}); //search sub panel
+        marketSearchBox = new JTextField(15); // search sub panel
+        searchMarketButton = new JButton("Search Market"); //search sub panel
+
+        sortPrompt = new JLabel("Sort market by: "); //search sub panel
+        marketSortOptions = new JComboBox<>(new String[]{"Item Price", "Quantity in Stock"}); //search sub panel
+        sortMarketButton = new JButton("Sort Market"); //sort sub panel
+
+        purchaseQuantityPrompt = new JLabel("Quantity");
+        purchaseQuantity = new JTextField(2);
+        purchaseButton = new JButton("Purchase");
+
         refresh = new JButton("Refresh");
         cancel = new JButton("Cancel");
         textField = new JTextField(fullString);
 
+        //restrict buttons if there's nothing in the market
         if (storesList.length == 0) {
             stores = new JComboBox<>(new String[]{"No Stores Available"});
-            purchase.setEnabled(false);
+            purchaseButton.setEnabled(false);
+            searchMarketButton.setEnabled(false);
+            sortMarketButton.setEnabled(false);
+
         } else {
             stores = new JComboBox<>(storesList);
-            purchase.setEnabled(true);
+            purchaseButton.setEnabled(true);
         }
         if (itemList.size() == 0) {
             items = new JComboBox<>(new String[]{"No Items Available"});
-            purchase.setEnabled(false);
+            purchaseButton.setEnabled(false);
+            searchMarketButton.setEnabled(false);
+            sortMarketButton.setEnabled(false);
+
         } else if (itemList.get(0).length == 1 && itemList.get(0)[0].equals("")) {
             items = new JComboBox<>(new String[]{"No Items Available"});
-            purchase.setEnabled(false);
+            purchaseButton.setEnabled(false);
+            searchMarketButton.setEnabled(false);
+            sortMarketButton.setEnabled(false);
+
         } else {
             items = new JComboBox<>(itemList.get(0));
-            purchase.setEnabled(true);
+            purchaseButton.setEnabled(true);
+            searchMarketButton.setEnabled(true);
+            sortMarketButton.setEnabled(true);
         }
 
-
+        //entire frame
         frame1.setTitle("Market_Interface");
         Container content = frame1.getContentPane();
         content.setLayout(new GridLayout(1, 2,0,0));
 
+        //left side
         content.add(textField);
 
+        //item/store sub panel
         JPanel subPanel = new JPanel();
         subPanel.setLayout(new GridLayout(1,2,0,0));
         subPanel.add(stores);
         subPanel.add(items);
 
+        //search sub panel
+        JPanel searchMarketSubPanel = new JPanel();
+        searchMarketSubPanel.setLayout(new GridLayout(1, 4, 0,0));
+        searchMarketSubPanel.add(searchPrompt);
+        searchMarketSubPanel.add(marketSearchOptions);
+        searchMarketSubPanel.add(marketSearchBox);
+        searchMarketSubPanel.add(searchMarketButton);
 
+        //sort sub panel
+        JPanel sortMarketSubPanel = new JPanel();
+        sortMarketSubPanel.setLayout(new GridLayout(1, 3, 0, 0));
+        sortMarketSubPanel.add(sortPrompt);
+        sortMarketSubPanel.add(marketSortOptions);
+        sortMarketSubPanel.add(sortMarketButton);
+
+        //purchase sub panel
+        JPanel purchaseSubPanel = new JPanel();
+        purchaseSubPanel.setLayout(new GridLayout(1, 3, 0, 0));
+        purchaseSubPanel.add(purchaseQuantityPrompt);
+        purchaseSubPanel.add(purchaseQuantity);
+        purchaseSubPanel.add(purchaseButton);
+
+        //initializing entire panel
         JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayout(7,1,0,0));
 
         panel1.add(purchaseLabel);
         panel1.add(subPanel);
-        panel1.add(SearchMarket);
-        panel1.add(SortMarket);
-        panel1.add(purchase);
+        panel1.add(searchMarketSubPanel);
+        panel1.add(sortMarketSubPanel);
+        panel1.add(purchaseSubPanel);
         panel1.add(refresh);
         panel1.add(cancel);
 
         content.add(panel1);
-
 
         ActionListener marketActionListeners = new ActionListener() {
             @Override
@@ -725,30 +788,55 @@ public class MarketClient extends JComponent {
                     items.removeAllItems();
                     if (itemList.size() == 0) {
                         items.addItem(new String[]{"No Items Available"});
-                        purchase.setEnabled(false);
+                        purchaseButton.setEnabled(false);
+
                     } else if (itemList.get(stores.getSelectedIndex()).length == 1
                             && itemList.get(stores.getSelectedIndex())[0].equals("")) {
                         items.addItem(new String[]{"No Items Available"});
-                        purchase.setEnabled(false);
+                        purchaseButton.setEnabled(false);
+
                     } else {
                         for (int i = 0; i < itemList.get(stores.getSelectedIndex()).length; i++) {
                             items.addItem(itemList.get(stores.getSelectedIndex())[i]);
-                            purchase.setEnabled(true);
+                            purchaseButton.setEnabled(true);
                         }
                     }
-
                 }
-                if (e.getSource() == SearchMarket) {
-                    //TODO
+                if (e.getSource() == searchMarketButton) {
+                    pw.write("searchMarket"); //send that search market button was pushed
+                    pw.flush();
+                    pw.write(marketSearchOptions.getSelectedIndex()); //send type of search
+                    pw.flush();
+                    pw.write(marketSearchBox.getText()); //send search prompt
+                    pw.flush();
+                    searchMarket(socket, pw, br);
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
-                if (e.getSource() == SortMarket) {
-                    //TODO
+                if (e.getSource() == sortMarketButton) {
+                    pw.write("sortMarket"); //send that sort market button was pushed
+                    pw.flush();
+                    pw.write(marketSortOptions.getSelectedIndex()); //send type of sort
+                    pw.flush();
+                    frame1.dispose();
+                    sortMarket(socket, pw, br);
+                    viewMarket(socket, username, pw, br);
                 }
-                if (e.getSource() == purchase) {
-                    //TODO
+                if (e.getSource() == purchaseButton) {
+                    pw.write("purchase"); //send that purchase button was pushed
+                    pw.flush();
+                    pw.write(purchaseQuantity.getText()); //send desired purchase quantity
+                    pw.flush();
+                    pw.write(items.getSelectedIndex()); //send product name
+                    pw.flush();
+                    pw.write(username);
+                    pw.flush();
+                    JOptionPane.showMessageDialog(null, "You've successfully purchased " +
+                        purchaseQuantity + " " + (String)items.getSelectedItem() + "!", "Purchase Successful",
+                        JOptionPane.PLAIN_MESSAGE);
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == refresh) {
-                    //TODO
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == cancel) {
                     frame1.dispose();
@@ -757,17 +845,84 @@ public class MarketClient extends JComponent {
             }
         };
         stores.addActionListener(marketActionListeners);
-        SearchMarket.addActionListener(marketActionListeners);
-        SortMarket.addActionListener(marketActionListeners);
-        purchase.addActionListener(marketActionListeners);
+        searchMarketButton.addActionListener(marketActionListeners);
+        sortMarketButton.addActionListener(marketActionListeners);
+        purchaseButton.addActionListener(marketActionListeners);
         refresh.addActionListener(marketActionListeners);
         cancel.addActionListener(marketActionListeners);
         frame1.setVisible(true);
-
     }
 
-    public static void makePurchase(Socket socket, PrintWriter pw,
-                                    BufferedReader br) {
+    public static void searchMarket(Socket socket, PrintWriter pw, BufferedReader br) {
+        try {
 
+            JFrame viewSearchFrame = new JFrame();
+            viewSearchFrame.setSize(400, 600);
+            viewSearchFrame.setLocationRelativeTo(null);
+            viewSearchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSearchFrame.setTitle("Search Results");
+            Container content = viewSearchFrame.getContentPane();
+            content.setLayout(new BoxLayout(viewSearchFrame, BoxLayout.PAGE_AXIS));
+
+            int numResults = Integer.parseInt(br.readLine());
+            for (int i = 0; i < numResults; i++) {
+                content.add(new JLabel(br.readLine()));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    public static void sortMarket(Socket socket, PrintWriter pw, BufferedReader br) {
+        try {
+            //initialize frame
+            JFrame viewSortFrame = new JFrame();
+            viewSortFrame.setSize(400, 600);
+            viewSortFrame.setLocationRelativeTo(null);
+            viewSortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSortFrame.setTitle("Sort Results");
+            Container content = viewSortFrame.getContentPane();
+            content.setLayout(new BoxLayout(viewSortFrame, BoxLayout.PAGE_AXIS));
+
+            int numResults = Integer.parseInt(br.readLine());
+            for (int i = 0; i < numResults; i++) {
+                content.add(new JLabel(br.readLine()));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void viewPurchaseHistory(Socket socket, PrintWriter pw, BufferedReader br) {
+        try {
+            //frame buttons
+            JButton cancelButton = new JButton("Cancel");
+
+            //initialize frame
+            JFrame viewPurchaseHistoryFrame = new JFrame();
+            viewPurchaseHistoryFrame.setSize(400, 600);
+            viewPurchaseHistoryFrame.setLocationRelativeTo(null);
+            viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewPurchaseHistoryFrame.setTitle("Transaction History");
+            Container content = viewPurchaseHistoryFrame.getContentPane();
+            content.setLayout(new GridLayout(1,2,0,0));
+
+            JPanel panel1 = new JPanel();
+            panel1.setLayout(new BoxLayout(viewPurchaseHistoryFrame, BoxLayout.PAGE_AXIS));
+
+            content.add(panel1);
+            content.add(cancelButton);
+
+            int numResults = Integer.parseInt(br.readLine());
+            for (int i = 0; i < numResults; i++) {
+                panel1.add(new JLabel(br.readLine()));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
