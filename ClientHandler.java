@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class ClientHandler extends Thread {
 
     private Seller seller;
     private Customer customer;
+    private Store store;
 
     public ClientHandler(PrintWriter printWriter, BufferedReader bufferedReader, Socket socket,
                          ArrayList<Store> storeMasterArrayList) {
@@ -147,7 +149,76 @@ public class ClientHandler extends Thread {
                         printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
                         printWriter.flush();
                     }
-                } else if (temp.equals("")) {
+                    String viewMarketChoice = bufferedReader.readLine();
+                    if (viewMarketChoice.equals("searchMarket")){
+                        int searchType = Integer.parseInt(bufferedReader.readLine());
+                        if (searchType == 0) { //search by item name
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (obj) {
+                                ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt);
+                                printWriter.write(searchResults.size());
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i));
+                                }
+                            }
+                        } else if (searchType == 1) { //search by store name
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (obj) {
+                                ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt);
+                                printWriter.write(searchResults.size());
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i));
+                                }
+                            }
+                        } else if (searchType == 2) {
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (obj) {
+                                ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt);
+                                printWriter.write(searchResults.size());
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i));
+                                }
+                            }
+                        }
+                    }
+                    if (viewMarketChoice.equals("sortMarket")) {
+                        int sortType = Integer.parseInt(bufferedReader.readLine());
+                        if (sortType == 0) { // sort by price
+                            synchronized (obj) {
+                                ArrayList<String> sortResults = customer.sortMarketPrice();
+                                printWriter.write(sortResults.size());
+                                printWriter.write(sortResults.size());
+                                for (int i = 0; i < sortResults.size(); i++) {
+                                    printWriter.write(sortResults.get(i));
+                                }
+                            }
+                        } else if (sortType == 1) { //sort by quantity
+                            synchronized (obj) {
+                                ArrayList<String> sortResults = customer.sortMarketQuantity();
+                                printWriter.write(sortResults.size());
+                                printWriter.write(sortResults.size());
+                                for (int i = 0; i < sortResults.size(); i++) {
+                                    printWriter.write(sortResults.get(i));
+                                }
+                            }
+                        }
+                    }
+                    if (viewMarketChoice.equals("purchase")) {
+                        int purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
+                        int itemIndex = Integer.parseInt(bufferedReader.readLine());
+                        String username = bufferedReader.readLine();
+                        synchronized (obj) {
+                            store.buyItem(itemIndex, purchaseQuantity, username);
+                        }
+                    }
+                } else if (temp.equals("ViewPurchaseHistory")) {
+                    ArrayList<String> purchaseHistory = new ArrayList<>();
+                    String username = bufferedReader.readLine();
+                    purchaseHistory = customer.purchaseHistory(username);
+                    printWriter.write(purchaseHistory.size());
+                    for (int i = 0; i < purchaseHistory.size(); i++) {
+                        printWriter.write(purchaseHistory.get(i));
+                    }
 
                 } else if (temp.equals("")) {
 
@@ -381,5 +452,4 @@ public class ClientHandler extends Thread {
      *     }
      *
      */
-
 }
