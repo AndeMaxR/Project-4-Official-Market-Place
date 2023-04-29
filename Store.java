@@ -58,8 +58,8 @@ public class Store {
                 }
             } else {
                 storeFile.createNewFile();
-                numberOfSales = 0;
-                revenue = 0;
+//                numberOfSales = 0;
+//                revenue = 0;
             }
 
             printToFile();
@@ -236,6 +236,7 @@ public class Store {
             }
             BufferedWriter bfw = new BufferedWriter(new FileWriter(file, true));
             bfw.write("--------------------\n");
+            bfw.write("Seller: " + owner + "\n");
             bfw.write("Item Purchased: " + (items.get(itemLocation).getProductName()) + "\n");
             bfw.write("Quantity purchased: " + quantity + "\n");
             bfw.write("Store Name: " + storeName + "\n");
@@ -318,5 +319,13 @@ public class Store {
             e.printStackTrace();
         }
 
+    }
+
+    public int getNumberOfSales() {
+        return numberOfSales;
+    }
+
+    public double getRevenue() {
+        return revenue;
     }
 }
