@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 
 
@@ -134,6 +134,49 @@ public class Seller {
 
     }
 
+    public String dashboard(String sortField, String order) {
+        LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
+        String holder = "";
+        for(Store s: storeList) {
+            holder = "Store name: "+s.getStoreName()+"\n";
+            holder += String.format("Total Sales: %d\nTotal Revenue: %.2f\n", s.getNumberOfSales(), s.getRevenue());
+            try {
+                File receiptListFile = new File(s.getStoreName() + "_Receipt.txt");
+                BufferedReader bfr = new BufferedReader(new FileReader(receiptListFile));
+                String contents;
+                while ((contents = bfr.readLine()) != null) {
+                    holder += contents + "\n";
+                }
+                //holder += "******************************************\n";
+                dataMap.put(s.getStoreName(), holder);
+                holder = "";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        String content = "";
+        if (sortField.equals("")) {
+            for (String key : dataMap.keySet()) {
+                content += "******************************************\n";
+                content += dataMap.get(key) + "\n";
+                content += "******************************************\n";
+            }
+        } else {
+            Map<String, String> tMap;
+            if (order.equals("desc")) {
+                tMap = new TreeMap<>(Collections.reverseOrder());
+                tMap.putAll(dataMap);
+            } else {
+                tMap = new TreeMap<>(dataMap);
+            }
+            for (String key : tMap.keySet()) {
+                content += "******************************************\n";
+                content += dataMap.get(key) + "\n";
+                content += "******************************************\n";
+            }
+        }
+        return content;
+    }
 
 
 
