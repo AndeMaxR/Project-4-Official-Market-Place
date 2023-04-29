@@ -123,7 +123,7 @@ public class Market {
 
     public static boolean sellerManipulation(Scanner scanner) {
         String decision;
-        System.out.println("Hello " + seller.getUsername() + " what would you like to do?\n1. Manage my stores.\n2. View my your Finances.\n3. Manage Account.\n4. Logout.");
+        System.out.println("Hello " + seller.getUsername() + " what would you like to do?\n1. Manage my stores.\n2. View my your Finances.\n3. Dashboard.\n4. Logout.");
         decision = scanner.nextLine();
         switch (decision) {
             case "1":
@@ -361,7 +361,22 @@ public class Market {
                 }
                 return true;
             case "3":
-                //TODO
+                System.out.println("How would you like sort the data?" +
+                        "\n1. Store name asc." +
+                        "\n2. Store name desc." +
+                        "\n3. No Sort.");
+                String sortBy = scanner.nextLine();
+                switch (sortBy) {
+                    case "1":
+                        System.out.println(seller.dashboard("store name", "asc"));
+                        break;
+                    case "2":
+                        System.out.println(seller.dashboard("store name", "desc"));
+                        break;
+                    default:
+                        System.out.println(seller.dashboard("", ""));
+                }
+                return true;
             case "4":
                 System.out.println("Thank you " + seller.getUsername() + ", you have been successfully logged out.");
                 seller = null;
@@ -377,7 +392,8 @@ public class Market {
         System.out.println("What would you like to do? " +
                 "\n1. Browse marketplace." +
                 "\n2. View purchase history." +
-                "\n3. Logout.");
+                "\n3. Dashboard." +
+                "\n4. Logout.");
         decision = scanner.nextLine();
         while (true) {
             boolean areThereItemsToView = true;
@@ -411,17 +427,17 @@ public class Market {
                                     String itemName;
                                     System.out.println("Please enter your search for Item Name");
                                     itemName = scanner.nextLine();
-                                    areThereItemsToView = customer.viewMarketNameSort(itemName);
+//                                    areThereItemsToView = customer.viewMarketNameSort(itemName);
                                 } else if (searchBy.equals("2")) {
                                     String storeName;
                                     System.out.println("Please enter your search for Store Name");
                                     storeName = scanner.nextLine();
-                                    areThereItemsToView = customer.viewMarketStoreSort(storeName);
+//                                    areThereItemsToView = customer.viewMarketStoreSort(storeName);
                                 } else if (searchBy.equals("3")) {
                                     String itemDesc;
                                     System.out.println("Please enter your search for Item Description");
                                     itemDesc = scanner.nextLine();
-                                    areThereItemsToView = customer.sortDescription(itemDesc);
+//                                    areThereItemsToView = customer.sortDescription(itemDesc);
                                 } else if (searchBy.equals("4")) {
                                     System.out.println("Cancelling...");
                                     break;
@@ -559,10 +575,28 @@ public class Market {
                     }
                     break;
                 case "2":
-                    customer.purchaseHistory(customer.getUsername());
+                    System.out.println(customer.purchaseHistory(customer.getUsername()));
                     return true;
                 //
                 case "3":
+                    System.out.println("How would you like sort the data?" +
+                            "\n1. Seller name asc." +
+                            "\n2. Seller name desc." +
+                            "\n3. No Sort.");
+                    String sortBy = scanner.nextLine();
+                    switch (sortBy) {
+                        case "1":
+                            System.out.println(customer.dashboard("seller", "asc"));
+                            break;
+                        case "2":
+                            System.out.println(customer.dashboard("seller", "desc"));
+                            break;
+                        default:
+                            System.out.println(customer.dashboard("", ""));
+                    }
+                    return true;
+
+                case "4":
                     System.out.println("Thank you " + customer.getUsername() + ", you have been successfully logged out.");
                     customer = null;
                     return false;
