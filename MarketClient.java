@@ -279,8 +279,7 @@ public class MarketClient extends JComponent {
 
     }
 
-    public static void manageStores(Socket socket, String username, PrintWriter pw,
-                                    BufferedReader br) {
+    public static void manageStores(Socket socket, String username, PrintWriter pw, BufferedReader br) {
         //Initialize the frame
         JFrame frame1 = new JFrame();
         frame1.setSize(600, 400);
@@ -585,6 +584,12 @@ public class MarketClient extends JComponent {
 
         content.add(panel1);
 
+        //disable transaction history buttons if no purchases
+        File file = new File(username + "_History.txt");
+        if (!file.exists()) {
+            ViewPurchaseHistory.setEnabled(false);
+            exportPurchaseHistory.setEnabled(false);
+        }
 
         ActionListener customerActionListeners = new ActionListener() {
             @Override
@@ -610,7 +615,7 @@ public class MarketClient extends JComponent {
                     viewPurchaseHistory(socket, pw, br);
                 }
                 if (e.getSource() == exportPurchaseHistory) {
-
+                    exportPurchaseHistory(socket, pw, br, username);
                 }
                 if (e.getSource() == Logout) {
                     pw.write("Logout\n");
@@ -925,4 +930,9 @@ public class MarketClient extends JComponent {
         }
     }
 
+    public static void exportPurchaseHistory(Socket socket, PrintWriter pr, BufferedReader br, String username) {
+        JOptionPane.showMessageDialog(null, "Your purchase history file is now available to " +
+            "view in the depository under the name " + username + "_History.txt", "Export Purchase History",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
 }
