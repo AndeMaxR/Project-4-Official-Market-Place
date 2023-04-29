@@ -3,7 +3,7 @@ import java.io.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.Buffer;
-import java.util.ArrayList;
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -352,6 +352,52 @@ public class Customer {
             e.printStackTrace();
         }
         return purchaseHistory;
+    }
+
+    public String dashboard(String sortField, String order) {
+        LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
+        String content = "";
+        File file = new File(username + "_History.txt");
+        try {
+            if (!file.exists()) {
+                System.out.println("You have not made any purchases yet.");
+            } else {
+                BufferedReader bfr = new BufferedReader(new FileReader(file));
+                String line;
+                String sellerName = "";
+                while ((line = bfr.readLine()) != null) {
+                    if (line.contains("Seller:")) {
+                        sellerName = line.split(" ")[1];
+                    }
+                    content += line + "\n";
+                    if (line.contains("Total price:")) {
+                        dataMap.put(sellerName, content);
+                        content = "";
+                    }
+                }
+                if (sortField.equals("")) {
+                    content = "";
+                    for (String key : dataMap.keySet()) {
+                        content += dataMap.get(key) + "\n";
+                    }
+                } else {
+                    content = "";
+                    Map<String, String> tMap;
+                    if (order.equals("desc")) {
+                        tMap = new TreeMap<>(Collections.reverseOrder());
+                        tMap.putAll(dataMap);
+                    } else {
+                        tMap = new TreeMap<>(dataMap);
+                    }
+                    for (String key : tMap.keySet()) {
+                        content += dataMap.get(key) + "\n";
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content;
     }
 
     public void printToFile() {
