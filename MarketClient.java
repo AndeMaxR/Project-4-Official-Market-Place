@@ -345,7 +345,6 @@ public class MarketClient extends JComponent {
     }
     public static void manageFinances(Socket socket, String username, PrintWriter pw,
                                       BufferedReader br) {
-        // TODO add to this, it is not finished!
         JFrame frame1 = new JFrame();
         frame1.setSize(600, 400);
         frame1.setLocationRelativeTo(null);
@@ -363,7 +362,7 @@ public class MarketClient extends JComponent {
 
         frame1.setTitle("Finances Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(2, 2, 0, 0));
+        content.setLayout(new GridLayout(1, 2, 0, 0));
         content.add(again);
         content.add(yes);
         content.add(no);
@@ -372,18 +371,31 @@ public class MarketClient extends JComponent {
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //todo this part is freezing, not working
                 if (e.getSource() == yes) {
                     pw.write("ViewFinances\n");
                     pw.flush();
+                    try {
+                        String line;
+                        line = br.readLine();
+                        while (br.readLine() != null) {
+                            JOptionPane.showMessageDialog(null, line,
+                                    "Finances", JOptionPane.INFORMATION_MESSAGE);
+                            line = br.readLine();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
                 if (e.getSource() == no) {
-                    pw.write("NoView");
-                    pw.flush();
                     frame1.dispose();
+                    seller(socket, username, pw, br);
                 }
             }
         };
-
+        yes.addActionListener(al);
+        no.addActionListener(al);
+        frame1.setVisible(true);
     }
     public static void addStore(Socket socket, String username, PrintWriter pw,
                                 BufferedReader br) {
@@ -575,10 +587,49 @@ public class MarketClient extends JComponent {
 
     }
 
-    //TODO
+    // todo finish this, almost done
     public static void addItem(Socket socket, String username, PrintWriter pw,
                                BufferedReader br) {
-        
+
+        JFrame frame1 = new JFrame();
+        frame1.setSize(600, 400);
+        frame1.setLocationRelativeTo(null);
+        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JTextField productName = new JTextField("", 20);
+        JTextField storeName = new JTextField("", 20);
+        JTextField productDesc = new JTextField("", 20);
+        JTextField price = new JTextField("", 5);
+        JTextField available = new JTextField("", 5);
+        JButton confirm = new JButton("Confirm");
+        JButton cancel = new JButton("Cancel");
+
+        frame1.setTitle("Add Item Interface");
+        frame1.add(productName);
+        frame1.add(storeName);
+        frame1.add(productDesc);
+        frame1.add(price);
+        frame1.add(available);
+        Container content = frame1.getContentPane();
+
+        JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayout(3, 1, 0, 0));
+
+        panel1.add(confirm);
+        panel1.add(cancel);
+
+        content.add(panel1);
+        content.add(frame1);
+
+        ActionListener addItemListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == confirm) {
+                    pw.write("AddItem\n");
+                    pw.flush();
+                }
+            }
+        };
     }
     //TODO
     public static void removeItem(Socket socket, String username, PrintWriter pw,
