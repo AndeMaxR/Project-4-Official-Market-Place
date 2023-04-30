@@ -308,6 +308,22 @@ public class ClientHandler extends Thread {
                             e.printStackTrace();
                         }
                     }
+
+                } else if (temp.equals("ViewFinances")) {
+                    try {
+                        synchronized (obj) {
+                            for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                                Store store = seller.getSpecificStore(i);
+                                printWriter.write(store.getFinances());
+                            }
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
                 } else if (temp.equals("AddItem")) {
 
                 } else if (temp.equals("RemoveItem")) {
