@@ -138,17 +138,27 @@ public class Seller {
         LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
         String holder = "";
         for(Store s: storeList) {
-            holder = "Store name: "+s.getStoreName()+"\n";
-            holder += String.format("Total Sales: %d\nTotal Revenue: %.2f\n", s.getNumberOfSales(), s.getRevenue());
+            String headerInfo = "Store name: "+s.getStoreName()+"\n";
             try {
                 File receiptListFile = new File(s.getStoreName() + "_Receipt.txt");
                 BufferedReader bfr = new BufferedReader(new FileReader(receiptListFile));
                 String contents;
+                int totalSales = 0;
+                Double totalRevenue = 0d;
                 while ((contents = bfr.readLine()) != null) {
+                    if (contents.contains("Sale #")) {
+                        totalSales += Integer.parseInt(contents.split("#")[1].trim());
+                    }
+                    if (contents.contains("Revenue from sale")) {
+                        totalRevenue += Double.parseDouble(contents.split(":")[1].trim());
+                    }
                     holder += contents + "\n";
                 }
+                headerInfo += String.format("Total Sales: %d\nTotal Revenue: %.2f\n", totalSales, totalRevenue);
+                headerInfo+= holder;
                 //holder += "******************************************\n";
-                dataMap.put(s.getStoreName(), holder);
+                dataMap.put(s.getStoreName(), headerInfo);
+                headerInfo = "";
                 holder = "";
             } catch (IOException e) {
                 e.printStackTrace();
@@ -159,7 +169,6 @@ public class Seller {
             for (String key : dataMap.keySet()) {
                 content += "******************************************\n";
                 content += dataMap.get(key) + "\n";
-                content += "******************************************\n";
             }
         } else {
             Map<String, String> tMap;
@@ -172,7 +181,6 @@ public class Seller {
             for (String key : tMap.keySet()) {
                 content += "******************************************\n";
                 content += dataMap.get(key) + "\n";
-                content += "******************************************\n";
             }
         }
         return content;
