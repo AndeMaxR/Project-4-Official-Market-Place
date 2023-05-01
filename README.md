@@ -3,6 +3,8 @@ To compile this project, make sure to run the MarketServer class first, followed
 
 Mark submitted the report, presentation, and the project.
 
+Test cases are labeled and written out in the Tests.md file in this repository.
+
 Descriptions of classes:
 
 MarketClient:
