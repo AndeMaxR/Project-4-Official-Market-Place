@@ -74,4 +74,16 @@ Steps:
 
 These steps should result in a successful deletion of a previously added item.
 
-MORE TO ADD TO THIS!
+Test 7: Edit Item
+
+Steps:
+  1. Use tests 1 or 2 to login to the system.
+  2. Create a store with test 3.
+  3. Create a new item with test 5.
+  4. Assuming the user is in the Manage Inventory interface now, click the "Edit Item" button.
+  5. Enter what fields should be changed
+  6. Select the Confirm button.
+
+These steps should result in a successful edit to a previously created item. 
+
+
