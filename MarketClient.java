@@ -1150,7 +1150,6 @@ public class MarketClient extends JComponent {
         JButton cancel;
         JTextField textField;
 
-
         String fullString = "";
         for (int i = 0; i < storesList.length; i++) {
             fullString += storesList[i] + "\n";
@@ -1281,32 +1280,31 @@ public class MarketClient extends JComponent {
                     }
                 }
                 if (e.getSource() == searchMarketButton) {
-                    pw.write("searchMarket"); //send that search market button was pushed
+                    pw.write("searchMarket\n"); //send that search market button was pushed
                     pw.flush();
-                    pw.write(marketSearchOptions.getSelectedIndex()); //send type of search
+                    pw.write(marketSearchOptions.getSelectedIndex() + "\n"); //send type of search
                     pw.flush();
-                    pw.write(marketSearchBox.getText()); //send search prompt
+                    pw.write(marketSearchBox.getText() + "\n"); //send search prompt
                     pw.flush();
                     searchMarket(socket, pw, br);
                     SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == sortMarketButton) {
-                    pw.write("sortMarket"); //send that sort market button was pushed
+                    pw.write("sortMarket\n"); //send that sort market button was pushed
                     pw.flush();
-                    pw.write(marketSortOptions.getSelectedIndex()); //send type of sort
+                    pw.write(marketSortOptions.getSelectedIndex() + "\n"); //send type of sort
                     pw.flush();
-                    frame1.dispose();
                     sortMarket(socket, pw, br);
-                    viewMarket(socket, username, pw, br);
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == purchaseButton) {
-                    pw.write("purchase"); //send that purchase button was pushed
+                    pw.write("purchase\n"); //send that purchase button was pushed
                     pw.flush();
-                    pw.write(purchaseQuantity.getText()); //send desired purchase quantity
+                    pw.write(purchaseQuantity.getText() + "\n"); //send desired purchase quantity
                     pw.flush();
-                    pw.write(items.getSelectedIndex()); //send product name
+                    pw.write(items.getSelectedIndex() + "\n"); //send product name
                     pw.flush();
-                    pw.write(username);
+                    pw.write(username + "\n");
                     pw.flush();
                     JOptionPane.showMessageDialog(null, "You've successfully purchased " +
                                     purchaseQuantity + " " + (String)items.getSelectedItem() + "!", "Purchase Successful",
@@ -1337,15 +1335,19 @@ public class MarketClient extends JComponent {
             JFrame viewSearchFrame = new JFrame();
             viewSearchFrame.setSize(400, 600);
             viewSearchFrame.setLocationRelativeTo(null);
-            viewSearchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSearchFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             viewSearchFrame.setTitle("Search Results");
             Container content = viewSearchFrame.getContentPane();
-            content.setLayout(new BoxLayout(viewSearchFrame, BoxLayout.PAGE_AXIS));
 
             int numResults = Integer.parseInt(br.readLine());
+
+            content.setLayout(new GridLayout(numResults, 1, 0, 0));
+
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
+
+            viewSearchFrame.setVisible(true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1358,15 +1360,18 @@ public class MarketClient extends JComponent {
             JFrame viewSortFrame = new JFrame();
             viewSortFrame.setSize(400, 600);
             viewSortFrame.setLocationRelativeTo(null);
-            viewSortFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSortFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             viewSortFrame.setTitle("Sort Results");
             Container content = viewSortFrame.getContentPane();
-            content.setLayout(new BoxLayout(viewSortFrame, BoxLayout.PAGE_AXIS));
 
             int numResults = Integer.parseInt(br.readLine());
+
+            content.setLayout(new GridLayout(numResults, 1, 0,0));
+
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
+            viewSortFrame.setVisible(true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1381,7 +1386,7 @@ public class MarketClient extends JComponent {
 
             viewPurchaseHistoryFrame.setSize(400, 600);
             viewPurchaseHistoryFrame.setLocationRelativeTo(null);
-            viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             viewPurchaseHistoryFrame.setTitle("Transaction History");
             Container content = viewPurchaseHistoryFrame.getContentPane();
             content.setLayout(new GridLayout(1,2,0,0));
@@ -1391,7 +1396,6 @@ public class MarketClient extends JComponent {
 
             content.add(panel1);
             content.add(cancelButton);
-
 
             int numResults = Integer.parseInt(br.readLine());
             for (int i = 0; i < numResults; i++) {
