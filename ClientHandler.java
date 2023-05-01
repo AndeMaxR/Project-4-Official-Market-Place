@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -325,7 +324,18 @@ public class ClientHandler extends Thread {
                         }
                     }
                 } else if (temp.equals("AddItem")) {
-
+                    try {
+                        synchronized (obj) {
+                            Store store = seller.getSpecificStore(0);
+                            // TODO: logic to add item to store
+                            // store.addItem();
+                        }
+                    } catch (Exception e) {
+                        printWriter.write("-1\n");
+                        printWriter.flush();
+                        e.printStackTrace();
+                    }
+                // TODO remove item, logout, edit item
                 } else if (temp.equals("RemoveItem")) {
 
                 }  else if (temp.equals("EditItem")) {
@@ -469,3 +479,4 @@ public class ClientHandler extends Thread {
      *
      */
 }
+
