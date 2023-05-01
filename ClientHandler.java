@@ -218,7 +218,49 @@ public class ClientHandler extends Thread {
                             printWriter.write(purchaseHistory.get(i));
                         }
                     }
-                } else if (temp.equals("Logout")) {
+                } else if (temp.equals("Seller name Asc")) {
+                        try {
+                            synchronized (obj) {
+                                String data = customer.dashboard("seller name", "asc").replace("\n", "#");
+                                printWriter.write(data + "\n");
+                                printWriter.flush();
+                            }
+                        } catch (Exception e) {
+                            synchronized (obj) {
+                                printWriter.write("-1\n");
+                                printWriter.flush();
+                                e.printStackTrace();
+                            }
+                        }
+                    } else if (temp.equals("Seller name Desc")) {
+                        try {
+                            synchronized (obj) {
+                                String data = customer.dashboard("seller name", "desc").replace("\n", "#");
+                                printWriter.write(data + "\n");
+                                printWriter.flush();
+                            }
+                        } catch (Exception e) {
+                            synchronized (obj) {
+                                printWriter.write("-1\n");
+                                printWriter.flush();
+                                e.printStackTrace();
+                            }
+                        }
+                    } else if (temp.equals("No Sort")) {
+                        try {
+                            synchronized (obj) {
+                                String data = customer.dashboard("", "").replace("\n", "#");
+                                printWriter.write(data + "\n");
+                                printWriter.flush();
+                            }
+                        } catch (Exception e) {
+                            synchronized (obj) {
+                                printWriter.write("-1\n");
+                                printWriter.flush();
+                                e.printStackTrace();
+                            }
+                        }
+                    } else if (temp.equals("Logout")) {
                     break;
                 }
             } catch (Exception e) {
