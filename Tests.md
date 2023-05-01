@@ -87,3 +87,42 @@ Steps:
 These steps should result in a successful edit to a previously created item. 
 
 
+Test 8: View Market
+
+Steps:
+  1. Use tests 1 or 2 to login to the system, need to be a buyer
+  2. Use test 3 and 5 to create a store and an item with a seller object.
+  3. Now in the buyer login, click the "View Market" button.
+  4. Here, the buyer should be able to view the market, sort it by name, description, store, quantity available, and price.
+
+These steps should result in the buyer being able to view and sort the market.
+
+Test 9: View Dashboard
+
+Steps:
+  1. Use tests 1 or 2 to login to the system as a buyer.
+  2. Also use tests 3 and 5 to create a store and an item as a seller.
+  3. In the Buyer Interface, click the View Dashboard button.
+
+These steps should result in the buyer being able to view the dashboard.
+
+Test 10: Purchase an item
+
+Steps:
+  1. Use tests 1 or 2 to login to the system as a seller.
+  2. Use tests 3 and 5 to create a store and an item.
+  3. Login to the system as a buyer with tests 1 or 2.
+  4. In the buyer interface, click the "View Market" button.
+  5. In this interface, click any item that has been created by a seller to purchase it.
+ 
+These steps should result in a successful purchase by a customer.
+
+Test 11: View Purchase History
+
+Steps:
+  1. Use test 10 to purchase an item.
+  2. Navigate back to the Buyer Interface.
+  3. Select "View Purchase History" button.
+
+These steps should result in a user being able to see their purchase history.
+
