@@ -224,6 +224,48 @@ public class ClientHandler extends Thread {
 
                 } else if (temp.equals("")) {
 
+                } else if (temp.equals("Seller name Asc")) {
+                    try {
+                        synchronized (obj) {
+                            String data = customer.dashboard("seller name", "asc").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (temp.equals("Seller name Desc")) {
+                    try {
+                        synchronized (obj) {
+                            String data = customer.dashboard("seller name", "desc").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (temp.equals("No Sort")) {
+                    try {
+                        synchronized (obj) {
+                            String data = customer.dashboard("", "").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
                 } else if (temp.equals("Logout")) {
                     break;
                 }
@@ -308,12 +350,71 @@ public class ClientHandler extends Thread {
                             e.printStackTrace();
                         }
                     }
+
+                } else if (temp.equals("ViewFinances")) {
+                    try {
+                        synchronized (obj) {
+                            for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                                Store store = seller.getSpecificStore(i);
+                                printWriter.write(store.getFinances());
+                            }
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+
                 } else if (temp.equals("AddItem")) {
 
                 } else if (temp.equals("RemoveItem")) {
 
                 }  else if (temp.equals("EditItem")) {
 
+                } else if (temp.equals("Store name Asc")) {
+                    try {
+                        synchronized (obj) {
+                            String data = seller.dashboard("store name", "asc").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (temp.equals("Store name Desc")) {
+                    try {
+                        synchronized (obj) {
+                            String data = seller.dashboard("store name", "desc").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (temp.equals("No Sort")) {
+                    try {
+                        synchronized (obj) {
+                            String data = seller.dashboard("", "").replace("\n", "#");
+                            printWriter.write(data + "\n");
+                            printWriter.flush();
+                        }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
+                    }
                 } else if (temp.equals("Logout")) {
                     break;
                 }
@@ -453,3 +554,4 @@ public class ClientHandler extends Thread {
      *
      */
 }
+
