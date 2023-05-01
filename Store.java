@@ -182,12 +182,17 @@ public class Store {
 
     public void editItem(int location, String productName, String storeName,
                          String productDescription, int quantityAvailable, double price) {
+        File file1 = new File(storeName + "_" + items.get(location).getProductName() + ".txt");
+        if (file1.exists()) {
+            file1.delete();
+        }
         items.get(location).setProductName(productName);
         items.get(location).setStoreName(storeName);
         items.get(location).setProductDescription(productDescription);
         items.get(location).setQuantityAvailable(quantityAvailable);
         items.get(location).setPrice(price);
         items.get(location).printToFile();
+        printToFile();
     }
 
     public String getItemList() {

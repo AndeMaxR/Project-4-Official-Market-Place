@@ -134,46 +134,4 @@ public class Seller {
 
     }
 
-
-
-
-    //edits the item inputted in the parameter
-
-    /**
-     * Keep for later for market - Max
-     * switch (editChoice) {
-     *                 case 1:
-     *                     System.out.println("What would you like to change the product name to?");
-     *                     String newName = scan.nextLine();
-     *                     item.setProductName(newName);
-     *                     break;
-     *                 case 2:
-     *                     String newDesc;
-     *                     do {
-     *                         System.out.println("What would you like to change the product description to?");
-     *                         newDesc = scan.nextLine();
-     *                         if (newDesc.length() > 200) {
-     *                             System.out.println("Invalid Description: Product description must be less than 200 characters!");
-     *                         }
-     *                     } while (newDesc.length() > 200);
-     *                     break;
-     *                 case 3:
-     *                     System.out.println("What would you like to change the available quantity to?");
-     *                     int newAvailQuant = scan.nextInt();
-     *                     scan.nextLine();
-     *                     item.setQuantityAvailable(newAvailQuant);
-     *                     break;
-     *                 case 4:
-     *                     System.out.println("What would you like to change the items price to?");
-     *                     double newPrice = scan.nextDouble();
-     *                     scan.nextLine();
-     *                     item.setPrice(newPrice);
-     *                     break;
-     *                 default:
-     *                     choiceValid = false;
-     *                     System.out.println("Invalid input: Please type an integer between 1 and 4.");
-     *                     break;
-     *             }
-     */
-
 }

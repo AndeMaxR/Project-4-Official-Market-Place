@@ -126,7 +126,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         JOptionPane.showMessageDialog(null,
-                            "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
+                                "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 }
@@ -160,7 +160,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         JOptionPane.showMessageDialog(null,
-                            "There are currently no stores selling!", "Error", JOptionPane.ERROR_MESSAGE);
+                                "There are currently no stores selling!", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 }
@@ -194,7 +194,7 @@ public class Customer {
                 if (fileContent == null) {
                     if (counter == 0) {
                         JOptionPane.showMessageDialog(null,
-                            "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
+                                "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 }
@@ -228,7 +228,7 @@ public class Customer {
             }
             if (numItems == 0) {
                 JOptionPane.showMessageDialog(null,
-                    "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
+                        "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
 
@@ -273,7 +273,7 @@ public class Customer {
             }
             if (counter == 0) {
                 JOptionPane.showMessageDialog(null,
-                    "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
+                        "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
             //iterates through tempMarket, searches for the highest quantity item, adds that item to sorted market list,

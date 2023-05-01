@@ -137,9 +137,7 @@ public class ClientHandler extends Thread {
         while (true) {
             try {
                 String temp = bufferedReader.readLine();
-                //TODO rest of the client methods should be done below in the else if statements
                 if (temp.equals("viewMarket")) {
-                    //TODO sorting should also be done inside of here
                     printWriter.write(storeMasterArrayList.size() + "\n");
                     printWriter.flush();
                     for (int i = 0; i < storeMasterArrayList.size(); i++) {
@@ -218,10 +216,6 @@ public class ClientHandler extends Thread {
                     for (int i = 0; i < purchaseHistory.size(); i++) {
                         printWriter.write(purchaseHistory.get(i));
                     }
-
-                } else if (temp.equals("")) {
-
-                } else if (temp.equals("")) {
 
                 } else if (temp.equals("Logout")) {
                     break;
@@ -313,8 +307,11 @@ public class ClientHandler extends Thread {
                         synchronized (obj) {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 Store store = seller.getSpecificStore(i);
-                                printWriter.write(store.getFinances());
+                                printWriter.write(store.getStoreName() + "\n" + store.getFinances());
+                                printWriter.flush();
                             }
+                            printWriter.write("-1\n");
+                            printWriter.flush();
                         }
                     } catch (Exception e) {
                         synchronized (obj) {
@@ -325,20 +322,119 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("AddItem")) {
                     try {
+                        String holder = "";
+                        String[] itemParts;
+                        holder = bufferedReader.readLine();
+                        itemParts = holder.split(",");
                         synchronized (obj) {
-                            Store store = seller.getSpecificStore(0);
-                            // TODO: logic to add item to store
-                            // store.addItem();
+                            for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                                if (seller.getSpecificStore(i).getStoreName().equals(itemParts[1])) {
+                                    seller.getSpecificStore(i).addItem(new Item(itemParts[0], itemParts[1], itemParts[2],
+                                            Integer.parseInt(itemParts[3]), Double.parseDouble(itemParts[4])));
+                                    for (int j = 0; j < storeMasterArrayList.size(); i++) {
+                                        if (storeMasterArrayList.get(j).getStoreName().equals(itemParts[1])) {
+                                            //HIGH CHANCE OF BUG
+                                            storeMasterArrayList.set(j, seller.getSpecificStore(i));
+                                            printWriter.write("1\n");
+                                            printWriter.flush();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     } catch (Exception e) {
-                        printWriter.write("-1\n");
-                        printWriter.flush();
-                        e.printStackTrace();
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
                     }
-                // TODO remove item, logout, edit item
+                    // TODO remove item, logout, edit item
                 } else if (temp.equals("RemoveItem")) {
+                    synchronized (obj) {
+                        printWriter.write(seller.getStoreList() + "\n");
+                        printWriter.flush();
 
-                }  else if (temp.equals("EditItem")) {
+                        for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                            printWriter.write(seller.getSpecificStore(i).getItemList() + "\n");
+                            printWriter.flush();
+                        }
+                    }
+                    String temp2;
+                    temp2 = bufferedReader.readLine();
+                    synchronized (obj) {
+                        if (!temp2.equals("cancel")) {
+                            String[] components = temp2.split(",");
+                            for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                                if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
+                                    for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName().equals(components[1])) {
+                                            if (seller.getSpecificStore(i).removeItem(j)) {
+                                                for (int k = 0; k < storeMasterArrayList.size(); k++) {
+                                                    if (storeMasterArrayList.get(k).getStoreName().equals(components[0])) {
+                                                        storeMasterArrayList.set(k, seller.getSpecificStore(i));
+                                                        break;
+                                                    }
+                                                }
+                                                printWriter.write("1\n");
+                                                printWriter.flush();
+                                            } else {
+                                                printWriter.write("-1\n");
+                                                printWriter.flush();
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                } else if (temp.equals("EditItem")) {
+                    synchronized (obj) {
+                        printWriter.write(seller.getStoreList() + "\n");
+                        printWriter.flush();
+
+                        for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                            printWriter.write(seller.getSpecificStore(i).getItemList() + "\n");
+                            printWriter.flush();
+                        }
+                    }
+                    String temp2;
+                    String temp3;
+                    temp2 = bufferedReader.readLine();
+                    if (!temp2.equals("cancel")) {
+                        temp3 = bufferedReader.readLine();
+                        synchronized (obj) {
+                            String[] components = temp2.split(",");
+                            String[] components2 = temp3.split(",");
+                            for (int i = 0; i < seller.getFullStoreList().size(); i++) {
+                                if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
+                                    for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName().equals(components[1])) {
+                                            seller.getSpecificStore(i).editItem(j, components2[0], components2[1],
+                                                    components2[2], Integer.parseInt(components2[3]),
+                                                    Double.parseDouble(components2[4]));
+
+                                            for (int k = 0; k < storeMasterArrayList.size(); k++) {
+                                                if (storeMasterArrayList.get(k).getStoreName().equals(components[0])) {
+                                                    storeMasterArrayList.set(k, seller.getSpecificStore(i));
+                                                    break;
+                                                }
+                                            }
+                                            printWriter.write("1\n");
+                                            printWriter.flush();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                 } else if (temp.equals("Logout")) {
                     break;
@@ -352,131 +448,5 @@ public class ClientHandler extends Thread {
             }
         }
     }
-
-    /**
-     *  public void customer() {
-     *         try {
-     *             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-     *             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-     *
-     *             int menu1Option = Integer.parseInt(in.readLine());
-     *
-     *             switch (menu1Option) {
-     *                 case 0: //Browse marketplace
-     *                     int menu2Option = Integer.parseInt(in.readLine());
-     *                     switch (menu2Option) {
-     *                         case 0: //View whole marketPlace
-     *                             if (!customer.viewMarket()) {
-     *                                 return true;
-     *                             }
-     *                             break;
-     *                         case 1: //search marketplace
-     *                             //TODO
-     *                             break;
-     *                         case 2: //SortMarketPlace
-     *                             //TODO
-     *                             break;
-     *                     }
-     *                     break;
-     *                 case 1: //View Purchase History
-     *                     //TODO
-     *                     break;
-     *                 case 2: //Logout
-     *                     //TODO
-     *             }
-     *
-     *         } catch (IOException e) {
-     *             e.printStackTrace();
-     *         }
-     *         return false;
-     *     }
-     *
-     *     public static boolean Seller(Socket socket) {
-     *         try {
-     *             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-     *             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-     *             int option = Integer.parseInt(br.readLine());
-     *
-     *             switch (option) {
-     *                 case 1:
-     *                     // Manage Store
-     *                     String myStr = seller.getStoreList();
-     *                     if (myStr.equals("")) {
-     *                         // Seller has no stores
-     *                         pw.write("Error");
-     *                         break;
-     *                     } else {
-     *                         // Seller has stores, so send message to client so it can display the stores.
-     *                         //TODO: CHECK THIS, might need to add stuff to send to the client so it can send info back.
-     *                         pw.write("Success");
-     *                         // Now get the store they would like to edit
-     *                         String newStore = br.readLine();
-     *                         int location = Integer.parseInt(newStore);
-     *                         if (location == seller.getFullStoreList().size() + 1) {
-     *                             pw.write("Cancelling...");
-     *                             break;
-     *                         } else if (myStr.contains(newStore)) {
-     *                             while (true) {
-     *                                 // Get their option for what they want to do to this store
-     *                                 int mod = Integer.parseInt(br.readLine());
-     *                                 Store store = seller.getSpecificStore(location - 1);
-     *                                 switch (mod) {
-     *                                     case 1:
-     *                                         // add item
-     *                                         // Need to have client sending messages for this stuff to work.
-     *                                         String prodName = br.readLine();
-     *                                         String storeName = seller.getSpecificStore(location - 1).getStoreName();
-     *                                         String desc = br.readLine();
-     *                                         int available = 0;
-     *                                         double price = 0;
-     *                                         while (true) {
-     *                                             try {
-     *                                                 available = Integer.parseInt(br.readLine());
-     *                                                 price = Integer.parseInt(br.readLine());
-     *                                                 break;
-     *                                             } catch (Exception e) {
-     *                                                 // TODO: make it so that client produces an error message from this.
-     *                                                 pw.write("Error");
-     *                                             }
-     *                                         }
-     *                                         store.addItem(new Item(prodName, storeName, desc, available, price));
-     *                                         break;
-     *                                     case 2:
-     *                                         // Remove item
-     *                                         // TODO: in client, print out the list of the items for the user to choose.
-     *                                         String decision = br.readLine();
-     *                                         try {
-     *
-     *                                         } catch (Exception e) {
-     *                                             // client produce error message from this
-     *                                             pw.write("Error");
-     *                                         }
-     *                                         break;
-     *                                     case 3:
-     *                                         // TODO: Edit item
-     *                                         break;
-     *                                     case 4:
-     *                                         // Cancel
-     *                                         pw.write("Cancel");
-     *                                         break;
-     *                                 }
-     *                             }
-     *                         }
-     *
-     *                     }
-     *                 case 2:
-     *                     // TODO
-     *                     break;
-     *                 case 3:
-     *                     // logout TODO
-     *                     break;
-     *             }
-     *         } catch (Exception e) {
-     *             e.printStackTrace();
-     *         }
-     *         return false;
-     *     }
-     *
-     */
 }
 
