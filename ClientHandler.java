@@ -153,27 +153,33 @@ public class ClientHandler extends Thread {
                             String searchPrompt = bufferedReader.readLine();
                             synchronized (obj) {
                                 ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt);
-                                printWriter.write(searchResults.size());
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
                                 for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i));
+                                    printWriter.write(searchResults.get(i) + "\n");
+                                    printWriter.flush();
                                 }
                             }
                         } else if (searchType == 1) { //search by store name
                             String searchPrompt = bufferedReader.readLine();
                             synchronized (obj) {
                                 ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt);
-                                printWriter.write(searchResults.size());
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
                                 for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i));
+                                    printWriter.write(searchResults.get(i) + "\n");
+                                    printWriter.flush();
                                 }
                             }
                         } else if (searchType == 2) {
                             String searchPrompt = bufferedReader.readLine();
                             synchronized (obj) {
                                 ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt);
-                                printWriter.write(searchResults.size());
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
                                 for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i));
+                                    printWriter.write(searchResults.get(i) + "\n");
+                                    printWriter.flush();
                                 }
                             }
                         }
@@ -183,19 +189,21 @@ public class ClientHandler extends Thread {
                         if (sortType == 0) { // sort by price
                             synchronized (obj) {
                                 ArrayList<String> sortResults = customer.sortMarketPrice();
-                                printWriter.write(sortResults.size());
-                                printWriter.write(sortResults.size());
+                                printWriter.write(sortResults.size() + "\n");
+                                printWriter.flush();
                                 for (int i = 0; i < sortResults.size(); i++) {
-                                    printWriter.write(sortResults.get(i));
+                                    printWriter.write(sortResults.get(i) + "\n");
+                                    printWriter.flush();
                                 }
                             }
                         } else if (sortType == 1) { //sort by quantity
                             synchronized (obj) {
                                 ArrayList<String> sortResults = customer.sortMarketQuantity();
-                                printWriter.write(sortResults.size());
-                                printWriter.write(sortResults.size());
+                                printWriter.write(sortResults.size() + "\n");
+                                printWriter.flush();
                                 for (int i = 0; i < sortResults.size(); i++) {
-                                    printWriter.write(sortResults.get(i));
+                                    printWriter.write(sortResults.get(i) + "\n");
+                                    printWriter.flush();
                                 }
                             }
                         }
@@ -227,12 +235,12 @@ public class ClientHandler extends Thread {
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
-                        } catch (Exception e) {
-                    synchronized (obj) {
-                        printWriter.write("-1\n");
-                        printWriter.flush();
-                        e.printStackTrace();
-                    } }
+                    } catch (Exception e) {
+                        synchronized (obj) {
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        } }
                 } else if (temp.equals("Seller name Desc")) {
                     try {
                         synchronized (obj) {
@@ -257,12 +265,12 @@ public class ClientHandler extends Thread {
                         }
                     } catch (Exception e) {
                         synchronized (obj) {
-                        printWriter.write("-1\n");
-                        printWriter.flush();
-                        e.printStackTrace();
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
+                        }
                     }
-                }
-            } else if (temp.equals("Logout")) {
+                } else if (temp.equals("Logout")) {
                     break;
                 }
             } catch (Exception e) {
