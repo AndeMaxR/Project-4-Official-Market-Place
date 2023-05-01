@@ -11,6 +11,7 @@ Steps:
   8. Select "OK" to confirm the object.
  
 These steps should result in a successful sign up.
+Test: Passed
 
 Test 2: User Log-in
 
@@ -21,6 +22,7 @@ Steps:
   4. User selects the "Log In" button
 
 These steps should result in a successful login.
+Test: Passed
 
 Test 3: Add Store
 
@@ -35,6 +37,7 @@ Steps:
  
 These steps should result in a successful addition of a store.
 To test this, you can go to the Remove Store interface (which will be discussed in the next test case) and see if the store that was added is inside of the drop down menu for removal.
+Test: Passed
 
 Test 4: Remove Store
 
@@ -44,6 +47,7 @@ Steps:
   3. Use the drop down menu to find the store desired to be removed, and then select Enter to confirm.
 
 These steps should result in the deletion of a previously added store.
+Test: Passed
 
 The following tests deal with the Manage Inventory interface.
 
@@ -62,6 +66,7 @@ Steps:
 
 These steps should result in a successful item addition.
 To test this, use the Remove Item interface to check if the item name results in a deletion.
+Test: Passed
 
 Test 6: Remove Item
 
@@ -73,6 +78,7 @@ Steps:
   5. Enter the desired item name that is to be removed in the text box, then select the Confirm button.
 
 These steps should result in a successful deletion of a previously added item.
+Test: Passed
 
 Test 7: Edit Item
 
@@ -85,6 +91,7 @@ Steps:
   6. Select the Confirm button.
 
 These steps should result in a successful edit to a previously created item. 
+Test: Passed
 
 
 Test 8: View Market
@@ -96,6 +103,7 @@ Steps:
   4. Here, the buyer should be able to view the market, sort it by name, description, store, quantity available, and price.
 
 These steps should result in the buyer being able to view and sort the market.
+Test: Passed
 
 Test 9: View Dashboard
 
