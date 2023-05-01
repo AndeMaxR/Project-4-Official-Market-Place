@@ -2,15 +2,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * Client handler
- *
- * This class takes input from market client and processes the info to send back.
- *
- * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
- *
- * @version 5/1/2023
- */
 public class ClientHandler extends Thread {
     final PrintWriter printWriter;
     final BufferedReader bufferedReader;
@@ -236,13 +227,12 @@ public class ClientHandler extends Thread {
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
-                    } catch (Exception e) {
-                        synchronized (obj) {
-                            printWriter.write("-1\n");
-                            printWriter.flush();
-                            e.printStackTrace();
-                        }
-                    }
+                        } catch (Exception e) {
+                    synchronized (obj) {
+                        printWriter.write("-1\n");
+                        printWriter.flush();
+                        e.printStackTrace();
+                    } }
                 } else if (temp.equals("Seller name Desc")) {
                     try {
                         synchronized (obj) {
@@ -257,6 +247,7 @@ public class ClientHandler extends Thread {
                             e.printStackTrace();
                         }
                     }
+
                 } else if (temp.equals("No Sort")) {
                     try {
                         synchronized (obj) {
@@ -266,12 +257,12 @@ public class ClientHandler extends Thread {
                         }
                     } catch (Exception e) {
                         synchronized (obj) {
-                            printWriter.write("-1\n");
-                            printWriter.flush();
-                            e.printStackTrace();
-                        }
+                        printWriter.write("-1\n");
+                        printWriter.flush();
+                        e.printStackTrace();
                     }
-                } else if (temp.equals("Logout")) {
+                }
+            } else if (temp.equals("Logout")) {
                     break;
                 }
             } catch (Exception e) {
@@ -379,14 +370,21 @@ public class ClientHandler extends Thread {
                         String holder = "";
                         String[] itemParts;
                         holder = bufferedReader.readLine();
+                        System.out.println(holder);
                         itemParts = holder.split(",");
+                        for (int i = 0; i < itemParts.length; i++) {
+                            System.out.println(itemParts[i]);
+                        }
                         synchronized (obj) {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(itemParts[1])) {
+                                    System.out.println("1");
                                     seller.getSpecificStore(i).addItem(new Item(itemParts[0], itemParts[1], itemParts[2],
                                             Integer.parseInt(itemParts[3]), Double.parseDouble(itemParts[4])));
+                                    System.out.println("2");
                                     for (int j = 0; j < storeMasterArrayList.size(); i++) {
                                         if (storeMasterArrayList.get(j).getStoreName().equals(itemParts[1])) {
+                                            System.out.println("3");
                                             //HIGH CHANCE OF BUG
                                             storeMasterArrayList.set(j, seller.getSpecificStore(i));
                                             printWriter.write("1\n");
@@ -488,50 +486,7 @@ public class ClientHandler extends Thread {
                             }
                         }
                     }
-                    else if (temp.equals("Store name Asc")) {
-                        try {
-                            synchronized (obj) {
-                                String data = seller.dashboard("store name", "asc").replace("\n", "#");
-                                printWriter.write(data + "\n");
-                                printWriter.flush();
-                            }
-                        } catch (Exception e) {
-                            synchronized (obj) {
-                                printWriter.write("-1\n");
-                                printWriter.flush();
-                                e.printStackTrace();
-                            }
-                        }
-                    } else if (temp.equals("Store name Desc")) {
-                        try {
-                            synchronized (obj) {
-                                String data = seller.dashboard("store name", "desc").replace("\n", "#");
-                                printWriter.write(data + "\n");
-                                printWriter.flush();
-                            }
-                        } catch (Exception e) {
-                            synchronized (obj) {
-                                printWriter.write("-1\n");
-                                printWriter.flush();
-                                e.printStackTrace();
-                            }
-                        }
-                    } else if (temp.equals("No Sort")) {
-                        try {
-                            synchronized (obj) {
-                                String data = seller.dashboard("", "").replace("\n", "#");
-                                printWriter.write(data + "\n");
-                                printWriter.flush();
-                            }
-                        } catch (Exception e) {
-                            synchronized (obj) {
-                                printWriter.write("-1\n");
-                                printWriter.flush();
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }else if (temp.equals("Store name Asc")) {
+                } else if (temp.equals("Store name Asc")) {
                     try {
                         synchronized (obj) {
                             String data = seller.dashboard("store name", "asc").replace("\n", "#");
@@ -573,6 +528,7 @@ public class ClientHandler extends Thread {
                             e.printStackTrace();
                         }
                     }
+
                 } else if (temp.equals("Logout")) {
                     break;
                 }
@@ -585,5 +541,3 @@ public class ClientHandler extends Thread {
         }
     }
 }
-
-
