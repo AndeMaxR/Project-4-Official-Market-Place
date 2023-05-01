@@ -1,6 +1,15 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 
+/**
+ * Seller
+ *
+ * This class is meant for seller objects to sell items to customers on their stores
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
+ */
 
 public class Seller {
     private String username;
@@ -111,6 +120,58 @@ public class Seller {
 
     }
 
+    public String dashboard(String sortField, String order) {
+        LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
+        String holder = "";
+        for(Store s: storeList) {
+            String headerInfo = "Store name: "+s.getStoreName()+"\n";
+            try {
+                File receiptListFile = new File(s.getStoreName() + "_Receipt.txt");
+                BufferedReader bfr = new BufferedReader(new FileReader(receiptListFile));
+                String contents;
+                int totalSales = 0;
+                Double totalRevenue = 0d;
+                while ((contents = bfr.readLine()) != null) {
+                    if (contents.contains("Sale #")) {
+                        //totalSales += Integer.parseInt(contents.split("#")[1].trim());
+                        totalSales++;
+                    }
+                    if (contents.contains("Revenue from sale")) {
+                        totalRevenue += Double.parseDouble(contents.split(":")[1].trim());
+                    }
+                    holder += contents + "\n";
+                }
+                headerInfo += String.format("Total Sales: %d\nTotal Revenue: %.2f\n", totalSales, totalRevenue);
+                headerInfo+= holder;
+                //holder += "******************************************\n";
+                dataMap.put(s.getStoreName(), headerInfo);
+                headerInfo = "";
+                holder = "";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        String content = "";
+        if (sortField.equals("")) {
+            for (String key : dataMap.keySet()) {
+                content += "******************************************\n";
+                content += dataMap.get(key) + "\n";
+            }
+        } else {
+            Map<String, String> tMap;
+            if (order.equals("desc")) {
+                tMap = new TreeMap<>(Collections.reverseOrder());
+                tMap.putAll(dataMap);
+            } else {
+                tMap = new TreeMap<>(dataMap);
+            }
+            for (String key : tMap.keySet()) {
+                content += "******************************************\n";
+                content += dataMap.get(key) + "\n";
+            }
+        }
+        return content;
+    }
     public void printToFile() {
         File file = new File(username + ".txt");
         try {
