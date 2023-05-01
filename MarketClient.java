@@ -585,7 +585,7 @@ public class MarketClient extends JComponent {
 
     }
 
-    // todo finish this, almost done
+    // todo clienthandler part of this
     public static void addItem(Socket socket, String username, PrintWriter pw,
                                BufferedReader br) {
 
@@ -603,27 +603,46 @@ public class MarketClient extends JComponent {
         JButton cancel = new JButton("Cancel");
 
         frame1.setTitle("Add Item Interface");
-        frame1.add(productName);
-        frame1.add(storeName);
-        frame1.add(productDesc);
-        frame1.add(price);
-        frame1.add(available);
+
+        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.add(new JLabel("Product Name:"));
+        panel.add(productName);
+        panel.add(new JLabel("Store Name:"));
+        panel.add(storeName);
+        panel.add(new JLabel("Product Description:"));
+        panel.add(productDesc);
+        panel.add(new JLabel("Price:"));
+        panel.add(price);
+        panel.add(new JLabel("Available Quantity:"));
+        panel.add(available);
+        panel.add(confirm);
+        panel.add(cancel);
+
         Container content = frame1.getContentPane();
-
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(3, 1, 0, 0));
-
-        panel1.add(confirm);
-        panel1.add(cancel);
-
-        content.add(panel1);
+        content.add(panel);
 
         ActionListener addItemListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == confirm) {
-                    pw.write("AddItem\n");
-                    pw.flush();
+                    String product = productName.getText();
+                    String store = storeName.getText();
+                    String desc = productDesc.getText();
+                    String p = price.getText();
+                    String q = available.getText();
+
+                    if (product.isEmpty() || store.isEmpty() || desc.isEmpty() || p.isEmpty() || q.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame1, "Please fill out all fields.");
+                    } else {
+                        pw.write("AddItem\n");
+                        pw.write(product + "\n");
+                        pw.write(store + "\n");
+                        pw.write(desc + "\n");
+                        pw.write(p + "\n");
+                        pw.write(q + "\n");
+                        pw.flush();
+                    }
                 }
                 if (e.getSource() == cancel) {
                     frame1.dispose();
@@ -631,16 +650,134 @@ public class MarketClient extends JComponent {
                 }
             }
         };
-    }
-    //TODO
-    public static void removeItem(Socket socket, String username, PrintWriter pw,
-                                  BufferedReader br) {
 
+        confirm.addActionListener(addItemListener);
+        cancel.addActionListener(addItemListener);
+
+        frame1.setVisible(true);
     }
     //TODO
     public static void editItem(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
+                                  BufferedReader br) {
+        JFrame frame = new JFrame("Edit Item Interface");
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // create text fields and labels for input
+        JLabel productNameLabel = new JLabel("Product Name: ");
+        JTextField productNameField = new JTextField("", 20);
+        JLabel storeNameLabel = new JLabel("Store Name: ");
+        JTextField storeNameField = new JTextField("", 20);
+        JLabel productDescLabel = new JLabel("Product Description: ");
+        JTextField productDescField = new JTextField("", 20);
+        JLabel priceLabel = new JLabel("Price: ");
+        JTextField priceField = new JTextField("", 5);
+        JLabel availableLabel = new JLabel("Quantity Available: ");
+        JTextField availableField = new JTextField("", 5);
+
+        // create buttons for confirmation and cancellation
+        JButton confirmButton = new JButton("Confirm");
+        JButton cancelButton = new JButton("Cancel");
+
+        // create panel to hold input fields
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(6, 2, 5, 5));
+
+        // add components to input panel
+        inputPanel.add(productNameLabel);
+        inputPanel.add(productNameField);
+        inputPanel.add(storeNameLabel);
+        inputPanel.add(storeNameField);
+        inputPanel.add(productDescLabel);
+        inputPanel.add(productDescField);
+        inputPanel.add(priceLabel);
+        inputPanel.add(priceField);
+        inputPanel.add(availableLabel);
+        inputPanel.add(availableField);
+        inputPanel.add(confirmButton);
+        inputPanel.add(cancelButton);
+
+        // add input panel to content pane
+        Container content = frame.getContentPane();
+        content.add(inputPanel);
+
+        // add action listeners to buttons
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == confirmButton) {
+                    String productName = productNameField.getText();
+                    String storeName = storeNameField.getText();
+                    String productDesc = productDescField.getText();
+                    int quantityAvailable = Integer.parseInt(availableField.getText());
+                    double price = Double.parseDouble(priceField.getText());
+
+                    Item item = new Item(productName, storeName, productDesc, quantityAvailable, price);
+                    pw.write("EditItem\n");
+                    pw.write(item.toString() + "\n");
+                    pw.flush();
+
+                    frame.dispose();
+                    manageInventory(socket, username, pw, br);
+                }
+            }
+        });
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == cancelButton) {
+                    frame.dispose();
+                    manageInventory(socket, username, pw, br);
+                }
+            }
+        });
+
+        // make the frame visible
+        frame.setVisible(true);
+    }
+    //TODO
+    public static void removeItem(Socket socket, String username, PrintWriter pw,
+                                BufferedReader br) {
+        JFrame frame1 = new JFrame();
+        frame1.setSize(400, 200);
+        frame1.setLocationRelativeTo(null);
+        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel removeLabel = new JLabel("Enter item name to remove:");
+        JTextField removeText = new JTextField("", 20);
+        JButton confirm = new JButton("Confirm");
+        JButton cancel = new JButton("Cancel");
+
+        frame1.setLayout(new FlowLayout());
+        frame1.add(removeLabel);
+        frame1.add(removeText);
+        frame1.add(confirm);
+        frame1.add(cancel);
+
+        ActionListener removeItemListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == confirm) {
+                    String itemName = removeText.getText();
+                    pw.write("RemoveItem\n");
+                    pw.write(itemName + "\n");
+                    pw.flush();
+                    frame1.dispose();
+                    manageInventory(socket, username, pw, br);
+                }
+                if (e.getSource() == cancel) {
+                    frame1.dispose();
+                    manageInventory(socket, username, pw, br);
+                }
+            }
+        };
+
+        confirm.addActionListener(removeItemListener);
+        cancel.addActionListener(removeItemListener);
+
+        frame1.setVisible(true);
     }
 
     //IMPORTANT DO NOT DELETE
