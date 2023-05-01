@@ -415,7 +415,7 @@ public class MarketClient extends JComponent {
                     try {
                         String temp = br.readLine().replace("#", "\n");
                         JOptionPane.showMessageDialog(null, temp,
-                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
                     } catch (Exception s) {
                         s.printStackTrace();
                     }
@@ -1287,7 +1287,7 @@ public class MarketClient extends JComponent {
                     try {
                         String temp = br.readLine().replace("#", "\n");
                         JOptionPane.showMessageDialog(null, temp,
-                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
                     } catch (Exception s) {
                         s.printStackTrace();
                     }
@@ -1301,7 +1301,7 @@ public class MarketClient extends JComponent {
                     try {
                         String temp = br.readLine().replace("#", "\n");
                         JOptionPane.showMessageDialog(null, temp,
-                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
                     } catch (Exception s) {
                         s.printStackTrace();
                     }
@@ -1315,7 +1315,7 @@ public class MarketClient extends JComponent {
                     try {
                         String temp = br.readLine().replace("#", "\n");
                         JOptionPane.showMessageDialog(null, temp,
-                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
                     } catch (Exception s) {
                         s.printStackTrace();
                     }
