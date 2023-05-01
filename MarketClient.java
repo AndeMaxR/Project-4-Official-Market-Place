@@ -268,12 +268,14 @@ public class MarketClient extends JComponent {
                 }
                 // if login is pressed
                 if (e.getSource() == ManageFinances) {
-                    //TODO
+                    frame1.dispose();
                     manageFinances(socket, username, pw, br, textArea);
                 }
                 // if signup is pressed
                 if (e.getSource() == viewDashboard) {
                     //TODO
+                    frame1.dispose();
+                    sellerDashboard(socket, username, pw, br);
                 }
                 if (e.getSource() == sellerLogoutButton) {
                     pw.write("Logout\n");
@@ -350,6 +352,95 @@ public class MarketClient extends JComponent {
         AddStore.addActionListener(sellerActionListeners);
         RemoveStore.addActionListener(sellerActionListeners);
         ManageInventory.addActionListener(sellerActionListeners);
+        Cancel.addActionListener(sellerActionListeners);
+        frame1.setVisible(true);
+    }
+    public static void sellerDashboard(Socket socket, String username, PrintWriter pw,
+                                       BufferedReader br) {
+        //Initialize the frame
+        JFrame frame1 = new JFrame();
+        frame1.setSize(600, 400);
+        frame1.setLocationRelativeTo(null);
+        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Buttons
+        JButton storeNameAsc;
+        JButton storeNameDesc;
+        JButton noSort;
+        JButton Cancel;
+
+        storeNameAsc = new JButton("Store name Asc");
+        storeNameDesc = new JButton("Store name Desc");
+        noSort = new JButton("No Sort");
+        Cancel = new JButton("Cancel");
+
+        frame1.setTitle("Seller Interface");
+        Container content = frame1.getContentPane();
+        content.setLayout(new GridLayout(1, 1,0,0));
+
+        JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayout(4,1,0,0));
+
+        panel1.add(storeNameAsc);
+        panel1.add(storeNameDesc);
+        panel1.add(noSort);
+        panel1.add(Cancel);
+
+        content.add(panel1);
+
+        ActionListener sellerActionListeners = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == storeNameAsc) {
+                    pw.write("Store name Asc\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    seller(socket, username, pw, br);
+                }
+                // if login is pressed
+                if (e.getSource() == storeNameDesc) {
+                    pw.write("Store name Desc\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "Failed", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    seller(socket, username, pw, br);
+                }
+                // if signup is pressed
+                if (e.getSource() == noSort) {
+                    pw.write("No Sort\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    seller(socket, username, pw, br);
+                }
+                if (e.getSource() == Cancel) {
+                    frame1.dispose();
+                    seller(socket, username, pw, br);
+                }
+            }
+        };
+        storeNameAsc.addActionListener(sellerActionListeners);
+        storeNameDesc.addActionListener(sellerActionListeners);
+        noSort.addActionListener(sellerActionListeners);
         Cancel.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
     }
@@ -646,7 +737,7 @@ public class MarketClient extends JComponent {
     }
     //TODO
     public static void editItem(Socket socket, String username, PrintWriter pw,
-                                  BufferedReader br) {
+                                BufferedReader br) {
         pw.write("EditItem\n");
         pw.flush();
 
@@ -823,7 +914,7 @@ public class MarketClient extends JComponent {
     }
     //TODO
     public static void removeItem(Socket socket, String username, PrintWriter pw,
-                                BufferedReader br) {
+                                  BufferedReader br) {
         pw.write("RemoveItem\n");
         pw.flush();
 
@@ -986,7 +1077,7 @@ public class MarketClient extends JComponent {
                     frame1.dispose();
                     pw.write("viewDashboard\n");
                     pw.flush();
-                    //TODO: viewDashboard(socket,username, pw, br);
+                    customerDashboard(socket,username, pw, br);
                 }
                 if (e.getSource() == ViewPurchaseHistory) {
                     frame1.dispose();
@@ -1310,6 +1401,94 @@ public class MarketClient extends JComponent {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static void customerDashboard(Socket socket, String username, PrintWriter pw, BufferedReader br) {
+        //Initialize the frame
+        JFrame frame1 = new JFrame();
+        frame1.setSize(600, 400);
+        frame1.setLocationRelativeTo(null);
+        frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Buttons
+        JButton sellerNameAsc;
+        JButton sellerNameDesc;
+        JButton noSort;
+        JButton Cancel;
+
+        sellerNameAsc = new JButton("Seller name Asc");
+        sellerNameDesc = new JButton("Seller name Desc");
+        noSort = new JButton("No Sort");
+        Cancel = new JButton("Cancel");
+
+        frame1.setTitle("Customer Interface");
+        Container content = frame1.getContentPane();
+        content.setLayout(new GridLayout(1, 1,0,0));
+
+        JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayout(4,1,0,0));
+
+        panel1.add(sellerNameAsc);
+        panel1.add(sellerNameDesc);
+        panel1.add(noSort);
+        panel1.add(Cancel);
+
+        content.add(panel1);
+
+        ActionListener sellerActionListeners = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == sellerNameAsc) {
+                    pw.write("Seller name Asc\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    customer(socket, username, pw, br);
+                }
+                // if login is pressed
+                if (e.getSource() == sellerNameDesc) {
+                    pw.write("Seller name Desc\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    customer(socket, username, pw, br);
+                }
+                // if signup is pressed
+                if (e.getSource() == noSort) {
+                    pw.write("No Sort\n");
+                    pw.flush();
+                    try {
+                        String temp = br.readLine().replace("#", "\n");
+                        JOptionPane.showMessageDialog(null, temp,
+                                "DashBoard", JOptionPane.PLAIN_MESSAGE);
+                    } catch (Exception s) {
+                        s.printStackTrace();
+                    }
+                    frame1.dispose();
+                    customer(socket, username, pw, br);
+                }
+                if (e.getSource() == Cancel) {
+                    frame1.dispose();
+                    customer(socket, username, pw, br);
+                }
+            }
+        };
+        sellerNameAsc.addActionListener(sellerActionListeners);
+        sellerNameDesc.addActionListener(sellerActionListeners);
+        noSort.addActionListener(sellerActionListeners);
+        Cancel.addActionListener(sellerActionListeners);
+        frame1.setVisible(true);
     }
     public static void exportPurchaseHistory(Socket socket, PrintWriter pr, BufferedReader br, String username) {
         JOptionPane.showMessageDialog(null, "Your purchase history file is now available to " +
