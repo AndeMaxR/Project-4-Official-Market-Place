@@ -1081,11 +1081,11 @@ public class MarketClient extends JComponent {
                 }
                 if (e.getSource() == ViewPurchaseHistory) {
                     frame1.dispose();
-                    pw.write("ViewPurchaseHistory");
+                    pw.write("ViewPurchaseHistory\n");
                     pw.flush();
-                    pw.write(username);
+                    pw.write(username + "\n");
                     pw.flush();
-                    viewPurchaseHistory(socket, pw, br);
+                    viewPurchaseHistory(socket, username, pw, br);
                 }
                 if (e.getSource() == exportPurchaseHistory) {
                     exportPurchaseHistory(socket, pw, br, username);
@@ -1373,13 +1373,12 @@ public class MarketClient extends JComponent {
         }
     }
 
-    public static void viewPurchaseHistory(Socket socket, PrintWriter pw, BufferedReader br) {
+    public static void viewPurchaseHistory(Socket socket, String username, PrintWriter pw, BufferedReader br) {
         try {
             //frame buttons
+            JFrame viewPurchaseHistoryFrame = new JFrame();
             JButton cancelButton = new JButton("Cancel");
 
-            //initialize frame
-            JFrame viewPurchaseHistoryFrame = new JFrame();
             viewPurchaseHistoryFrame.setSize(400, 600);
             viewPurchaseHistoryFrame.setLocationRelativeTo(null);
             viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1388,15 +1387,28 @@ public class MarketClient extends JComponent {
             content.setLayout(new GridLayout(1,2,0,0));
 
             JPanel panel1 = new JPanel();
-            panel1.setLayout(new BoxLayout(viewPurchaseHistoryFrame, BoxLayout.PAGE_AXIS));
+            panel1.setLayout(new FlowLayout());
 
             content.add(panel1);
             content.add(cancelButton);
+
 
             int numResults = Integer.parseInt(br.readLine());
             for (int i = 0; i < numResults; i++) {
                 panel1.add(new JLabel(br.readLine()));
             }
+            viewPurchaseHistoryFrame.setVisible(true);
+
+            ActionListener actionListener = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource() == cancelButton) {
+                        viewPurchaseHistoryFrame.dispose();
+                        customer(socket, username, pw, br);
+                    }
+                }
+            };
+            cancelButton.addActionListener(actionListener);
 
         } catch (IOException e) {
             e.printStackTrace();

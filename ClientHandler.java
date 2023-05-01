@@ -213,9 +213,11 @@ public class ClientHandler extends Thread {
                     String username = bufferedReader.readLine();
                     purchaseHistory = customer.purchaseHistory(username);
                     synchronized (obj) {
-                        printWriter.write(purchaseHistory.size());
+                        printWriter.write(purchaseHistory.size() + "\n");
+                        printWriter.flush();
                         for (int i = 0; i < purchaseHistory.size(); i++) {
-                            printWriter.write(purchaseHistory.get(i));
+                            printWriter.write(purchaseHistory.get(i) + "\n");
+                            printWriter.flush();
                         }
                     }
                 } else if (temp.equals("Seller name Asc")) {
