@@ -58,8 +58,8 @@ public class Store {
                 }
             } else {
                 storeFile.createNewFile();
-//                numberOfSales = 0;
-//                revenue = 0;
+                numberOfSales = 0;
+                revenue = 0;
             }
 
             printToFile();
