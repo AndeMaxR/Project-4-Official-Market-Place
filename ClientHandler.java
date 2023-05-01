@@ -212,11 +212,12 @@ public class ClientHandler extends Thread {
                     ArrayList<String> purchaseHistory = new ArrayList<>();
                     String username = bufferedReader.readLine();
                     purchaseHistory = customer.purchaseHistory(username);
-                    printWriter.write(purchaseHistory.size());
-                    for (int i = 0; i < purchaseHistory.size(); i++) {
-                        printWriter.write(purchaseHistory.get(i));
+                    synchronized (obj) {
+                        printWriter.write(purchaseHistory.size());
+                        for (int i = 0; i < purchaseHistory.size(); i++) {
+                            printWriter.write(purchaseHistory.get(i));
+                        }
                     }
-
                 } else if (temp.equals("Logout")) {
                     break;
                 }
@@ -351,7 +352,6 @@ public class ClientHandler extends Thread {
                             e.printStackTrace();
                         }
                     }
-                    // TODO remove item, logout, edit item
                 } else if (temp.equals("RemoveItem")) {
                     synchronized (obj) {
                         printWriter.write(seller.getStoreList() + "\n");
@@ -439,7 +439,6 @@ public class ClientHandler extends Thread {
                 } else if (temp.equals("Logout")) {
                     break;
                 }
-                //TODO ADD MORE ELSE IF STATEMENTS TO COMPLETE THE REST OF SELLER
             } catch (Exception e) {
                 e.printStackTrace();
                 //IGNORE THIS RED MARKER, IT"S MARKED FOR DELETION, BUT SATISFIES WHAT WE NEED IT FOR
