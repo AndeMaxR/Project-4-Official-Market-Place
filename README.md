@@ -1,7 +1,9 @@
 # README
 To compile this project, make sure to run the MarketServer class first, followed by the MarketClient. This ensures that the Client class will compile because it will be able to connect the server to the client with sockets.
 
-Mark submitted the report, presentation, and the project.
+Mark submitted the report and presentation.
+
+Max submitted the project.
 
 Test cases are labeled and written out in the Tests.md file in this repository.
 
