@@ -147,7 +147,8 @@ public class Seller {
                 Double totalRevenue = 0d;
                 while ((contents = bfr.readLine()) != null) {
                     if (contents.contains("Sale #")) {
-                        totalSales += Integer.parseInt(contents.split("#")[1].trim());
+                        //totalSales += Integer.parseInt(contents.split("#")[1].trim());
+                        totalSales++;
                     }
                     if (contents.contains("Revenue from sale")) {
                         totalRevenue += Double.parseDouble(contents.split(":")[1].trim());
