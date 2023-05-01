@@ -32,7 +32,6 @@ public class MarketClient extends JComponent {
             throw new RuntimeException(e);
         }
     }
-    //todo Make methods for each individual panel that return boolean value so that way we can move through out panels
 
 
     public static void register(Socket socket, PrintWriter pw, BufferedReader br) {
@@ -56,7 +55,7 @@ public class MarketClient extends JComponent {
         passwordTextBox = new JTextField("",20);
         passwordTextBox.setSize(20, 5);
 
-        //todo add action Listeners ##############################################################
+
         //Added Cancel ActionListener
         ActionListener registerActions = new ActionListener() {
             @Override
@@ -87,7 +86,6 @@ public class MarketClient extends JComponent {
         login.addActionListener(registerActions);
         signup.addActionListener(registerActions);
         cancel.addActionListener(registerActions);
-        //todo add action Listeners ##############################################################
 
         frame.setTitle("Welcome");
         Container content = frame.getContentPane();
@@ -561,17 +559,17 @@ public class MarketClient extends JComponent {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == AddItem) {
                     frame1.dispose();
-                    addStore(socket, username, pw, br);
+                    addItem(socket, username, pw, br);
                 }
                 // if login is pressed
                 if (e.getSource() == RemoveItem) {
                     frame1.dispose();
-                    removeStore(socket, username, pw, br);
+                    removeItem(socket, username, pw, br);
                 }
                 // if signup is pressed
                 if (e.getSource() == EditItem) {
                     frame1.dispose();
-                    manageInventory(socket, username, pw, br);
+                    editItem(socket, username, pw, br);
                 }
                 if (e.getSource() == Cancel) {
                     frame1.dispose();
@@ -619,7 +617,6 @@ public class MarketClient extends JComponent {
         panel1.add(cancel);
 
         content.add(panel1);
-        content.add(frame1);
 
         ActionListener addItemListener = new ActionListener() {
             @Override
@@ -627,6 +624,10 @@ public class MarketClient extends JComponent {
                 if (e.getSource() == confirm) {
                     pw.write("AddItem\n");
                     pw.flush();
+                }
+                if (e.getSource() == cancel) {
+                    frame1.dispose();
+                    manageInventory(socket, username, pw, br);
                 }
             }
         };
@@ -642,7 +643,6 @@ public class MarketClient extends JComponent {
 
     }
 
-    //TODO: implement the code below. THE CODE BELOW IS VERY IMPORTANT IT JUST NEEDS TO BE ALTERED to conform to updated CODE
     //IMPORTANT DO NOT DELETE
     public static void customer(Socket socket, String username, PrintWriter pw,
                                 BufferedReader br) {
