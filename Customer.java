@@ -9,6 +9,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+/**
+ * Customer
+ *
+ * This class is meant for buyer objects to purchase items.
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
+ */
+
 public class Customer {
     private String username;
     private String password;
