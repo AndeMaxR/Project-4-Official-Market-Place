@@ -138,92 +138,138 @@ public class ClientHandler extends Thread {
             try {
                 String temp = bufferedReader.readLine();
                 if (temp.equals("viewMarket")) {
-                    printWriter.write(storeMasterArrayList.size() + "\n");
-                    printWriter.flush();
-                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                        printWriter.write(storeMasterArrayList.get(i).getStoreName() + "\n");
+                    while (true) {
+                        printWriter.write(storeMasterArrayList.size() + "\n");
                         printWriter.flush();
-                        printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
-                        printWriter.flush();
-                    }
-                    String viewMarketChoice = bufferedReader.readLine();
-                    System.out.println(viewMarketChoice);
-                    if (viewMarketChoice.equals("searchMarket")){
-                        int searchType = Integer.parseInt(bufferedReader.readLine());
-                        if (searchType == 0) { //search by item name
-                            String searchPrompt = bufferedReader.readLine();
-                            synchronized (obj) {
-                                ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt);
-                                printWriter.write(searchResults.size() + "\n");
-                                printWriter.flush();
-                                for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i) + "\n");
+                        for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                            printWriter.write(storeMasterArrayList.get(i).getStoreName() + "\n");
+                            printWriter.flush();
+                            printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
+                            printWriter.flush();
+                        }
+                        String viewMarketChoice = bufferedReader.readLine();
+                        System.out.println(viewMarketChoice);
+                        if (viewMarketChoice.equals("searchMarket")) {
+                            int searchType = Integer.parseInt(bufferedReader.readLine());
+                            if (searchType == 0) { //search by item name
+                                String searchPrompt = bufferedReader.readLine();
+                                synchronized (obj) {
+                                    ArrayList<Item> market = new ArrayList<>();
+
+                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
+                                            market.add(storeMasterArrayList.get(i).getItem(j));
+                                        }
+                                    }
+
+                                    ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt,
+                                        market);
+                                    printWriter.write(searchResults.size() + "\n");
                                     printWriter.flush();
+                                    for (int i = 0; i < searchResults.size(); i++) {
+                                        printWriter.write(searchResults.get(i) + "\n");
+                                        printWriter.flush();
+                                    }
                                 }
-                            }
-                        } else if (searchType == 1) { //search by store name
-                            String searchPrompt = bufferedReader.readLine();
-                            synchronized (obj) {
-                                ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt);
-                                printWriter.write(searchResults.size() + "\n");
-                                printWriter.flush();
-                                for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i) + "\n");
+                            } else if (searchType == 1) { //search by store name
+                                String searchPrompt = bufferedReader.readLine();
+                                synchronized (obj) {
+                                    ArrayList<Item> market = new ArrayList<>();
+
+                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
+                                            market.add(storeMasterArrayList.get(i).getItem(j));
+                                        }
+                                    }
+
+                                    ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt,
+                                        market);
+                                    printWriter.write(searchResults.size() + "\n");
                                     printWriter.flush();
+                                    for (int i = 0; i < searchResults.size(); i++) {
+                                        printWriter.write(searchResults.get(i) + "\n");
+                                        printWriter.flush();
+                                    }
                                 }
-                            }
-                        } else if (searchType == 2) {
-                            String searchPrompt = bufferedReader.readLine();
-                            synchronized (obj) {
-                                ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt);
-                                printWriter.write(searchResults.size() + "\n");
-                                printWriter.flush();
-                                for (int i = 0; i < searchResults.size(); i++) {
-                                    printWriter.write(searchResults.get(i) + "\n");
+                            } else if (searchType == 2) {
+                                String searchPrompt = bufferedReader.readLine();
+                                synchronized (obj) {
+                                    ArrayList<Item> market = new ArrayList<>();
+
+                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
+                                            market.add(storeMasterArrayList.get(i).getItem(j));
+                                        }
+                                    }
+
+                                    ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt,
+                                        market);
+                                    printWriter.write(searchResults.size() + "\n");
                                     printWriter.flush();
+                                    for (int i = 0; i < searchResults.size(); i++) {
+                                        printWriter.write(searchResults.get(i) + "\n");
+                                        printWriter.flush();
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (viewMarketChoice.equals("sortMarket")) {
-                        int sortType = Integer.parseInt(bufferedReader.readLine());
-                        if (sortType == 0) { // sort by price
-                            synchronized (obj) {
-                                ArrayList<String> sortResults = customer.sortMarketPrice();
-                                printWriter.write(sortResults.size() + "\n");
-                                printWriter.flush();
-                                for (int i = 0; i < sortResults.size(); i++) {
-                                    printWriter.write(sortResults.get(i) + "\n");
+                        if (viewMarketChoice.equals("sortMarket")) {
+                            int sortType = Integer.parseInt(bufferedReader.readLine());
+                            if (sortType == 0) { // sort by price
+                                synchronized (obj) {
+                                    ArrayList<Item> market = new ArrayList<>();
+
+                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
+                                            market.add(storeMasterArrayList.get(i).getItem(j));
+                                        }
+                                    }
+
+                                    ArrayList<String> sortResults = customer.sortMarketPrice(market);
+                                    printWriter.write(sortResults.size() + "\n");
                                     printWriter.flush();
+                                    for (int i = 0; i < sortResults.size(); i++) {
+                                        printWriter.write(sortResults.get(i) + "\n");
+                                        printWriter.flush();
+                                    }
                                 }
-                            }
-                        } else if (sortType == 1) { //sort by quantity
-                            synchronized (obj) {
-                                ArrayList<String> sortResults = customer.sortMarketQuantity();
-                                printWriter.write(sortResults.size() + "\n");
-                                printWriter.flush();
-                                for (int i = 0; i < sortResults.size(); i++) {
-                                    printWriter.write(sortResults.get(i) + "\n");
+                            } else if (sortType == 1) { //sort by quantity
+                                synchronized (obj) {
+
+                                    ArrayList<Item> market = new ArrayList<>();
+
+                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
+                                            market.add(storeMasterArrayList.get(i).getItem(j));
+                                        }
+                                    }
+
+                                    ArrayList<String> sortResults = customer.sortMarketQuantity(market);
+                                    printWriter.write(sortResults.size() + "\n");
                                     printWriter.flush();
+                                    for (int i = 0; i < sortResults.size(); i++) {
+                                        printWriter.write(sortResults.get(i) + "\n");
+                                        printWriter.flush();
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (viewMarketChoice.equals("purchase")) {
-                        int storeLocation;
-                        int itemIndex;
-                        int purchaseQuantity;
-                        String username;
-                        storeLocation = Integer.parseInt(bufferedReader.readLine());
-                        itemIndex = Integer.parseInt(bufferedReader.readLine());
-                        purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
-                        username = bufferedReader.readLine();
-                        System.out.println(storeLocation);
-                        System.out.println(itemIndex);
-                        System.out.println(purchaseQuantity);
-                        System.out.println(username);
-                        synchronized (obj) {
-                            storeMasterArrayList.get(storeLocation).buyItem(itemIndex, purchaseQuantity, username);
+                        if (viewMarketChoice.equals("purchase")) {
+                            int storeLocation;
+                            int itemIndex;
+                            int purchaseQuantity;
+                            String username;
+                            storeLocation = Integer.parseInt(bufferedReader.readLine());
+                            itemIndex = Integer.parseInt(bufferedReader.readLine());
+                            purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
+                            username = bufferedReader.readLine();
+                            System.out.println(storeLocation);
+                            System.out.println(itemIndex);
+                            System.out.println(purchaseQuantity);
+                            System.out.println(username);
+                            synchronized (obj) {
+                                storeMasterArrayList.get(storeLocation).buyItem(itemIndex, purchaseQuantity, username);
+                            }
                         }
                     }
                 } else if (temp.equals("ViewPurchaseHistory")) {
@@ -276,9 +322,9 @@ public class ClientHandler extends Thread {
                         }
                     } catch (Exception e) {
                         synchronized (obj) {
-                        printWriter.write("-1\n");
-                        printWriter.flush();
-                        e.printStackTrace();
+                            printWriter.write("-1\n");
+                            printWriter.flush();
+                            e.printStackTrace();
                         }
                     }
                 } else if (temp.equals("Logout")) {
