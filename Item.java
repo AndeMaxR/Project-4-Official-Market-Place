@@ -4,11 +4,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * For CSV files we will format all item strings as productName,storeName,productDescription,quantityAvailable,price
- * No spaces in between to make things simple
+ * Item
  *
- * We don't really need to add anything to this, if there needs to be an altercation done do it in the seller class
+ * This class is meant for product objects to be stored in store objects.
  *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
  */
 public class Item {
     private String productName;
