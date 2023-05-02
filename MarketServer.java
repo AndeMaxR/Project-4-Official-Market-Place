@@ -2,6 +2,16 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ * Market Server
+ *
+ * This class establishes a socket connection with Market Client.
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
+ */
+
 public class MarketServer {
 
     public static ArrayList<Store> storeMasterArrayList;
