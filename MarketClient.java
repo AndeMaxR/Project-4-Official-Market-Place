@@ -1311,8 +1311,8 @@ public class MarketClient extends JComponent {
                     pw.flush();
                     pw.write(marketSearchBox.getText() + "\n"); //send search prompt
                     pw.flush();
-                    searchMarket(socket, pw, br);
-                    SwingUtilities.updateComponentTreeUI(frame1);
+                    frame1.dispose();
+                    searchMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == sortMarketButton) {
                     pw.write("sortMarket\n"); //send that sort market button was pushed
@@ -1320,8 +1320,7 @@ public class MarketClient extends JComponent {
                     pw.write(marketSortOptions.getSelectedIndex() + "\n"); //send type of sort
                     pw.flush();
                     frame1.dispose();
-                    sortMarket(socket, pw, br);
-                    viewMarket(socket, username, pw, br);
+                    sortMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == purchaseButton) {
                     try {
@@ -1348,8 +1347,7 @@ public class MarketClient extends JComponent {
 
                 }
                 if (e.getSource() == refresh) {
-                    frame1.dispose();
-                    viewMarket(socket, username, pw, br);
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == cancel) {
                     frame1.dispose();
@@ -1366,8 +1364,10 @@ public class MarketClient extends JComponent {
         frame1.setVisible(true);
     }
 
-    public static void searchMarket(Socket socket, PrintWriter pw, BufferedReader br) {
+    public static void searchMarket(Socket socket, String username, PrintWriter pw, BufferedReader br) {
         try {
+
+            JButton cancelButton = new JButton("Cancel");
 
             JFrame viewSearchFrame = new JFrame();
             viewSearchFrame.setSize(400, 600);
@@ -1377,21 +1377,36 @@ public class MarketClient extends JComponent {
             Container content = viewSearchFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-            content.setLayout(new GridLayout(numResults, 1, 0, 0));
+            content.setLayout(new GridLayout(numResults + 1, 1, 0, 0));
 
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
 
+            content.add(cancelButton);
             viewSearchFrame.setVisible(true);
+
+            ActionListener actionListener = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource() == cancelButton) {
+                        viewSearchFrame.dispose();
+                        viewMarket(socket, username, pw, br);
+                    }
+                }
+            };
+            cancelButton.addActionListener(actionListener);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void sortMarket(Socket socket, PrintWriter pw, BufferedReader br) {
+    public static void sortMarket(Socket socket, String username, PrintWriter pw, BufferedReader br) {
         try {
+
+            JButton cancelButton = new JButton("Cancel");
+
             //initialize frame
             JFrame viewSortFrame = new JFrame();
             viewSortFrame.setSize(400, 600);
@@ -1401,12 +1416,24 @@ public class MarketClient extends JComponent {
             Container content = viewSortFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-            content.setLayout(new GridLayout(numResults, 1, 0,0));
+            content.setLayout(new GridLayout(numResults + 1, 1, 0,0));
 
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
+            content.add(cancelButton);
             viewSortFrame.setVisible(true);
+
+            ActionListener actionListener = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource() == cancelButton) {
+                        viewSortFrame.dispose();
+                        viewMarket(socket, username, pw, br);
+                    }
+                }
+            };
+            cancelButton.addActionListener(actionListener);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1544,7 +1571,7 @@ public class MarketClient extends JComponent {
     }
     public static void exportPurchaseHistory(Socket socket, PrintWriter pr, BufferedReader br, String username) {
         JOptionPane.showMessageDialog(null, "Your purchase history file is now available to " +
-                        "view in the depository under the name " + username + "_History.txt", "Export Purchase" +
-                        " History", JOptionPane.INFORMATION_MESSAGE);
+                "view in the depository under the name " + username + "_History.txt", "Export Purchase" +
+                " History", JOptionPane.INFORMATION_MESSAGE);
     }
 }
