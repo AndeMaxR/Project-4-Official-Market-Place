@@ -12,7 +12,7 @@ import java.io.*;
 public class Customer {
     private String username;
     private String password;
-
+    private Store store;
     private ArrayList<Store> storeArrayList;
 
     public Customer(String username, String password) {
@@ -110,194 +110,83 @@ public class Customer {
         return false;
     }
 
-    public ArrayList<String> viewMarketNameSearch(String name) {
+    public ArrayList<String> viewMarketNameSearch(String name, ArrayList<Item> tempMarket) {
         ArrayList<String> searchResults = new ArrayList<String>();
-        try {
-            File masterList = new File("ItemMasterList.txt");
-            if (!masterList.exists()) {
-                masterList.createNewFile();
-            }
-            BufferedReader bfr = new BufferedReader(new FileReader(masterList));
-            String fileContent;
-            int counter = 0;
 
-            while (true) {
-                fileContent = bfr.readLine();
-                if (fileContent == null) {
-                    if (counter == 0) {
-                        JOptionPane.showMessageDialog(null,
-                                "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    break;
-                }
-                if (fileContent.contains(name)) {
-                    searchResults.add(fileContent);
-                }
-                counter++;
+        for (int i = 0; i < tempMarket.size(); i++) {
+            if (tempMarket.get(i).getProductName().contains(name)) {
+                searchResults.add(tempMarket.get(i).getProductName() + ", Store: " + tempMarket.get(i).getStoreName());
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find ItemMasterList.txt");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return searchResults;
     }
 
-    public ArrayList<String> viewMarketStoreSearch(String storeName) {
+    public ArrayList<String> viewMarketStoreSearch(String storeName, ArrayList<Item> tempMarket) {
         ArrayList<String> searchResults = new ArrayList<String>();
-        try {
-            File masterList = new File("ItemMasterList.txt");
-            if (!masterList.exists()) {
-                masterList.createNewFile();
-            }
-            BufferedReader bfr = new BufferedReader(new FileReader(masterList));
-            String fileContent;
-            int counter = 0;
 
-            while (true) {
-                fileContent = bfr.readLine();
-                if (fileContent == null) {
-                    if (counter == 0) {
-                        JOptionPane.showMessageDialog(null,
-                                "There are currently no stores selling!", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    break;
-                }
-                if (fileContent.contains(storeName)) {
-                    searchResults.add(fileContent);
-                }
-                counter++;
+        for (int i = 0; i < tempMarket.size(); i++) {
+            if (tempMarket.get(i).getStoreName().contains(storeName)) {
+                searchResults.add(tempMarket.get(i).getProductName() + ", Store: " + tempMarket.get(i).getStoreName());
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find ItemMasterList.txt");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return searchResults;
     }
 
-    public ArrayList<String> viewMarketDescriptionSearch(String description) {
+    public ArrayList<String> viewMarketDescriptionSearch(String description, ArrayList<Item> tempMarket) {
         ArrayList<String> searchResults = new ArrayList<String>();
-        try {
-            File masterList = new File("ItemMasterList.txt");
-            if (!masterList.exists()) {
-                masterList.createNewFile();
-            }
-            BufferedReader bfr = new BufferedReader(new FileReader(masterList));
-            String fileContent;
-            int counter = 0;
 
-            while (true) {
-                fileContent = bfr.readLine();
-                if (fileContent == null) {
-                    if (counter == 0) {
-                        JOptionPane.showMessageDialog(null,
-                                "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    break;
-                }
-                if (fileContent.contains(description)) {
-                    searchResults.add(fileContent);
-                }
-                counter++;
+        for (int i = 0; i < tempMarket.size(); i++) {
+            if (tempMarket.get(i).getProductDescription().contains(description)) {
+                searchResults.add(tempMarket.get(i).getProductName() + ", Store: " + tempMarket.get(i).getStoreName());
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find ItemMasterList.txt");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return searchResults;
     }
 
 
     //returns a string list of item info ordered from greatest to lowest price, also prints to terminal in that order
-    public ArrayList<String> sortMarketPrice() {
+    public ArrayList<String> sortMarketPrice(ArrayList<Item> tempMarket) {
         ArrayList<String> priceSortedMarket = new ArrayList<String>();
-        ArrayList<String> tempMarket = new ArrayList<String>();
-        try {
-            int numItems = 0;
-            BufferedReader bfr = new BufferedReader(new FileReader((new File("ItemMasterList.txt"))));
-            String line;
-            //copies marketplace into temporary marketplace variable
-            while ((line = bfr.readLine()) != null) {
-                tempMarket.add(line);
-                numItems++;
-            }
-            if (numItems == 0) {
-                JOptionPane.showMessageDialog(null,
-                        "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        while (tempMarket.size() > 0) {
 
-
-            //iterates through tempMarket, searches for the highest price item, adds that item to sorted market list,
-            // deletes that item from temp market
-            String[] itemInfo;
-            while (tempMarket.size() > 0) {
-                double highestPrice = 0;
-                int highestPriceIndex = 0;
-                for (int i = 0; i < tempMarket.size(); i ++) {
-                    itemInfo = tempMarket.get(i).split(",");
-                    if (Double.parseDouble(itemInfo[4].substring(9)) > highestPrice) {
-                        highestPrice = Double.parseDouble(itemInfo[4].substring(9));
-                        highestPriceIndex = i;
-                    }
+            int highestPrice = 0;
+            int highestPriceIndex = 0;
+            for (int i = 0; i < tempMarket.size(); i ++) {
+                if (tempMarket.get(i).getPrice() > highestPrice) {
+                    highestPrice = tempMarket.get(i).getQuantityAvailable();
+                    highestPriceIndex = i;
                 }
-                priceSortedMarket.add(tempMarket.get(highestPriceIndex));
-                tempMarket.remove(highestPriceIndex);
             }
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find ItemMasterList.txt");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            priceSortedMarket.add(tempMarket.get(highestPriceIndex).getProductName() + ", Store: " +
+                tempMarket.get(highestPriceIndex).getStoreName() + ", Price: " +
+                tempMarket.get(highestPriceIndex).getPrice());
+            tempMarket.remove(highestPriceIndex);
         }
         return priceSortedMarket;
     }
 
     //returns a string list of item info ordered from greatest to lowest quantity, also prints to terminal in that order
-    public ArrayList<String> sortMarketQuantity() {
+    public ArrayList<String> sortMarketQuantity(ArrayList<Item> tempMarket) {
+
         ArrayList<String> quantitySortedMarket = new ArrayList<String>();
-        ArrayList<String> tempMarket = new ArrayList<String>();
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader((new File("ItemMasterList.txt"))));
-            String line;
-            //copies marketplace into temporary marketplace variable
-            int counter = 0;
-            while ((line = bfr.readLine()) != null) {
-                tempMarket.add(line);
-                counter++;
-            }
-            if (counter == 0) {
-                JOptionPane.showMessageDialog(null,
-                        "There are currently no items for sale!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        while (tempMarket.size() > 0) {
 
-            //iterates through tempMarket, searches for the highest quantity item, adds that item to sorted market list,
-            // deletes that item from temp market
-            String[] itemInfo;
-            while (tempMarket.size() > 0) {
-                int highestQuantity = 0;
-                int highestQuantityIndex = 0;
-                for (int i = 0; i < tempMarket.size(); i ++) {
-                    itemInfo = tempMarket.get(i).split(",");
-                    if (Integer.parseInt(itemInfo[3].substring(21)) > highestQuantity) {
-                        highestQuantity = Integer.parseInt(itemInfo[3].substring(21));
-                        highestQuantityIndex = i;
-                    }
+            int highestQuantity = 0;
+            int highestQuantityIndex = 0;
+            for (int i = 0; i < tempMarket.size(); i ++) {
+                if (tempMarket.get(i).getQuantityAvailable() > highestQuantity) {
+                    highestQuantity = tempMarket.get(i).getQuantityAvailable();
+                    highestQuantityIndex = i;
                 }
-
-                quantitySortedMarket.add(tempMarket.get(highestQuantityIndex));
-                tempMarket.remove(highestQuantityIndex);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Couldn't find ItemMasterList.txt");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            quantitySortedMarket.add(tempMarket.get(highestQuantityIndex).getProductName() + ", Store: " +
+                tempMarket.get(highestQuantityIndex).getStoreName() + ", Quantity: " +
+                tempMarket.get(highestQuantityIndex).getQuantityAvailable());
+            tempMarket.remove(highestQuantityIndex);
         }
         return quantitySortedMarket;
     }
