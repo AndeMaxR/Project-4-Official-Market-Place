@@ -2,6 +2,16 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * ClientHandler
+ *
+ * This class acts as the client and handles the GUI.
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
+ */
+
 public class ClientHandler extends Thread {
     final PrintWriter printWriter;
     final BufferedReader bufferedReader;
