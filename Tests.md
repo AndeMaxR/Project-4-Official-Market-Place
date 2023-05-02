@@ -113,6 +113,7 @@ Steps:
   3. In the Buyer Interface, click the View Dashboard button.
 
 These steps should result in the buyer being able to view the dashboard.
+Test: Passed
 
 Test 10: Purchase an item
 
@@ -124,6 +125,7 @@ Steps:
   5. In this interface, click any item that has been created by a seller to purchase it.
  
 These steps should result in a successful purchase by a customer.
+Test: Passed
 
 Test 11: View Purchase History
 
@@ -133,4 +135,5 @@ Steps:
   3. Select "View Purchase History" button.
 
 These steps should result in a user being able to see their purchase history.
+Test: Passed 
 
