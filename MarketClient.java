@@ -157,7 +157,8 @@ public class MarketClient extends JComponent {
 
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"IOException", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -185,7 +186,8 @@ public class MarketClient extends JComponent {
                             "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
                 }
             } else if (type.equals("Customer")) {
-                pw.write("SIGNUP," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "," + type + "\n");
+                pw.write("SIGNUP," + usernameTextBox.getText() + "," + passwordTextBox.getText() + "," +
+                        type + "\n");
                 pw.flush();
 
 
@@ -203,7 +205,8 @@ public class MarketClient extends JComponent {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"IOException", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"IOException", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -232,7 +235,8 @@ public class MarketClient extends JComponent {
         textArea.setBounds(0, 20, 280, 200);
         textArea.setBorder(new LineBorder(Color.black));
 
-        JScrollPane scroll = new JScrollPane (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scroll = new JScrollPane (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scroll.setBounds(280, 20, 20, 200);
         scroll.getViewport().setBackground(Color.white);
         scroll.getViewport().add(textArea);
@@ -268,7 +272,6 @@ public class MarketClient extends JComponent {
                 }
                 // if login is pressed
                 if (e.getSource() == ManageFinances) {
-                    frame1.dispose();
                     manageFinances(socket, username, pw, br, textArea);
                 }
                 // if signup is pressed
@@ -458,6 +461,9 @@ public class MarketClient extends JComponent {
                 } else {
                     fulltext += line + "\n";
                 }
+            }
+            if (fulltext.equals("")) {
+                fulltext = "No Stores Available.\n";
             }
             textArea.setText(fulltext);
         } catch (Exception ex) {
@@ -720,7 +726,8 @@ public class MarketClient extends JComponent {
                             manageInventory(socket, username, pw, br);
                         }
                     } catch (Exception y) {
-                        JOptionPane.showMessageDialog(frame1, "Please fill out all fields correctly.", "Error", JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(frame1, "Please fill out all fields correctly.",
+                                "Error", JOptionPane.PLAIN_MESSAGE);
                     }
                 }
                 if (e.getSource() == cancel) {
@@ -755,7 +762,8 @@ public class MarketClient extends JComponent {
         list.setBounds(0, 0, 250, 600);
         list.setBorder(new LineBorder(Color.BLACK));
 
-        JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setBounds(230, 0, 20, 600);
         scrollPane.getViewport().add(list);
 
@@ -938,7 +946,8 @@ public class MarketClient extends JComponent {
         list.setBounds(0, 0, 300, 600);
         list.setBorder(new LineBorder(Color.BLACK));
 
-        JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setBounds(280, 0, 20, 600);
         scrollPane.getViewport().add(list);
 
@@ -998,7 +1007,8 @@ public class MarketClient extends JComponent {
 
                     try {
                         if (br.readLine().equals("-1")) {
-                            JOptionPane.showMessageDialog(frame1, "Item was not removed, please fill out all fields correctly.");
+                            JOptionPane.showMessageDialog(frame1, "Item was not removed," +
+                                    " please fill out all fields correctly.");
                             //TODO YOU MAY NEED THIS YOU MAY NOT
                             pw.write("RemoveItem\n");
                             pw.flush();
@@ -1148,7 +1158,8 @@ public class MarketClient extends JComponent {
 
         JButton refresh;
         JButton cancel;
-        JTextField textField;
+        JTextArea textArea;
+
 
         String fullString = "";
         for (int i = 0; i < storesList.length; i++) {
@@ -1161,12 +1172,14 @@ public class MarketClient extends JComponent {
         purchaseLabel = new JLabel("Select an item if you wish to purchase it");
 
         searchPrompt = new JLabel("Search market by: "); //search sub panel
-        marketSearchOptions = new JComboBox<>(new String[]{"Item name", "Store Name", "Item Description"}); //search sub panel
+        marketSearchOptions = new JComboBox<>(new String[]{"Item name", "Store Name", "Item Description"});
+        //search sub panel
         marketSearchBox = new JTextField(15); // search sub panel
         searchMarketButton = new JButton("Search Market"); //search sub panel
 
         sortPrompt = new JLabel("Sort market by: "); //search sub panel
-        marketSortOptions = new JComboBox<>(new String[]{"Item Price", "Quantity in Stock"}); //search sub panel
+        marketSortOptions = new JComboBox<>(new String[]{"Item Price", "Quantity in Stock"});
+        //search sub panel
         sortMarketButton = new JButton("Sort Market"); //sort sub panel
 
         purchaseQuantityPrompt = new JLabel("Quantity");
@@ -1175,7 +1188,7 @@ public class MarketClient extends JComponent {
 
         refresh = new JButton("Refresh");
         cancel = new JButton("Cancel");
-        textField = new JTextField(fullString);
+        textArea = new JTextArea(fullString);
 
         //restrict buttons if there's nothing in the market
         if (storesList.length == 0) {
@@ -1212,8 +1225,20 @@ public class MarketClient extends JComponent {
         Container content = frame1.getContentPane();
         content.setLayout(new GridLayout(1, 2,0,0));
 
+        textArea.setBounds(0, 0,1180, 400);
+        textArea.setBorder(new LineBorder(Color.black));
+        textArea.setEditable(false);
+
+
+        JScrollPane scrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.getViewport().add(textArea);
         //left side
-        content.add(textField);
+        ;
+        scrollPane.setBounds(1180, 0, 20, 400);
+        scrollPane.getViewport().setBackground(Color.white);
+        scrollPane.getViewport().add(textArea);
+        content.add(scrollPane);
 
         //item/store sub panel
         JPanel subPanel = new JPanel();
@@ -1294,25 +1319,37 @@ public class MarketClient extends JComponent {
                     pw.flush();
                     pw.write(marketSortOptions.getSelectedIndex() + "\n"); //send type of sort
                     pw.flush();
+                    frame1.dispose();
                     sortMarket(socket, pw, br);
-                    SwingUtilities.updateComponentTreeUI(frame1);
+                    viewMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == purchaseButton) {
-                    pw.write("purchase\n"); //send that purchase button was pushed
-                    pw.flush();
-                    pw.write(purchaseQuantity.getText() + "\n"); //send desired purchase quantity
-                    pw.flush();
-                    pw.write(items.getSelectedIndex() + "\n"); //send product name
-                    pw.flush();
-                    pw.write(username + "\n");
-                    pw.flush();
-                    JOptionPane.showMessageDialog(null, "You've successfully purchased " +
-                                    purchaseQuantity + " " + (String)items.getSelectedItem() + "!", "Purchase Successful",
-                            JOptionPane.PLAIN_MESSAGE);
-                    SwingUtilities.updateComponentTreeUI(frame1);
+                    try {
+                        Integer.parseInt(purchaseQuantity.getText());
+                        pw.write("purchase\n"); //send that purchase button was pushed
+                        pw.flush();
+                        pw.write(stores.getSelectedIndex() + "\n");
+                        pw.flush();
+                        pw.write(items.getSelectedIndex() + "\n"); //send product name
+                        pw.flush();
+                        pw.write(purchaseQuantity.getText() + "\n"); //send desired purchase quantity
+                        pw.flush();
+                        pw.write(username + "\n");
+                        pw.flush();
+                        JOptionPane.showMessageDialog(null, "You've successfully purchased " +
+                                        purchaseQuantity.getText() + " " + items.getSelectedItem().toString()
+                                        .substring(items.getSelectedItem().toString().indexOf(" ") + 1) +
+                                        "!", "" + "Purchase Successful",
+                                JOptionPane.PLAIN_MESSAGE);
+                        SwingUtilities.updateComponentTreeUI(frame1);
+                    } catch (Exception u) {
+                        JOptionPane.showMessageDialog(frame1, "Please enter valid inputs.");
+                    }
+
                 }
                 if (e.getSource() == refresh) {
-                    SwingUtilities.updateComponentTreeUI(frame1);
+                    frame1.dispose();
+                    viewMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == cancel) {
                     frame1.dispose();
@@ -1340,7 +1377,6 @@ public class MarketClient extends JComponent {
             Container content = viewSearchFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-
             content.setLayout(new GridLayout(numResults, 1, 0, 0));
 
             for (int i = 0; i < numResults; i++) {
@@ -1365,7 +1401,6 @@ public class MarketClient extends JComponent {
             Container content = viewSortFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-
             content.setLayout(new GridLayout(numResults, 1, 0,0));
 
             for (int i = 0; i < numResults; i++) {
@@ -1386,7 +1421,7 @@ public class MarketClient extends JComponent {
 
             viewPurchaseHistoryFrame.setSize(400, 600);
             viewPurchaseHistoryFrame.setLocationRelativeTo(null);
-            viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             viewPurchaseHistoryFrame.setTitle("Transaction History");
             Container content = viewPurchaseHistoryFrame.getContentPane();
             content.setLayout(new GridLayout(1,2,0,0));
@@ -1396,6 +1431,7 @@ public class MarketClient extends JComponent {
 
             content.add(panel1);
             content.add(cancelButton);
+
 
             int numResults = Integer.parseInt(br.readLine());
             for (int i = 0; i < numResults; i++) {
@@ -1508,7 +1544,7 @@ public class MarketClient extends JComponent {
     }
     public static void exportPurchaseHistory(Socket socket, PrintWriter pr, BufferedReader br, String username) {
         JOptionPane.showMessageDialog(null, "Your purchase history file is now available to " +
-                        "view in the depository under the name " + username + "_History.txt", "Export Purchase History",
-                JOptionPane.INFORMATION_MESSAGE);
+                        "view in the depository under the name " + username + "_History.txt", "Export Purchase" +
+                        " History", JOptionPane.INFORMATION_MESSAGE);
     }
 }

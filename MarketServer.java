@@ -22,6 +22,7 @@ public class MarketServer {
                     storeMasterArrayList.add(new Store(owner, storeName));
                 }
             }
+            bfr.close();
         }
 
         ServerSocket serverSocket = new ServerSocket(4242);

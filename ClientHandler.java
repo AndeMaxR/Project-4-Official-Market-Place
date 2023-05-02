@@ -16,7 +16,7 @@ public class ClientHandler extends Thread {
 
     private Seller seller;
     private Customer customer;
-    private Store store;
+
 
     public ClientHandler(PrintWriter printWriter, BufferedReader bufferedReader, Socket socket,
                          ArrayList<Store> storeMasterArrayList) {
@@ -147,6 +147,7 @@ public class ClientHandler extends Thread {
                         printWriter.flush();
                     }
                     String viewMarketChoice = bufferedReader.readLine();
+                    System.out.println(viewMarketChoice);
                     if (viewMarketChoice.equals("searchMarket")){
                         int searchType = Integer.parseInt(bufferedReader.readLine());
                         if (searchType == 0) { //search by item name
@@ -209,11 +210,20 @@ public class ClientHandler extends Thread {
                         }
                     }
                     if (viewMarketChoice.equals("purchase")) {
-                        int purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
-                        int itemIndex = Integer.parseInt(bufferedReader.readLine());
-                        String username = bufferedReader.readLine();
+                        int storeLocation;
+                        int itemIndex;
+                        int purchaseQuantity;
+                        String username;
+                        storeLocation = Integer.parseInt(bufferedReader.readLine());
+                        itemIndex = Integer.parseInt(bufferedReader.readLine());
+                        purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
+                        username = bufferedReader.readLine();
+                        System.out.println(storeLocation);
+                        System.out.println(itemIndex);
+                        System.out.println(purchaseQuantity);
+                        System.out.println(username);
                         synchronized (obj) {
-                            store.buyItem(itemIndex, purchaseQuantity, username);
+                            storeMasterArrayList.get(storeLocation).buyItem(itemIndex, purchaseQuantity, username);
                         }
                     }
                 } else if (temp.equals("ViewPurchaseHistory")) {
@@ -240,7 +250,8 @@ public class ClientHandler extends Thread {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
-                        } }
+                        }
+                    }
                 } else if (temp.equals("Seller name Desc")) {
                     try {
                         synchronized (obj) {
@@ -265,15 +276,16 @@ public class ClientHandler extends Thread {
                         }
                     } catch (Exception e) {
                         synchronized (obj) {
-                            printWriter.write("-1\n");
-                            printWriter.flush();
-                            e.printStackTrace();
+                        printWriter.write("-1\n");
+                        printWriter.flush();
+                        e.printStackTrace();
                         }
                     }
                 } else if (temp.equals("Logout")) {
                     break;
                 }
             } catch (Exception e) {
+                currentThread().stop();
                 e.printStackTrace();
             }
         }
@@ -286,8 +298,8 @@ public class ClientHandler extends Thread {
                 if (temp.equals("AddStore")) {
                     try {
                         String storeName = bufferedReader.readLine();
-                        seller.addStore(new Store(seller.getUsername(), storeName));
                         synchronized (obj) {
+                            seller.addStore(new Store(seller.getUsername(), storeName));
                             storeMasterArrayList.add(seller.getSpecificStore(seller.getFullStoreList().size() - 1));
                             printWriter.write("1\n");
                             printWriter.flush();
@@ -312,7 +324,8 @@ public class ClientHandler extends Thread {
                         } else {
                             synchronized (obj) {
                                 for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                    if (storeMasterArrayList.get(i).getStoreName().equals(seller.getSpecificStore(input).getStoreName())) {
+                                    if (storeMasterArrayList.get(i).getStoreName().equals(seller
+                                            .getSpecificStore(input).getStoreName())) {
                                         storeMasterArrayList.remove(i);
                                         break;
                                     }
@@ -378,21 +391,16 @@ public class ClientHandler extends Thread {
                         String holder = "";
                         String[] itemParts;
                         holder = bufferedReader.readLine();
-                        System.out.println(holder);
                         itemParts = holder.split(",");
-                        for (int i = 0; i < itemParts.length; i++) {
-                            System.out.println(itemParts[i]);
-                        }
                         synchronized (obj) {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(itemParts[1])) {
-                                    System.out.println("1");
-                                    seller.getSpecificStore(i).addItem(new Item(itemParts[0], itemParts[1], itemParts[2],
-                                            Integer.parseInt(itemParts[3]), Double.parseDouble(itemParts[4])));
-                                    System.out.println("2");
-                                    for (int j = 0; j < storeMasterArrayList.size(); i++) {
+                                    seller.getSpecificStore(i).addItem(new Item(itemParts[0], itemParts[1],
+                                            itemParts[2], Integer.parseInt(itemParts[3]),
+                                            Double.parseDouble(itemParts[4])));
+                                    for (int j = 0; j < storeMasterArrayList.size(); j++) {
+                                        System.out.println(storeMasterArrayList.get(j).getStoreName());
                                         if (storeMasterArrayList.get(j).getStoreName().equals(itemParts[1])) {
-                                            System.out.println("3");
                                             //HIGH CHANCE OF BUG
                                             storeMasterArrayList.set(j, seller.getSpecificStore(i));
                                             printWriter.write("1\n");
@@ -429,10 +437,12 @@ public class ClientHandler extends Thread {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
                                     for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
-                                        if (seller.getSpecificStore(i).getItem(j).getProductName().equals(components[1])) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName().
+                                                equals(components[1])) {
                                             if (seller.getSpecificStore(i).removeItem(j)) {
                                                 for (int k = 0; k < storeMasterArrayList.size(); k++) {
-                                                    if (storeMasterArrayList.get(k).getStoreName().equals(components[0])) {
+                                                    if (storeMasterArrayList.get(k).getStoreName().
+                                                            equals(components[0])) {
                                                         storeMasterArrayList.set(k, seller.getSpecificStore(i));
                                                         break;
                                                     }
@@ -473,7 +483,8 @@ public class ClientHandler extends Thread {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
                                     for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
-                                        if (seller.getSpecificStore(i).getItem(j).getProductName().equals(components[1])) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName().
+                                                equals(components[1])) {
                                             seller.getSpecificStore(i).editItem(j, components2[0], components2[1],
                                                     components2[2], Integer.parseInt(components2[3]),
                                                     Double.parseDouble(components2[4]));
@@ -497,7 +508,8 @@ public class ClientHandler extends Thread {
                 } else if (temp.equals("Store name Asc")) {
                     try {
                         synchronized (obj) {
-                            String data = seller.dashboard("store name", "asc").replace("\n", "#");
+                            String data = seller.dashboard("store name", "asc").replace("\n",
+                                    "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
@@ -511,7 +523,8 @@ public class ClientHandler extends Thread {
                 } else if (temp.equals("Store name Desc")) {
                     try {
                         synchronized (obj) {
-                            String data = seller.dashboard("store name", "desc").replace("\n", "#");
+                            String data = seller.dashboard("store name", "desc").replace("\n",
+                                    "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }

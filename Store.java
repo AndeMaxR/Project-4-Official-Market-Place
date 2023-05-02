@@ -29,6 +29,31 @@ public class Store {
                 bfw.write(owner + "_" + storeName + ".txt\n");
                 bfw.flush();
                 bfw.close();
+            } else {
+                BufferedReader bfr = new BufferedReader(new FileReader(masterListFile));
+                String temp = "";
+                ArrayList<String> holder = new ArrayList<>();
+                while (true) {
+                    temp = bfr.readLine();
+                    System.out.println(temp);
+                    if (temp == null) {
+                        bfr.close();
+                        BufferedWriter bfw = new BufferedWriter(new FileWriter(masterListFile, false));
+                        for (int i = 0; i < holder.size(); i++) {
+                            bfw.write(holder.get(i) + "\n");
+                            bfw.flush();
+                        }
+                        bfw.write(owner + "_" + storeName + ".txt\n");
+                        bfw.flush();
+                        bfw.close();
+                        break;
+                    } else if (temp.equals(owner + "_" + storeName + ".txt")) {
+                        bfr.close();
+                        break;
+                    } else {
+                        holder.add(temp);
+                    }
+                }
             }
 
             if (storeFile.exists()) {
