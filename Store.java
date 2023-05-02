@@ -1,17 +1,14 @@
 import java.io.*;
 import java.util.ArrayList;
-//owner + "_" + this.storeName + ".txt" is file format name
 
 /**
- * Store
+ * Market Client
  *
- * This class is meant for product objects to be stored.
+ * This class handles the Store methods.
  *
- * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
- *
- * @version 5/1/2023
+ * @version 5/2/2023
+ * @author Colin, Max A, Mark, Bomma
  */
-
 public class Store {
     private String owner;
     private String storeName;
@@ -76,10 +73,10 @@ public class Store {
                 content = bfr.readLine();
                 bfr.close();
                 if (content != null) {
-                    String[] items = content.split(",");
-                    for (int i = 0; i < items.length; i++) {
+                    String[] itemsBrokenDown = content.split(",");
+                    for (int i = 0; i < itemsBrokenDown.length; i++) {
                         String[] holder;
-                        File itemFile = new File(items[i] + ".txt");
+                        File itemFile = new File(itemsBrokenDown[i] + ".txt");
                         bfr = new BufferedReader(new FileReader(itemFile));
                         content = bfr.readLine();
                         if (content != null) {
@@ -142,7 +139,6 @@ public class Store {
     }
 
     public void setStoreName(String storeName) {
-        //TODO do the same thing here as up above
         try {
             ArrayList<String> content = new ArrayList<>();
             File masterListFile = new File("StoreMasterList.txt");
@@ -190,9 +186,9 @@ public class Store {
         return storeName;
     }
 
-    public void addItem(Item item) {
-        items.add(item);
-        item.printToFile();
+    public void addItem(Item newItem) {
+        items.add(newItem);
+        newItem.printToFile();
         printToFile();
     }
 
@@ -215,14 +211,14 @@ public class Store {
         return items.get(index);
     }
 
-    public void editItem(int location, String productName, String storeName,
+    public void editItem(int location, String productName, String inputStoreName,
                          String productDescription, int quantityAvailable, double price) {
-        File file1 = new File(storeName + "_" + items.get(location).getProductName() + ".txt");
+        File file1 = new File(inputStoreName + "_" + items.get(location).getProductName() + ".txt");
         if (file1.exists()) {
             file1.delete();
         }
         items.get(location).setProductName(productName);
-        items.get(location).setStoreName(storeName);
+        items.get(location).setStoreName(inputStoreName);
         items.get(location).setProductDescription(productDescription);
         items.get(location).setQuantityAvailable(quantityAvailable);
         items.get(location).setPrice(price);
@@ -233,7 +229,7 @@ public class Store {
     public String getItemList() {
         String holder = "";
         for (int i = 0; i < items.size(); i++) {
-            holder += (i+1) + ". " + items.get(i).getProductName() + ",";
+            holder += (i + 1) + ". " + items.get(i).getProductName() + ",";
         }
         return holder;
     }
@@ -291,13 +287,14 @@ public class Store {
             File file = new File("ItemMasterList.txt");
             BufferedReader bfr = new BufferedReader(new FileReader(file));
             String line;
-            while((line = bfr.readLine()) != null) {
+            while ((line = bfr.readLine()) != null) {
                 marketList.add(line);
             }
             bfr.close();
 
             for (int i = 0; i < marketList.size(); i++) {
-                if (marketList.get(i).substring(14, marketList.get(i).indexOf(",")).equals(items.get(itemLocation).getProductName())) {
+                if (marketList.get(i).substring(14, marketList.get(i).indexOf(",")).equals(items.get(itemLocation)
+                        .getProductName())) {
                     String newLine = marketList.get(i).substring(0, marketList.get(i).indexOf("Available:") + 11) +
                             items.get(itemLocation).getQuantityAvailable() +
                             marketList.get(i).substring(marketList.get(i).indexOf(", Price"));
@@ -318,7 +315,7 @@ public class Store {
 
     public String getFinances() {
         String holder = "";
-        holder = String.format("Total Sales: %d\nTotal Revenue: %.2f\n",numberOfSales,revenue);
+        holder = String.format("Total Sales: %d\nTotal Revenue: %.2f\n", numberOfSales, revenue);
         try {
             String contents;
             File receiptListFile = new File(storeName + "_Receipt.txt");

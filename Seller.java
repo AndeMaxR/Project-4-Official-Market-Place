@@ -7,7 +7,6 @@ import java.io.*;
  * This class is meant for seller objects to sell items to customers on their stores
  *
  * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
- *
  * @version 5/1/2023
  */
 
@@ -123,8 +122,8 @@ public class Seller {
     public String dashboard(String sortField, String order) {
         LinkedHashMap<String, String> dataMap = new LinkedHashMap<>();
         String holder = "";
-        for(Store s: storeList) {
-            String headerInfo = "Store name: "+s.getStoreName()+"\n";
+        for (Store s: storeList) {
+            String headerInfo = "Store name: " + s.getStoreName() + "\n";
             try {
                 File receiptListFile = new File(s.getStoreName() + "_Receipt.txt");
                 BufferedReader bfr = new BufferedReader(new FileReader(receiptListFile));
@@ -142,7 +141,7 @@ public class Seller {
                     holder += contents + "\n";
                 }
                 headerInfo += String.format("Total Sales: %d\nTotal Revenue: %.2f\n", totalSales, totalRevenue);
-                headerInfo+= holder;
+                headerInfo += holder;
                 //holder += "******************************************\n";
                 dataMap.put(s.getStoreName(), headerInfo);
                 headerInfo = "";

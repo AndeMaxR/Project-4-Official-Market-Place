@@ -13,9 +13,8 @@ import java.util.ArrayList;
  *
  * This class handles the GUI and sends input to the server for processing.
  *
- * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
- *
- * @version 4/18/2023
+ * @version 5/2/2023
+ * @author Colin, Max A, Mark, Bomma
  */
 public class MarketClient extends JComponent {
 
@@ -51,9 +50,9 @@ public class MarketClient extends JComponent {
         cancel = new JButton("Cancel");
 
         // initialize the textField objects
-        usernameTextBox = new JTextField("",20);
+        usernameTextBox = new JTextField("", 20);
         usernameTextBox.setSize(20, 5);
-        passwordTextBox = new JTextField("",20);
+        passwordTextBox = new JTextField("", 20);
         passwordTextBox.setSize(20, 5);
 
 
@@ -92,7 +91,7 @@ public class MarketClient extends JComponent {
         Container content = frame.getContentPane();
 
         //content.setLayout(new BorderLayout());
-        content.setLayout(new GridLayout(5, 3,20,5));
+        content.setLayout(new GridLayout(5, 3, 20, 5));
         //marketClient = this;
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
@@ -136,7 +135,7 @@ public class MarketClient extends JComponent {
 
             int decision = Integer.parseInt(br.readLine());
             if (decision == 1) {
-                JOptionPane.showMessageDialog(null,"You have successfully been logged in "
+                JOptionPane.showMessageDialog(null, "You have successfully been logged in "
                         + usernameTextBox.getText() + "!", "Login", JOptionPane.PLAIN_MESSAGE);
 
                 String username = usernameTextBox.getText();
@@ -147,17 +146,17 @@ public class MarketClient extends JComponent {
                     seller(socket, username, pw, br);
                 } else {
                     frame.dispose();
-                    //TODO
+
                     customer(socket, username, pw, br);
                 }
             } else {
-                JOptionPane.showMessageDialog(null,"Login failed, your username or"
+                JOptionPane.showMessageDialog(null, "Login failed, your username or"
                         + " password was incorrect", "Login", JOptionPane.PLAIN_MESSAGE);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"IOException", "Error",
+            JOptionPane.showMessageDialog(null, "IOException", "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -176,13 +175,13 @@ public class MarketClient extends JComponent {
 
                 int decision = Integer.parseInt(br.readLine());
                 if (decision == 1) {
-                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                    JOptionPane.showMessageDialog(null, "You have successfully been signed-up" +
                             " and logged in "
                             + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
                     frame.dispose();
                     seller(socket, username, pw, br);
                 } else {
-                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                    JOptionPane.showMessageDialog(null, "Sign-up failed, there is already an " +
                             "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
                 }
             } else if (type.equals("Customer")) {
@@ -193,19 +192,19 @@ public class MarketClient extends JComponent {
 
                 int decision = Integer.parseInt(br.readLine());
                 if (decision == 1) {
-                    JOptionPane.showMessageDialog(null,"You have successfully been signed-up" +
+                    JOptionPane.showMessageDialog(null, "You have successfully been signed-up" +
                             " and logged in "
                             + username + "!", "Sign-up", JOptionPane.PLAIN_MESSAGE);
                     frame.dispose();
                     customer(socket, username, pw, br);
                 } else {
-                    JOptionPane.showMessageDialog(null,"Sign-up failed, there is already an " +
+                    JOptionPane.showMessageDialog(null, "Sign-up failed, there is already an " +
                             "account with the same username", "Sign-up", JOptionPane.PLAIN_MESSAGE);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,"IOException", "Error",
+            JOptionPane.showMessageDialog(null, "IOException", "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -219,14 +218,14 @@ public class MarketClient extends JComponent {
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //seller Buttons
-        JButton ManageStores;
-        JButton ManageFinances;
+        JButton manageStores;
+        JButton manageFinances;
         JButton viewDashboard;
         JButton sellerLogoutButton;
         JTextArea textArea;
 
-        ManageStores = new JButton("Manage Stores");
-        ManageFinances = new JButton("View Finances");
+        manageStores = new JButton("Manage Stores");
+        manageFinances = new JButton("View Finances");
         viewDashboard = new JButton("View Dashboard");
         sellerLogoutButton = new JButton("Logout");
 
@@ -235,30 +234,24 @@ public class MarketClient extends JComponent {
         textArea.setBounds(0, 20, 280, 200);
         textArea.setBorder(new LineBorder(Color.black));
 
-        JScrollPane scroll = new JScrollPane (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        JScrollPane scroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scroll.setBounds(280, 20, 20, 200);
         scroll.getViewport().setBackground(Color.white);
         scroll.getViewport().add(textArea);
 
-
-
-
         frame1.setTitle("Seller Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 2,0,0));
+        content.setLayout(new GridLayout(1, 2, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+        panel1.setLayout(new GridLayout(4, 1, 0, 0));
 
         content.add(scroll);
-        panel1.add(ManageStores);
-        panel1.add(ManageFinances);
+        panel1.add(manageStores);
+        panel1.add(manageFinances);
         panel1.add(viewDashboard);
         panel1.add(sellerLogoutButton);
-
-        //content.add(textArea);
-        //content.add(scroll);
 
         content.add(panel1);
 
@@ -266,17 +259,17 @@ public class MarketClient extends JComponent {
         ActionListener sellerActionListeners = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == ManageStores) {
+                if (e.getSource() == manageStores) {
                     frame1.dispose();
                     manageStores(socket, username, pw, br);
                 }
                 // if login is pressed
-                if (e.getSource() == ManageFinances) {
+                if (e.getSource() == manageFinances) {
                     manageFinances(socket, username, pw, br, textArea);
                 }
                 // if signup is pressed
                 if (e.getSource() == viewDashboard) {
-                    //TODO
+
                     frame1.dispose();
                     sellerDashboard(socket, username, pw, br);
                 }
@@ -288,8 +281,8 @@ public class MarketClient extends JComponent {
                 }
             }
         };
-        ManageStores.addActionListener(sellerActionListeners);
-        ManageFinances.addActionListener(sellerActionListeners);
+        manageStores.addActionListener(sellerActionListeners);
+        manageFinances.addActionListener(sellerActionListeners);
         viewDashboard.addActionListener(sellerActionListeners);
         sellerLogoutButton.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
@@ -305,57 +298,57 @@ public class MarketClient extends JComponent {
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //customer Buttons
-        JButton AddStore;
-        JButton RemoveStore;
-        JButton ManageInventory;
-        JButton Cancel;
+        JButton addStore;
+        JButton removeStore;
+        JButton manageInventory;
+        JButton cancel;
 
-        AddStore = new JButton("Add Store");
-        RemoveStore = new JButton("Remove Store");
-        ManageInventory = new JButton("Manage Inventory");
-        Cancel = new JButton("Cancel");
+        addStore = new JButton("Add Store");
+        removeStore = new JButton("Remove Store");
+        manageInventory = new JButton("Manage Inventory");
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Seller Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+        content.setLayout(new GridLayout(1, 1, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+        panel1.setLayout(new GridLayout(4, 1, 0, 0));
 
-        panel1.add(AddStore);
-        panel1.add(RemoveStore);
-        panel1.add(ManageInventory);
-        panel1.add(Cancel);
+        panel1.add(addStore);
+        panel1.add(removeStore);
+        panel1.add(manageInventory);
+        panel1.add(cancel);
 
         content.add(panel1);
 
         ActionListener sellerActionListeners = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == AddStore) {
+                if (e.getSource() == addStore) {
                     frame1.dispose();
                     addStore(socket, username, pw, br);
                 }
                 // if login is pressed
-                if (e.getSource() == RemoveStore) {
+                if (e.getSource() == removeStore) {
                     frame1.dispose();
                     removeStore(socket, username, pw, br);
                 }
                 // if signup is pressed
-                if (e.getSource() == ManageInventory) {
+                if (e.getSource() == manageInventory) {
                     frame1.dispose();
                     manageInventory(socket, username, pw, br);
                 }
-                if (e.getSource() == Cancel) {
+                if (e.getSource() == cancel) {
                     frame1.dispose();
                     seller(socket, username, pw, br);
                 }
             }
         };
-        AddStore.addActionListener(sellerActionListeners);
-        RemoveStore.addActionListener(sellerActionListeners);
-        ManageInventory.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
+        addStore.addActionListener(sellerActionListeners);
+        removeStore.addActionListener(sellerActionListeners);
+        manageInventory.addActionListener(sellerActionListeners);
+        cancel.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
     }
     public static void sellerDashboard(Socket socket, String username, PrintWriter pw,
@@ -370,24 +363,24 @@ public class MarketClient extends JComponent {
         JButton storeNameAsc;
         JButton storeNameDesc;
         JButton noSort;
-        JButton Cancel;
+        JButton cancel;
 
         storeNameAsc = new JButton("Store name Asc");
         storeNameDesc = new JButton("Store name Desc");
         noSort = new JButton("No Sort");
-        Cancel = new JButton("Cancel");
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Seller Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+        content.setLayout(new GridLayout(1, 1, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+        panel1.setLayout(new GridLayout(4, 1, 0, 0));
 
         panel1.add(storeNameAsc);
         panel1.add(storeNameDesc);
         panel1.add(noSort);
-        panel1.add(Cancel);
+        panel1.add(cancel);
 
         content.add(panel1);
 
@@ -435,7 +428,7 @@ public class MarketClient extends JComponent {
                     frame1.dispose();
                     seller(socket, username, pw, br);
                 }
-                if (e.getSource() == Cancel) {
+                if (e.getSource() == cancel) {
                     frame1.dispose();
                     seller(socket, username, pw, br);
                 }
@@ -444,7 +437,7 @@ public class MarketClient extends JComponent {
         storeNameAsc.addActionListener(sellerActionListeners);
         storeNameDesc.addActionListener(sellerActionListeners);
         noSort.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
+        cancel.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
     }
     public static void manageFinances(Socket socket, String username, PrintWriter pw,
@@ -486,11 +479,11 @@ public class MarketClient extends JComponent {
         storeName = new JLabel("Store name: ");
         textField = new JTextField("", 30);
         enter = new JButton("Enter");
-        cancel = new JButton("Cancel");;
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Add store Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(2, 2,0,0));
+        content.setLayout(new GridLayout(2, 2, 0, 0));
         content.add(storeName);
         content.add(textField);
         content.add(cancel);
@@ -499,7 +492,6 @@ public class MarketClient extends JComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == enter) {
-                    //might need username + "," +
                     pw.write("AddStore\n");
                     pw.flush();
                     pw.write(textField.getText() + "\n");
@@ -554,11 +546,11 @@ public class MarketClient extends JComponent {
         storeName = new JLabel("Store name: ");
         stores = new JComboBox<>(list);
         enter = new JButton("Enter");
-        cancel = new JButton("Cancel");;
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Remove store Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(2, 2,0,0));
+        content.setLayout(new GridLayout(2, 2, 0, 0));
         content.add(storeName);
         content.add(stores);
         content.add(cancel);
@@ -606,62 +598,61 @@ public class MarketClient extends JComponent {
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //customer Buttons
-        JButton AddItem;
-        JButton RemoveItem;
-        JButton EditItem;
-        JButton Cancel;
+        JButton addItem;
+        JButton removeItem;
+        JButton editItem;
+        JButton cancel;
 
-        AddItem = new JButton("Add Item");
-        RemoveItem = new JButton("Remove Item");
-        EditItem = new JButton("Edit Item");
-        Cancel = new JButton("Cancel");
+        addItem = new JButton("Add Item");
+        removeItem = new JButton("Remove Item");
+        editItem = new JButton("Edit Item");
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Seller Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+        content.setLayout(new GridLayout(1, 1, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+        panel1.setLayout(new GridLayout(4, 1, 0, 0));
 
-        panel1.add(AddItem);
-        panel1.add(RemoveItem);
-        panel1.add(EditItem);
-        panel1.add(Cancel);
+        panel1.add(addItem);
+        panel1.add(removeItem);
+        panel1.add(editItem);
+        panel1.add(cancel);
 
         content.add(panel1);
 
         ActionListener sellerActionListeners = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == AddItem) {
+                if (e.getSource() == addItem) {
                     frame1.dispose();
                     addItem(socket, username, pw, br);
                 }
                 // if login is pressed
-                if (e.getSource() == RemoveItem) {
+                if (e.getSource() == removeItem) {
                     frame1.dispose();
                     removeItem(socket, username, pw, br);
                 }
                 // if signup is pressed
-                if (e.getSource() == EditItem) {
+                if (e.getSource() == editItem) {
                     frame1.dispose();
                     editItem(socket, username, pw, br);
                 }
-                if (e.getSource() == Cancel) {
+                if (e.getSource() == cancel) {
                     frame1.dispose();
                     manageStores(socket, username, pw, br);
                 }
             }
         };
-        AddItem.addActionListener(sellerActionListeners);
-        RemoveItem.addActionListener(sellerActionListeners);
-        EditItem.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
+        addItem.addActionListener(sellerActionListeners);
+        removeItem.addActionListener(sellerActionListeners);
+        editItem.addActionListener(sellerActionListeners);
+        cancel.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
 
     }
 
-    // todo clienthandler part of this
     public static void addItem(Socket socket, String username, PrintWriter pw,
                                BufferedReader br) {
 
@@ -742,7 +733,7 @@ public class MarketClient extends JComponent {
 
         frame1.setVisible(true);
     }
-    //TODO
+
     public static void editItem(Socket socket, String username, PrintWriter pw,
                                 BufferedReader br) {
         pw.write("EditItem\n");
@@ -754,7 +745,7 @@ public class MarketClient extends JComponent {
         editItemInterface.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container content = editItemInterface.getContentPane();
-        content.setLayout(new GridLayout(1, 3,0,0));
+        content.setLayout(new GridLayout(1, 3, 0, 0));
 
         JTextArea list = new JTextArea("");
         list.setEditable(false);
@@ -773,7 +764,7 @@ public class MarketClient extends JComponent {
         JTextField oldStoreText = new JTextField("", 30);
         JTextField oldItemText = new JTextField("", 20);
 
-        JPanel panel1 = new JPanel(new GridLayout(8,2, 0, 0));
+        JPanel panel1 = new JPanel(new GridLayout(8, 2, 0, 0));
         panel1.add(oldLabel);
         panel1.add(new JLabel(""));
         panel1.add(new JLabel(""));
@@ -783,7 +774,7 @@ public class MarketClient extends JComponent {
         panel1.add(oldItemLabel);
         panel1.add(oldItemText);
 
-        JPanel panel2 = new JPanel(new GridLayout(8,2, 0, 0));
+        JPanel panel2 = new JPanel(new GridLayout(8, 2, 0, 0));
         JLabel newLabel = new JLabel("Edited Item");
         JLabel productNameLabel = new JLabel("Product Name: ");
         JLabel storeNameLabel = new JLabel("Store Name: ");
@@ -794,7 +785,7 @@ public class MarketClient extends JComponent {
         JTextField nameText = new JTextField("", 20);
         JTextField storeText = new JTextField("", 30);
         JTextField descText = new JTextField("", 200);
-        JTextField quantText = new JTextField("",5);
+        JTextField quantText = new JTextField("", 5);
         JTextField priceText = new JTextField("", 10);
 
         JButton cancel = new JButton("Cancel");
@@ -822,7 +813,7 @@ public class MarketClient extends JComponent {
 
         String temp;
         String[] storeList = new String[1];
-        ArrayList<String[]> itemList = new ArrayList<>();;
+        ArrayList<String[]> itemList = new ArrayList<>();
         try {
             temp = br.readLine();
             if (temp.equals("")) {
@@ -890,7 +881,7 @@ public class MarketClient extends JComponent {
                         if (br.readLine().equals("-1")) {
                             JOptionPane.showMessageDialog(editItemInterface, "Item was not removed," +
                                     " please fill out all fields correctly.");
-                            //TODO YOU MAY NEED THIS YOU MAY NOT
+
                             pw.write("EditItem\n");
                             pw.flush();
                         } else {
@@ -920,7 +911,7 @@ public class MarketClient extends JComponent {
 
         editItemInterface.setVisible(true);
     }
-    //TODO
+
     public static void removeItem(Socket socket, String username, PrintWriter pw,
                                   BufferedReader br) {
         pw.write("RemoveItem\n");
@@ -932,7 +923,7 @@ public class MarketClient extends JComponent {
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 2,0,0));
+        content.setLayout(new GridLayout(1, 2, 0, 0));
 
         JLabel storeLabel = new JLabel("Store name:");
         JLabel itemLabel = new JLabel("Item name:");
@@ -953,7 +944,7 @@ public class MarketClient extends JComponent {
 
         String temp;
         String[] storeList = new String[1];
-        ArrayList<String[]> itemList = new ArrayList<>();;
+        ArrayList<String[]> itemList = new ArrayList<>();
         try {
             temp = br.readLine();
             if (temp.equals("")) {
@@ -986,7 +977,7 @@ public class MarketClient extends JComponent {
         list.setText(temp);
 
         content.add(scrollPane);
-        JPanel panel = new JPanel(new GridLayout(3,2, 0, 0));
+        JPanel panel = new JPanel(new GridLayout(3, 2, 0, 0));
         panel.add(storeLabel);
         panel.add(itemLabel);
         panel.add(storeText);
@@ -1009,7 +1000,7 @@ public class MarketClient extends JComponent {
                         if (br.readLine().equals("-1")) {
                             JOptionPane.showMessageDialog(frame1, "Item was not removed," +
                                     " please fill out all fields correctly.");
-                            //TODO YOU MAY NEED THIS YOU MAY NOT
+
                             pw.write("RemoveItem\n");
                             pw.flush();
                         } else {
@@ -1048,28 +1039,28 @@ public class MarketClient extends JComponent {
         //customer Buttons
         JButton viewMarket;
         JButton viewDashboard;
-        JButton ViewPurchaseHistory;
+        JButton viewPurchaseHistory;
         JButton exportPurchaseHistory;
-        JButton Logout;
+        JButton logout;
 
         viewMarket = new JButton("View Market");
         viewDashboard = new JButton("View Dashboard");
-        ViewPurchaseHistory = new JButton("View Purchase History");
+        viewPurchaseHistory = new JButton("View Purchase History");
         exportPurchaseHistory = new JButton("Export Purchase History");
-        Logout = new JButton("Logout");
+        logout = new JButton("Logout");
 
         frame1.setTitle("Customer Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+        content.setLayout(new GridLayout(1, 1, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(5,1,0,0));
+        panel1.setLayout(new GridLayout(5, 1, 0, 0));
 
         panel1.add(viewMarket);
         panel1.add(viewDashboard);
-        panel1.add(ViewPurchaseHistory);
+        panel1.add(viewPurchaseHistory);
         panel1.add(exportPurchaseHistory);
-        panel1.add(Logout);
+        panel1.add(logout);
 
         content.add(panel1);
 
@@ -1087,9 +1078,9 @@ public class MarketClient extends JComponent {
                     frame1.dispose();
                     pw.write("viewDashboard\n");
                     pw.flush();
-                    customerDashboard(socket,username, pw, br);
+                    customerDashboard(socket, username, pw, br);
                 }
-                if (e.getSource() == ViewPurchaseHistory) {
+                if (e.getSource() == viewPurchaseHistory) {
                     frame1.dispose();
                     pw.write("ViewPurchaseHistory\n");
                     pw.flush();
@@ -1100,7 +1091,7 @@ public class MarketClient extends JComponent {
                 if (e.getSource() == exportPurchaseHistory) {
                     exportPurchaseHistory(socket, pw, br, username);
                 }
-                if (e.getSource() == Logout) {
+                if (e.getSource() == logout) {
                     pw.write("Logout\n");
                     pw.flush();
                     frame1.dispose();
@@ -1111,9 +1102,9 @@ public class MarketClient extends JComponent {
         };
         viewMarket.addActionListener(customerActionListeners);
         viewDashboard.addActionListener(customerActionListeners);
-        ViewPurchaseHistory.addActionListener(customerActionListeners);
+        viewPurchaseHistory.addActionListener(customerActionListeners);
         exportPurchaseHistory.addActionListener(customerActionListeners);
-        Logout.addActionListener(customerActionListeners);
+        logout.addActionListener(customerActionListeners);
         frame1.setVisible(true);
     }
 
@@ -1139,7 +1130,7 @@ public class MarketClient extends JComponent {
 
         //customer Buttons
         JLabel purchaseLabel;
-        //TODO CHECK TO SEE IF THIS WORKS ONCE ADD ITEM IS DONE
+
         JComboBox stores;
         JComboBox items;
 
@@ -1223,9 +1214,9 @@ public class MarketClient extends JComponent {
         //entire frame
         frame1.setTitle("Market_Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 2,0,0));
+        content.setLayout(new GridLayout(1, 2, 0, 0));
 
-        textArea.setBounds(0, 0,1180, 400);
+        textArea.setBounds(0, 0, 1180, 400);
         textArea.setBorder(new LineBorder(Color.black));
         textArea.setEditable(false);
 
@@ -1234,7 +1225,6 @@ public class MarketClient extends JComponent {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.getViewport().add(textArea);
         //left side
-        ;
         scrollPane.setBounds(1180, 0, 20, 400);
         scrollPane.getViewport().setBackground(Color.white);
         scrollPane.getViewport().add(textArea);
@@ -1242,13 +1232,13 @@ public class MarketClient extends JComponent {
 
         //item/store sub panel
         JPanel subPanel = new JPanel();
-        subPanel.setLayout(new GridLayout(1,2,0,0));
+        subPanel.setLayout(new GridLayout(1, 2, 0, 0));
         subPanel.add(stores);
         subPanel.add(items);
 
         //search sub panel
         JPanel searchMarketSubPanel = new JPanel();
-        searchMarketSubPanel.setLayout(new GridLayout(1, 4, 0,0));
+        searchMarketSubPanel.setLayout(new GridLayout(1, 4, 0, 0));
         searchMarketSubPanel.add(searchPrompt);
         searchMarketSubPanel.add(marketSearchOptions);
         searchMarketSubPanel.add(marketSearchBox);
@@ -1270,7 +1260,7 @@ public class MarketClient extends JComponent {
 
         //initializing entire panel
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(7,1,0,0));
+        panel1.setLayout(new GridLayout(7, 1, 0, 0));
 
         panel1.add(purchaseLabel);
         panel1.add(subPanel);
@@ -1311,8 +1301,8 @@ public class MarketClient extends JComponent {
                     pw.flush();
                     pw.write(marketSearchBox.getText() + "\n"); //send search prompt
                     pw.flush();
-                    frame1.dispose();
-                    searchMarket(socket, username, pw, br);
+                    searchMarket(socket, pw, br);
+                    SwingUtilities.updateComponentTreeUI(frame1);
                 }
                 if (e.getSource() == sortMarketButton) {
                     pw.write("sortMarket\n"); //send that sort market button was pushed
@@ -1320,7 +1310,8 @@ public class MarketClient extends JComponent {
                     pw.write(marketSortOptions.getSelectedIndex() + "\n"); //send type of sort
                     pw.flush();
                     frame1.dispose();
-                    sortMarket(socket, username, pw, br);
+                    sortMarket(socket, pw, br);
+                    viewMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == purchaseButton) {
                     try {
@@ -1347,7 +1338,8 @@ public class MarketClient extends JComponent {
 
                 }
                 if (e.getSource() == refresh) {
-                    SwingUtilities.updateComponentTreeUI(frame1);
+                    frame1.dispose();
+                    viewMarket(socket, username, pw, br);
                 }
                 if (e.getSource() == cancel) {
                     frame1.dispose();
@@ -1364,10 +1356,8 @@ public class MarketClient extends JComponent {
         frame1.setVisible(true);
     }
 
-    public static void searchMarket(Socket socket, String username, PrintWriter pw, BufferedReader br) {
+    public static void searchMarket(Socket socket, PrintWriter pw, BufferedReader br) {
         try {
-
-            JButton cancelButton = new JButton("Cancel");
 
             JFrame viewSearchFrame = new JFrame();
             viewSearchFrame.setSize(400, 600);
@@ -1377,36 +1367,21 @@ public class MarketClient extends JComponent {
             Container content = viewSearchFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-            content.setLayout(new GridLayout(numResults + 1, 1, 0, 0));
+            content.setLayout(new GridLayout(numResults, 1, 0, 0));
 
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
 
-            content.add(cancelButton);
             viewSearchFrame.setVisible(true);
-
-            ActionListener actionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (e.getSource() == cancelButton) {
-                        viewSearchFrame.dispose();
-                        viewMarket(socket, username, pw, br);
-                    }
-                }
-            };
-            cancelButton.addActionListener(actionListener);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void sortMarket(Socket socket, String username, PrintWriter pw, BufferedReader br) {
+    public static void sortMarket(Socket socket, PrintWriter pw, BufferedReader br) {
         try {
-
-            JButton cancelButton = new JButton("Cancel");
-
             //initialize frame
             JFrame viewSortFrame = new JFrame();
             viewSortFrame.setSize(400, 600);
@@ -1416,24 +1391,12 @@ public class MarketClient extends JComponent {
             Container content = viewSortFrame.getContentPane();
 
             int numResults = Integer.parseInt(br.readLine());
-            content.setLayout(new GridLayout(numResults + 1, 1, 0,0));
+            content.setLayout(new GridLayout(numResults, 1, 0, 0));
 
             for (int i = 0; i < numResults; i++) {
                 content.add(new JLabel(br.readLine()));
             }
-            content.add(cancelButton);
             viewSortFrame.setVisible(true);
-
-            ActionListener actionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (e.getSource() == cancelButton) {
-                        viewSortFrame.dispose();
-                        viewMarket(socket, username, pw, br);
-                    }
-                }
-            };
-            cancelButton.addActionListener(actionListener);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1451,7 +1414,7 @@ public class MarketClient extends JComponent {
             viewPurchaseHistoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             viewPurchaseHistoryFrame.setTitle("Transaction History");
             Container content = viewPurchaseHistoryFrame.getContentPane();
-            content.setLayout(new GridLayout(1,2,0,0));
+            content.setLayout(new GridLayout(1, 2, 0, 0));
 
             JPanel panel1 = new JPanel();
             panel1.setLayout(new FlowLayout());
@@ -1492,24 +1455,24 @@ public class MarketClient extends JComponent {
         JButton sellerNameAsc;
         JButton sellerNameDesc;
         JButton noSort;
-        JButton Cancel;
+        JButton cancel;
 
         sellerNameAsc = new JButton("Seller name Asc");
         sellerNameDesc = new JButton("Seller name Desc");
         noSort = new JButton("No Sort");
-        Cancel = new JButton("Cancel");
+        cancel = new JButton("Cancel");
 
         frame1.setTitle("Customer Interface");
         Container content = frame1.getContentPane();
-        content.setLayout(new GridLayout(1, 1,0,0));
+        content.setLayout(new GridLayout(1, 1, 0, 0));
 
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(4,1,0,0));
+        panel1.setLayout(new GridLayout(4, 1, 0, 0));
 
         panel1.add(sellerNameAsc);
         panel1.add(sellerNameDesc);
         panel1.add(noSort);
-        panel1.add(Cancel);
+        panel1.add(cancel);
 
         content.add(panel1);
 
@@ -1557,7 +1520,7 @@ public class MarketClient extends JComponent {
                     frame1.dispose();
                     customer(socket, username, pw, br);
                 }
-                if (e.getSource() == Cancel) {
+                if (e.getSource() == cancel) {
                     frame1.dispose();
                     customer(socket, username, pw, br);
                 }
@@ -1566,12 +1529,12 @@ public class MarketClient extends JComponent {
         sellerNameAsc.addActionListener(sellerActionListeners);
         sellerNameDesc.addActionListener(sellerActionListeners);
         noSort.addActionListener(sellerActionListeners);
-        Cancel.addActionListener(sellerActionListeners);
+        cancel.addActionListener(sellerActionListeners);
         frame1.setVisible(true);
     }
     public static void exportPurchaseHistory(Socket socket, PrintWriter pr, BufferedReader br, String username) {
         JOptionPane.showMessageDialog(null, "Your purchase history file is now available to " +
-                "view in the depository under the name " + username + "_History.txt", "Export Purchase" +
-                " History", JOptionPane.INFORMATION_MESSAGE);
+                        "view in the depository under the name " + username + "_History.txt", "Export Purchase" +
+                        " History", JOptionPane.INFORMATION_MESSAGE);
     }
 }

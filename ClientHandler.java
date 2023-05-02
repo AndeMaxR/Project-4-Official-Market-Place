@@ -1,23 +1,19 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-
 /**
- * ClientHandler
+ * Market Client
  *
- * This class acts as the client and handles the GUI.
- *
- * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
- *
- * @version 5/1/2023
+ * This class handles the input from the market
+ * @version 5/2/2023
+ * @author Colin, Max A, Mark, Bomma
  */
-
 public class ClientHandler extends Thread {
     final PrintWriter printWriter;
     final BufferedReader bufferedReader;
     final Socket socket;
 
-    public static final Object obj = new Object();
+    public static final Object OBJ = new Object();
 
     private String username;
     private String password;
@@ -61,28 +57,28 @@ public class ClientHandler extends Thread {
         String[] list = string.split(",");
         File file = new File(list[1] + ".txt");
         if (!file.exists()) {
-            synchronized (obj) {
+            synchronized (OBJ) {
                 printWriter.write("-1\n");
                 printWriter.flush();
             }
         } else {
             try {
                 String temp;
-                synchronized (obj) {
+                synchronized (OBJ) {
                     BufferedReader bfr = new BufferedReader(new FileReader(file));
                     temp = bfr.readLine();
                     bfr.close();
 
                 }
                 if (temp == null) {
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         printWriter.write("-1\n");
                         printWriter.flush();
                     }
                 } else if (temp.contains(list[2])) {
                     username = list[1];
                     password = list[2];
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         printWriter.write("1\n");
                         printWriter.flush();
                         if (temp.contains("SELLER")) {
@@ -99,13 +95,13 @@ public class ClientHandler extends Thread {
 
                     }
                 } else {
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         printWriter.write("-1\n");
                         printWriter.flush();
                     }
                 }
             } catch (IOException e) {
-                synchronized (obj) {
+                synchronized (OBJ) {
                     printWriter.write("-1\n");
                     printWriter.flush();
                 }
@@ -118,7 +114,7 @@ public class ClientHandler extends Thread {
         String[] list = string.split(",");
         File file = new File(list[1] + ".txt");
         if (file.exists()) {
-            synchronized (obj) {
+            synchronized (OBJ) {
                 printWriter.write("-1\n");
                 printWriter.flush();
             }
@@ -127,14 +123,14 @@ public class ClientHandler extends Thread {
             password = list[2];
             if (list[3].equals("Seller")) {
                 this.seller = new Seller(username, password);
-                synchronized (obj) {
+                synchronized (OBJ) {
                     printWriter.write("1\n");
                     printWriter.flush();
                     seller();
                 }
             } else {
                 this.customer = new Customer(username, password);
-                synchronized (obj) {
+                synchronized (OBJ) {
                     printWriter.write("1\n");
                     printWriter.flush();
                     customer();
@@ -148,145 +144,99 @@ public class ClientHandler extends Thread {
             try {
                 String temp = bufferedReader.readLine();
                 if (temp.equals("viewMarket")) {
-                    while (true) {
-                        printWriter.write(storeMasterArrayList.size() + "\n");
+                    printWriter.write(storeMasterArrayList.size() + "\n");
+                    printWriter.flush();
+                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
+                        printWriter.write(storeMasterArrayList.get(i).getStoreName() + "\n");
                         printWriter.flush();
-                        for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                            printWriter.write(storeMasterArrayList.get(i).getStoreName() + "\n");
-                            printWriter.flush();
-                            printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
-                            printWriter.flush();
-                        }
-                        String viewMarketChoice = bufferedReader.readLine();
-                        System.out.println(viewMarketChoice);
-                        if (viewMarketChoice.equals("searchMarket")) {
-                            int searchType = Integer.parseInt(bufferedReader.readLine());
-                            if (searchType == 0) { //search by item name
-                                String searchPrompt = bufferedReader.readLine();
-                                synchronized (obj) {
-                                    ArrayList<Item> market = new ArrayList<>();
-
-                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
-                                            market.add(storeMasterArrayList.get(i).getItem(j));
-                                        }
-                                    }
-
-                                    ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt,
-                                        market);
-                                    printWriter.write(searchResults.size() + "\n");
+                        printWriter.write(storeMasterArrayList.get(i).getItemList() + "\n");
+                        printWriter.flush();
+                    }
+                    String viewMarketChoice = bufferedReader.readLine();
+                    System.out.println(viewMarketChoice);
+                    if (viewMarketChoice.equals("searchMarket")) {
+                        int searchType = Integer.parseInt(bufferedReader.readLine());
+                        if (searchType == 0) { //search by item name
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (OBJ) {
+                                ArrayList<String> searchResults = customer.viewMarketNameSearch(searchPrompt);
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i) + "\n");
                                     printWriter.flush();
-                                    for (int i = 0; i < searchResults.size(); i++) {
-                                        printWriter.write(searchResults.get(i) + "\n");
-                                        printWriter.flush();
-                                    }
                                 }
-                            } else if (searchType == 1) { //search by store name
-                                String searchPrompt = bufferedReader.readLine();
-                                synchronized (obj) {
-                                    ArrayList<Item> market = new ArrayList<>();
-
-                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
-                                            market.add(storeMasterArrayList.get(i).getItem(j));
-                                        }
-                                    }
-
-                                    ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt,
-                                        market);
-                                    printWriter.write(searchResults.size() + "\n");
+                            }
+                        } else if (searchType == 1) { //search by store name
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (OBJ) {
+                                ArrayList<String> searchResults = customer.viewMarketStoreSearch(searchPrompt);
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i) + "\n");
                                     printWriter.flush();
-                                    for (int i = 0; i < searchResults.size(); i++) {
-                                        printWriter.write(searchResults.get(i) + "\n");
-                                        printWriter.flush();
-                                    }
                                 }
-                            } else if (searchType == 2) {
-                                String searchPrompt = bufferedReader.readLine();
-                                synchronized (obj) {
-                                    ArrayList<Item> market = new ArrayList<>();
-
-                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
-                                            market.add(storeMasterArrayList.get(i).getItem(j));
-                                        }
-                                    }
-
-                                    ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt,
-                                        market);
-                                    printWriter.write(searchResults.size() + "\n");
+                            }
+                        } else if (searchType == 2) {
+                            String searchPrompt = bufferedReader.readLine();
+                            synchronized (OBJ) {
+                                ArrayList<String> searchResults = customer.viewMarketDescriptionSearch(searchPrompt);
+                                printWriter.write(searchResults.size() + "\n");
+                                printWriter.flush();
+                                for (int i = 0; i < searchResults.size(); i++) {
+                                    printWriter.write(searchResults.get(i) + "\n");
                                     printWriter.flush();
-                                    for (int i = 0; i < searchResults.size(); i++) {
-                                        printWriter.write(searchResults.get(i) + "\n");
-                                        printWriter.flush();
-                                    }
                                 }
                             }
                         }
-                        if (viewMarketChoice.equals("sortMarket")) {
-                            int sortType = Integer.parseInt(bufferedReader.readLine());
-                            if (sortType == 0) { // sort by price
-                                synchronized (obj) {
-                                    ArrayList<Item> market = new ArrayList<>();
-
-                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
-                                            market.add(storeMasterArrayList.get(i).getItem(j));
-                                        }
-                                    }
-
-                                    ArrayList<String> sortResults = customer.sortMarketPrice(market);
-                                    printWriter.write(sortResults.size() + "\n");
+                    }
+                    if (viewMarketChoice.equals("sortMarket")) {
+                        int sortType = Integer.parseInt(bufferedReader.readLine());
+                        if (sortType == 0) { // sort by price
+                            synchronized (OBJ) {
+                                ArrayList<String> sortResults = customer.sortMarketPrice();
+                                printWriter.write(sortResults.size() + "\n");
+                                printWriter.flush();
+                                for (int i = 0; i < sortResults.size(); i++) {
+                                    printWriter.write(sortResults.get(i) + "\n");
                                     printWriter.flush();
-                                    for (int i = 0; i < sortResults.size(); i++) {
-                                        printWriter.write(sortResults.get(i) + "\n");
-                                        printWriter.flush();
-                                    }
                                 }
-                            } else if (sortType == 1) { //sort by quantity
-                                synchronized (obj) {
-
-                                    ArrayList<Item> market = new ArrayList<>();
-
-                                    for (int i = 0; i < storeMasterArrayList.size(); i++) {
-                                        for (int j = 0; j < storeMasterArrayList.get(i).getItemListSize(); j++) {
-                                            market.add(storeMasterArrayList.get(i).getItem(j));
-                                        }
-                                    }
-
-                                    ArrayList<String> sortResults = customer.sortMarketQuantity(market);
-                                    printWriter.write(sortResults.size() + "\n");
+                            }
+                        } else if (sortType == 1) { //sort by quantity
+                            synchronized (OBJ) {
+                                ArrayList<String> sortResults = customer.sortMarketQuantity();
+                                printWriter.write(sortResults.size() + "\n");
+                                printWriter.flush();
+                                for (int i = 0; i < sortResults.size(); i++) {
+                                    printWriter.write(sortResults.get(i) + "\n");
                                     printWriter.flush();
-                                    for (int i = 0; i < sortResults.size(); i++) {
-                                        printWriter.write(sortResults.get(i) + "\n");
-                                        printWriter.flush();
-                                    }
                                 }
                             }
                         }
-                        if (viewMarketChoice.equals("purchase")) {
-                            int storeLocation;
-                            int itemIndex;
-                            int purchaseQuantity;
-                            String username;
-                            storeLocation = Integer.parseInt(bufferedReader.readLine());
-                            itemIndex = Integer.parseInt(bufferedReader.readLine());
-                            purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
-                            username = bufferedReader.readLine();
-                            System.out.println(storeLocation);
-                            System.out.println(itemIndex);
-                            System.out.println(purchaseQuantity);
-                            System.out.println(username);
-                            synchronized (obj) {
-                                storeMasterArrayList.get(storeLocation).buyItem(itemIndex, purchaseQuantity, username);
-                            }
+                    }
+                    if (viewMarketChoice.equals("purchase")) {
+                        int storeLocation;
+                        int itemIndex;
+                        int purchaseQuantity;
+                        String usernameTemp;
+                        storeLocation = Integer.parseInt(bufferedReader.readLine());
+                        itemIndex = Integer.parseInt(bufferedReader.readLine());
+                        purchaseQuantity = Integer.parseInt(bufferedReader.readLine());
+                        usernameTemp = bufferedReader.readLine();
+                        System.out.println(storeLocation);
+                        System.out.println(itemIndex);
+                        System.out.println(purchaseQuantity);
+                        System.out.println(usernameTemp);
+                        synchronized (OBJ) {
+                            storeMasterArrayList.get(storeLocation).buyItem(itemIndex, purchaseQuantity, usernameTemp);
                         }
                     }
                 } else if (temp.equals("ViewPurchaseHistory")) {
                     ArrayList<String> purchaseHistory = new ArrayList<>();
-                    String username = bufferedReader.readLine();
-                    purchaseHistory = customer.purchaseHistory(username);
-                    synchronized (obj) {
+                    String usernameTemp = bufferedReader.readLine();
+                    purchaseHistory = customer.purchaseHistory(usernameTemp);
+                    synchronized (OBJ) {
                         printWriter.write(purchaseHistory.size() + "\n");
                         printWriter.flush();
                         for (int i = 0; i < purchaseHistory.size(); i++) {
@@ -296,13 +246,13 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("Seller name Asc")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = customer.dashboard("seller name", "asc").replace("\n", "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -310,13 +260,13 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("Seller name Desc")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = customer.dashboard("seller name", "desc").replace("\n", "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -325,13 +275,13 @@ public class ClientHandler extends Thread {
 
                 } else if (temp.equals("No Sort")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = customer.dashboard("", "").replace("\n", "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -354,7 +304,7 @@ public class ClientHandler extends Thread {
                 if (temp.equals("AddStore")) {
                     try {
                         String storeName = bufferedReader.readLine();
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             seller.addStore(new Store(seller.getUsername(), storeName));
                             storeMasterArrayList.add(seller.getSpecificStore(seller.getFullStoreList().size() - 1));
                             printWriter.write("1\n");
@@ -362,14 +312,14 @@ public class ClientHandler extends Thread {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                         }
                     }
                 } else if (temp.equals("RemoveStore")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write(seller.getStoreList() + "\n");
                             printWriter.flush();
                         }
@@ -378,7 +328,7 @@ public class ClientHandler extends Thread {
                         if (input == -1) {
                             continue;
                         } else {
-                            synchronized (obj) {
+                            synchronized (OBJ) {
                                 for (int i = 0; i < storeMasterArrayList.size(); i++) {
                                     if (storeMasterArrayList.get(i).getStoreName().equals(seller
                                             .getSpecificStore(input).getStoreName())) {
@@ -409,7 +359,7 @@ public class ClientHandler extends Thread {
                                 } catch (Exception k) {
                                     k.printStackTrace();
                                 }
-                                synchronized (obj) {
+                                synchronized (OBJ) {
                                     seller.removeStore(input);
                                     printWriter.write("1\n");
                                     printWriter.flush();
@@ -417,7 +367,7 @@ public class ClientHandler extends Thread {
                             }
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -426,7 +376,7 @@ public class ClientHandler extends Thread {
 
                 } else if (temp.equals("ViewFinances")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 Store store = seller.getSpecificStore(i);
                                 printWriter.write(store.getStoreName() + "\n" + store.getFinances());
@@ -436,7 +386,7 @@ public class ClientHandler extends Thread {
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -448,7 +398,7 @@ public class ClientHandler extends Thread {
                         String[] itemParts;
                         holder = bufferedReader.readLine();
                         itemParts = holder.split(",");
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(itemParts[1])) {
                                     seller.getSpecificStore(i).addItem(new Item(itemParts[0], itemParts[1],
@@ -469,14 +419,14 @@ public class ClientHandler extends Thread {
                             }
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
                         }
                     }
                 } else if (temp.equals("RemoveItem")) {
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         printWriter.write(seller.getStoreList() + "\n");
                         printWriter.flush();
 
@@ -487,18 +437,18 @@ public class ClientHandler extends Thread {
                     }
                     String temp2;
                     temp2 = bufferedReader.readLine();
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         if (!temp2.equals("cancel")) {
                             String[] components = temp2.split(",");
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
                                     for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
-                                        if (seller.getSpecificStore(i).getItem(j).getProductName().
-                                                equals(components[1])) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName()
+                                                .equals(components[1])) {
                                             if (seller.getSpecificStore(i).removeItem(j)) {
                                                 for (int k = 0; k < storeMasterArrayList.size(); k++) {
-                                                    if (storeMasterArrayList.get(k).getStoreName().
-                                                            equals(components[0])) {
+                                                    if (storeMasterArrayList.get(k).getStoreName()
+                                                            .equals(components[0])) {
                                                         storeMasterArrayList.set(k, seller.getSpecificStore(i));
                                                         break;
                                                     }
@@ -519,7 +469,7 @@ public class ClientHandler extends Thread {
                     }
 
                 } else if (temp.equals("EditItem")) {
-                    synchronized (obj) {
+                    synchronized (OBJ) {
                         printWriter.write(seller.getStoreList() + "\n");
                         printWriter.flush();
 
@@ -533,14 +483,14 @@ public class ClientHandler extends Thread {
                     temp2 = bufferedReader.readLine();
                     if (!temp2.equals("cancel")) {
                         temp3 = bufferedReader.readLine();
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String[] components = temp2.split(",");
                             String[] components2 = temp3.split(",");
                             for (int i = 0; i < seller.getFullStoreList().size(); i++) {
                                 if (seller.getSpecificStore(i).getStoreName().equals(components[0])) {
                                     for (int j = 0; j < seller.getSpecificStore(i).getItemListSize(); j++) {
-                                        if (seller.getSpecificStore(i).getItem(j).getProductName().
-                                                equals(components[1])) {
+                                        if (seller.getSpecificStore(i).getItem(j).getProductName()
+                                                .equals(components[1])) {
                                             seller.getSpecificStore(i).editItem(j, components2[0], components2[1],
                                                     components2[2], Integer.parseInt(components2[3]),
                                                     Double.parseDouble(components2[4]));
@@ -563,14 +513,14 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("Store name Asc")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = seller.dashboard("store name", "asc").replace("\n",
                                     "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -578,14 +528,14 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("Store name Desc")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = seller.dashboard("store name", "desc").replace("\n",
                                     "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
@@ -593,13 +543,13 @@ public class ClientHandler extends Thread {
                     }
                 } else if (temp.equals("No Sort")) {
                     try {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             String data = seller.dashboard("", "").replace("\n", "#");
                             printWriter.write(data + "\n");
                             printWriter.flush();
                         }
                     } catch (Exception e) {
-                        synchronized (obj) {
+                        synchronized (OBJ) {
                             printWriter.write("-1\n");
                             printWriter.flush();
                             e.printStackTrace();
