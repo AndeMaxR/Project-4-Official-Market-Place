@@ -2,6 +2,16 @@ import java.io.*;
 import java.util.ArrayList;
 //owner + "_" + this.storeName + ".txt" is file format name
 
+/**
+ * Store
+ *
+ * This class is meant for product objects to be stored.
+ *
+ * @author Mark Herman, Max Anderson, Colin McKee, Aarnav Bomma, Section L06
+ *
+ * @version 5/1/2023
+ */
+
 public class Store {
     private String owner;
     private String storeName;
